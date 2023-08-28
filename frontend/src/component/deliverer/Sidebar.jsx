@@ -150,7 +150,7 @@ const Sidebar = ({
                 Tapiwa Muranda
               </Typography>
               <Typography fontSize={"0.8rem"} sx={{color:theme.palette.secondary[200]}}>
-                Admin
+                Super Admin 
               </Typography>
             </Box>
            </FlexBetween>
