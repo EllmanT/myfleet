@@ -45,6 +45,7 @@ const DelRegisterPage = () => {
         });
     } else {
       toast.error("Passwords do not match");
+      setDisable(false);
     }
   };
 
@@ -53,7 +54,7 @@ const DelRegisterPage = () => {
   };
 
   return (
-    <div cursor>
+    <div>
       <form onSubmit={handleSubmit}>
         <Box
           display="flex"
@@ -64,8 +65,9 @@ const DelRegisterPage = () => {
           alignItems={"center"}
           justifyContent={"center"}
           borderRadius={"20px"}
-          border="solid 2px"
-          borderColor={"#d3d3d3"}
+          border="solid 1px"
+          borderColor={"#cca752"}
+          boxShadow={"1px 1px 2px #cca752"}
         >
           <Box
             display="flex"
@@ -75,7 +77,7 @@ const DelRegisterPage = () => {
             alignItems={"center"}
             justifyContent={"center"}
           >
-            <Typography variant="h2" fontWeight={"bold"}>
+            <Typography variant="h2" fontWeight={"bold"} color={theme.palette.secondary[100]}>
               myFleet
             </Typography>
           </Box>
@@ -120,8 +122,14 @@ const DelRegisterPage = () => {
               value={check}
               onChange={(e) => setCheck(e.target.value)}
             />
-
-            <Button
+            <Box
+              display={"flex"}
+              flexDirection={"column"}
+              sx={{
+                cursor: disable ? "not-allowed" : "pointer",
+              }}
+            >
+                <Button
               type="submit"
               margin="normal"
               variant="contained"
@@ -135,11 +143,6 @@ const DelRegisterPage = () => {
                 border: "solid 0.5px",
                 ":hover": {
                   backgroundColor: theme.palette.secondary[300],
-
-                  //this is buggy and is not fully working
-                  ":disabled": {
-                    cursor: "not-allowed",
-                  },
                 },
               }}
             >
@@ -148,6 +151,7 @@ const DelRegisterPage = () => {
             <Button
               onClick={toLoginPage}
               variant="contained"
+              disabled={disable}
               size="large"
               sx={{
                 color: theme.palette.secondary[300],
@@ -161,6 +165,9 @@ const DelRegisterPage = () => {
             >
               Login
             </Button>
+
+            </Box>
+          
           </Box>
         </Box>
       </form>
