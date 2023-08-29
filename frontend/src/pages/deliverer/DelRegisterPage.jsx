@@ -1,6 +1,7 @@
 import { Box, Button, TextField, Typography, useTheme } from "@mui/material";
 import axios from "axios";
 import React, { useState } from "react";
+import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { server } from "server";
 
@@ -10,119 +11,160 @@ const DelRegisterPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [check, setCheck] = useState("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [disable, setDisable] = useState(false);
 
-  const config = {Headers: {"Content-type" :"multipart/form-data"}}
-  const newForm = new FormData()
+  console.log(disable);
+  const config = { Headers: { "Content-Type": "multipart/form-data" } };
+  const newForm = new FormData();
 
-  newForm.append("name", name)
-  newForm.append("email", email)
-  newForm.append("password", password)
-  newForm.append("check", check)
+  newForm.append("name", name);
+  newForm.append("email", email);
+  newForm.append("password", password);
+  newForm.append("check", check);
 
+  const handleSubmit = async (e) => {
+    setDisable(true);
 
-
-  const handleSubmit = async(e) => {
     e.preventDefault();
 
-    await axios.post(`${server}/user/create-user`, newForm, config,).then((res)=>{
-      
-    })
-
+    if (password === check) {
+      await axios
+        .post(`${server}/user/create-user`, newForm, config)
+        .then((res) => {
+          toast.success(res.data.message);
+          setName("");
+          setEmail("");
+          setPassword("");
+          setCheck("");
+          setDisable(false);
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+          setDisable(false);
+        });
+    } else {
+      toast.error("Passwords do not match");
+    }
   };
 
-  const toLoginPage=()=>{
-    navigate("/del-login")
-  }
+  const toLoginPage = () => {
+    navigate("/del-login");
+  };
 
   return (
-    <Box
-      display="flex"
-      maxWidth={"350px"}
-      padding={"12px"}
-      margin={"auto"}
-      flexDirection="column"
-      alignItems={"center"}
-      justifyContent={"center"}
-      borderRadius={"20px"}
-      border="solid 2px"
-      borderColor={"#d3d3d3"}
-    >
+    <div cursor>
       <form onSubmit={handleSubmit}>
-        <Box    display="flex"
-      maxWidth={"350px"}
-      margin={"auto"}
-      flexDirection="column"
-      alignItems={"center"}
-      justifyContent={"center"}
-     
->
-        <Typography variant="h2" fontWeight={"bold"}>myFleet</Typography>
-
-
-        </Box>
-        <Box display={"flex"} flexDirection={"column"}>
-          <TextField
-            variant="outlined"
-            type="text"
-            label="Name"
-            margin="normal"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <TextField
-            variant="outlined"
-            type="email"
-            label="Email"
-            margin="normal"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <TextField
-            variant="outlined"
-            type="password"
-            label="Password"
-            margin="normal"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <TextField
-            variant="outlined"
-            type="password"
-            label="Reenter Password"
-            margin="normal"
-            value={check}
-            onChange={(e) => setCheck(e.currentTarget)}
-          />
-
-          <Button
-            type="submit"
-            margin="normal"
-            variant="contained"
-            sx={{
-              color: theme.palette.secondary[200],
-              marginTop: "1rem",
-              border: "solid 1px",
-            }}
+        <Box
+          display="flex"
+          maxWidth={"350px"}
+          padding={"12px"}
+          margin={"auto"}
+          flexDirection="column"
+          alignItems={"center"}
+          justifyContent={"center"}
+          borderRadius={"20px"}
+          border="solid 2px"
+          borderColor={"#d3d3d3"}
+        >
+          <Box
+            display="flex"
+            maxWidth={"350px"}
+            margin={"auto"}
+            flexDirection="column"
+            alignItems={"center"}
+            justifyContent={"center"}
           >
-            Register
-          </Button>
-          <Button
-            onClick={toLoginPage}
-            variant="outlined"
-            border="solid 20px"
-            borderColor="#000"
-            sx={{
-              color: theme.palette.secondary[100],
-              marginTop: "1rem",
-              border: "solid 1px",
-            }}
-          >
-            Login
-          </Button>
+            <Typography variant="h2" fontWeight={"bold"}>
+              myFleet
+            </Typography>
+          </Box>
+          <Box display={"flex"} flexDirection={"column"}>
+            <TextField
+              required
+              variant="outlined"
+              color="info"
+              type="text"
+              label="Name"
+              margin="normal"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <TextField
+              required
+              color="info"
+              variant="outlined"
+              type="email"
+              label="Email"
+              margin="normal"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <TextField
+              required
+              color={check === password && password !== "" ? "success" : "info"}
+              variant="outlined"
+              type="password"
+              label="Password"
+              margin="normal"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <TextField
+              required
+              color={check !== "" && check === password ? "success" : "error"}
+              variant="outlined"
+              type="password"
+              label="Reenter Password"
+              margin="normal"
+              value={check}
+              onChange={(e) => setCheck(e.target.value)}
+            />
+
+            <Button
+              type="submit"
+              margin="normal"
+              variant="contained"
+              fontWeight="bold"
+              size="large"
+              disabled={disable}
+              sx={{
+                color: theme.palette.secondary[100],
+                backgroundColor: theme.palette.secondary[300],
+                margin: "1rem 1rem 0rem ",
+                border: "solid 0.5px",
+                ":hover": {
+                  backgroundColor: theme.palette.secondary[300],
+
+                  //this is buggy and is not fully working
+                  ":disabled": {
+                    cursor: "not-allowed",
+                  },
+                },
+              }}
+            >
+              Register
+            </Button>
+            <Button
+              onClick={toLoginPage}
+              variant="contained"
+              size="large"
+              sx={{
+                color: theme.palette.secondary[300],
+
+                margin: "1rem",
+                border: "solid 1px",
+                ":hover": {
+                  backgroundColor: theme.palette.secondary[800],
+                },
+              }}
+            >
+              Login
+            </Button>
+          </Box>
         </Box>
       </form>
-    </Box>
+    </div>
   );
 };
 
