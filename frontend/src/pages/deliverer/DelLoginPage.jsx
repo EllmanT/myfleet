@@ -1,6 +1,9 @@
 import { Box, Button, TextField, Typography, useTheme } from "@mui/material";
+import axios from "axios";
 import React, { useState } from "react";
+import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { server } from "server";
 
 const DelLoginPage = () => {
   const theme = useTheme();
@@ -8,10 +11,31 @@ const DelLoginPage = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [disable, setDisable] = useState("");
-  
-  const handleSubmit = (e) => {
+  const [disable, setDisable] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setDisable(true);
+
+    await axios
+      .post(
+        `${server}/user/login-user`,
+        {
+          email,
+          password,
+        },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        toast.success("Login successfull!");
+        navigate("/del-dashboard");
+        window.location.reload(false);
+        setDisable(false);
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+        setDisable(false);
+      });
   };
 
   const toRegisterPage = () => {
@@ -19,88 +43,105 @@ const DelLoginPage = () => {
   };
 
   return (
-    <Box
-      display="flex"
-      maxWidth={"350px"}
-      padding={"12px"}
-      margin={"auto"}
-      flexDirection="column"
-      alignItems={"center"}
-      justifyContent={"center"}
-      borderRadius={"20px"}
-      border="solid 2px"
-      borderColor={"#d3d3d3"}
-    >
+    <div>
       <form onSubmit={handleSubmit}>
         <Box
           display="flex"
           maxWidth={"350px"}
+          padding={"12px"}
           margin={"auto"}
           flexDirection="column"
           alignItems={"center"}
           justifyContent={"center"}
+          borderRadius={"20px"}
+          border="solid 2px"
+          borderColor={"#d3d3d3"}
         >
-          <Typography variant="h2" fontWeight={"bold"}>
-            myFleet
-          </Typography>
-        </Box>
-        <Box display={"flex"} flexDirection={"column"}>
-          <TextField
-            variant="outlined"
-            type="email"
-            label="Email"
-            color="info"
-            margin="normal"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <TextField
-            variant="outlined"
-            type="password"
-            label="Password"
-            margin="normal"
-            color="info"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-
-          <Button
-            type="submit"
-            margin="normal"
-            variant="contained"
-            fontWeight="bold"
-            size="large"
-            sx={{
-              color: theme.palette.secondary[100],
-              backgroundColor: theme.palette.secondary[300],
-              margin: "1rem 1rem 0rem ",
-              border: "solid 0.5px",
-              ":hover": {
-                backgroundColor: theme.palette.secondary[300],
-              },
-            }}
+          <Box
+            display="flex"
+            maxWidth={"350px"}
+            margin={"auto"}
+            flexDirection="column"
+            alignItems={"center"}
+            justifyContent={"center"}
           >
-            Login
-          </Button>
-          <Button
-            onClick={toRegisterPage}
-            variant="contained"
-            size="large"
-            sx={{
-              color: theme.palette.secondary[300],
+            <Typography variant="h2" fontWeight={"bold"}>
+              myFleet
+            </Typography>
+          </Box>
+          <Box display={"flex"} flexDirection={"column"}>
+            <TextField
+              variant="outlined"
+              type="email"
+              label="Email"
+              color="info"
+              margin="normal"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <TextField
+              variant="outlined"
+              type="password"
+              label="Password"
+              margin="normal"
+              color="info"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <Box
+              display={"flex"}
+              flexDirection={"column"}
+              sx={{
+                cursor: disable ? "not-allowed" : "pointer",
+              }}
+            >
+              <Button
+                type="submit"
+                margin="normal"
+                variant="contained"
+                fontWeight="bold"
+                disabled={disable}
+                size="large"
+                sx={{
+                  color: theme.palette.secondary[100],
+                  backgroundColor: theme.palette.secondary[300],
+                  margin: "1rem 1rem 0rem ",
+                  border: "solid 0.5px",
+                  ":hover": {
+                    backgroundColor: theme.palette.secondary[300],
+                  },
+                  ":disabled": {
+                    backgroundColor: theme.palette.secondary[300],
+                  },
+                }}
+              >
+                Login
+              </Button>
+              <Button
+                onClick={toRegisterPage}
+                variant="contained"
+                disabled={disable}
+                size="large"
+                sx={{
+                  color: theme.palette.secondary[300],
 
-              margin: "1rem",
-              border: "solid 1px",
-              ":hover": {
-                backgroundColor: theme.palette.secondary[800],
-              },
-            }}
-          >
-            Register
-          </Button>
+                  margin: "1rem",
+                  border: "solid 1px",
+                  ":hover": {
+                    backgroundColor: theme.palette.secondary[800],
+                  },
+                  ":disabled": {
+                    backgroundColor: theme.palette.secondary[800],
+                  },
+                }}
+              >
+                Register
+              </Button>
+            </Box>
+          </Box>
         </Box>
       </form>
-    </Box>
+    </div>
   );
 };
 
