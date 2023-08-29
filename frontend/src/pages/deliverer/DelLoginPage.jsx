@@ -54,8 +54,9 @@ const DelLoginPage = () => {
           alignItems={"center"}
           justifyContent={"center"}
           borderRadius={"20px"}
-          border="solid 2px"
-          borderColor={"#d3d3d3"}
+          border="solid 1px"
+          borderColor={"#cca752"}
+          boxShadow={"1px 1px 2px #cca752"}
         >
           <Box
             display="flex"
@@ -65,7 +66,7 @@ const DelLoginPage = () => {
             alignItems={"center"}
             justifyContent={"center"}
           >
-            <Typography variant="h2" fontWeight={"bold"}>
+            <Typography variant="h2" fontWeight={"bold"} color={theme.palette.secondary[100]}> 
               myFleet
             </Typography>
           </Box>
