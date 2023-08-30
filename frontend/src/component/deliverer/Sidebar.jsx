@@ -17,8 +17,10 @@ import FlexBetween from "./FlexBetween";
 import {
   CalendarMonth,
   ChevronLeftOutlined,
+  DriveEta,
   HomeOutlined,
   Money,
+  People,
 } from "@mui/icons-material";
 
 const navItems = [
@@ -33,6 +35,14 @@ const navItems = [
   {
     text: "Payments",
     icon: <Money />,
+  },
+  {
+    text: "Drivers",
+    icon: <People />,
+  },
+  {
+    text: "Vehicles",
+    icon: <DriveEta />,
   },
 ];
 
