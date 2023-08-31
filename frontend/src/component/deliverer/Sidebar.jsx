@@ -15,12 +15,23 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import FlexBetween from "./FlexBetween";
 import {
+  AdminPanelSettingsOutlined,
   CalendarMonth,
+  CalendarMonthOutlined,
   ChevronLeftOutlined,
   DriveEta,
+  GroupOutlined,
+  Groups2Outlined,
   HomeOutlined,
+  LocalShipping,
   Money,
+  Payments,
   People,
+  PieChartOutlined,
+  PointOfSaleOutlined,
+  ReceiptLongOutlined,
+  TodayOutlined,
+  TrendingUpOutlined,
 } from "@mui/icons-material";
 
 const navItems = [
@@ -36,7 +47,7 @@ const navItems = [
   {
     text: "Overview",
     icon: <TodayOutlined />,
-    name: "overview-orders",
+    name: "dash-orders",
   },
   {
     text: "View All",
@@ -61,7 +72,7 @@ const navItems = [
   {
     text: "Overview",
     icon: <PointOfSaleOutlined />,
-    name: "overview-revenue",
+    name: "dash-revenue",
   },
   {
     text: "Daily",
@@ -175,7 +186,7 @@ const Sidebar = ({
                   <ListItem key={text} disablePadding>
                     <ListItemButton
                       onClick={() => {
-                        navigate(`/${name}`);
+                        navigate(`/del-${name}`);
                       }}
                       sx={{
                         backgroundColor:
