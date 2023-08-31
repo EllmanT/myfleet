@@ -9,6 +9,16 @@ import {
   DelRegisterPage,
   DelLoginPage,
   DelDashboardPage,
+  DelVehiclesPage,
+  DelDriversPage,
+  DelCustomersPage,
+  DelAdminsPage,
+  DelContractorsPage,
+  DelPaymentsPage,
+  DelAllOrdersPage,
+  DelDashOrdersPage,
+  DelDashRevenuePage
+
 } from "./route/delRoutes";
 import DelLayout from "component/deliverer/DelLayout";
 import ToasterProvider from "providers/ToastProvider";
@@ -37,11 +47,22 @@ const App = () => {
                 path="/"
                 element={<Navigate to="/del-dashboard" replace />}
               />
+               <Route path="/del-vehicles" element={<DelVehiclesPage />} />
+            <Route path="/del-drivers" element={<DelDriversPage />} />
+            <Route path="/del-payments" element={<DelPaymentsPage />} />
+            <Route path="/del-admins" element={<DelAdminsPage />} />
+            <Route path="/del-contractors" element={<DelContractorsPage />} />
+            <Route path="/del-customers" element={<DelCustomersPage />} />
+            <Route path="/del-dash-orders" element={<DelDashOrdersPage />} />
+            <Route path="/del-dash-revenue" element={<DelDashRevenuePage />} />
+            <Route path="/del-all-orders" element={<DelAllOrdersPage />} />
 
               <Route path="/del-dashboard" element={<DelDashboardPage />} />
             </Route>
             <Route path="/del-register" element={<DelRegisterPage />} />
             <Route path="/del-login" element={<DelLoginPage />} />
+           
+
           </Routes>
         </ThemeProvider>
         <ToasterProvider />
