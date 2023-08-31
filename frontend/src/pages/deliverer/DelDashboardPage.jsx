@@ -2,9 +2,9 @@ import React from 'react'
 
 const DelDashboardPage = () => {
   return (
-    <Box m="1.5rem 2.5rem">
+    <Box m="1rem 2.5rem">
       <FlexBetween>
-        <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
+        <Header title="DASHBOARD"  />
 
         <Box>
           <Button
@@ -17,7 +17,7 @@ const DelDashboardPage = () => {
             }}
           >
             <DownloadOutlined sx={{ mr: "10px" }} />
-            Download Reports
+            Reports
           </Button>
         </Box>
       </FlexBetween>
@@ -44,7 +44,7 @@ const DelDashboardPage = () => {
           }
         />
         <StatBox
-          title="Total Income"
+          title="Tot Income"
           value={data && data.todayStats.totalSales}
           icon={
             <MonetizationOn
@@ -53,22 +53,25 @@ const DelDashboardPage = () => {
           }
         />
         <Box
+          display={"flex"}
+          flexDirection={"column"}
+          alignItems={"center"}
           gridColumn="span 8"
-          headerName="Revenue"
           gridRow="span 2"
           backgroundColor={theme.palette.background.alt}
           p="1rem"
           borderRadius="0.55rem"
         >
+          <Typography variant="h5" fontWeight={"bold"}>Revenue Info</Typography>
           <OverviewChart view="sales" isDashboard={true} />
         </Box>
         <StatBox
           title="Drivers"
           value={data && data.thisMonthStats.totalSales}
-          increase="+5%"
-          description="Since last month"
+          increase="5"
+          description="Available"
           icon={
-            <PersonAdd
+            <Groups
               sx={{ color: theme.palette.secondary[300], fontSize: "26px" }}
             />
           }
@@ -76,19 +79,50 @@ const DelDashboardPage = () => {
         <StatBox
           title="Vehicles"
           value={data && data.yearlySalesTotal}
-          increase="+43%"
-          description="Since last month"
+          increase="2"
+          description="Available"
           icon={
-            <DriveEta
+            <LocalShipping
               sx={{ color: theme.palette.secondary[300], fontSize: "26px" }}
             />
           }
         />
 
         {/* ROW 2 */}
+
         <Box
-          gridColumn="span 8"
+          alignItems="center"
+          display="flex"
+          flexDirection="column"
+          gridColumn="span 6"
           gridRow="span 3"
+          backgroundColor={theme.palette.background.alt}
+          p="1.5rem"
+          borderRadius="0.55rem"
+        >
+          <Typography variant="h6" fontWeight="bold">
+            Sales By Contractor
+          </Typography>
+          <BreakdownChart isDashboard={true} />
+          <Typography
+            p="0 0.6rem"
+            fontSize="0.8rem"
+            sx={{ color: theme.palette.secondary[200] }}
+          >
+            Breakdown of all time revenue by contractor
+          </Typography>
+        </Box>
+
+        <Box
+                  p="1.5rem"
+
+          gridColumn="span 6"
+          gridRow="span 3"
+          backgroundColor= {theme.palette.background.alt}
+          alignItems="center"
+          fullWidth
+          display="flex"
+          flexDirection="column"
           sx={{
             "& .MuiDataGrid-root": {
               border: "none",
@@ -115,33 +149,16 @@ const DelDashboardPage = () => {
             },
           }}
         >
+          <Typography fontWeight="bold">Latest Orders</Typography>
           <DataGrid
+          
             loading={isLoading || !data}
             getRowId={(row) => row._id}
             rows={(data && data.transactions) || []}
             columns={columns}
           />
         </Box>
-        <Box
-          gridColumn="span 4"
-          gridRow="span 3"
-          backgroundColor={theme.palette.background.alt}
-          p="1.5rem"
-          borderRadius="0.55rem"
-        >
-          <Typography variant="h6" sx={{ color: theme.palette.secondary[100] }}>
-            Sales By Category
-          </Typography>
-          <BreakdownChart isDashboard={true} />
-          <Typography
-            p="0 0.6rem"
-            fontSize="0.8rem"
-            sx={{ color: theme.palette.secondary[200] }}
-          >
-            Breakdown of real states and information via category for revenue
-            made for this year and total sales.
-          </Typography>
-        </Box>
+      
       </Box>
     </Box>
   );
