@@ -27,22 +27,85 @@ const navItems = [
   {
     text: "Dashboard",
     icon: <HomeOutlined />,
+    name: "dashboard",
   },
   {
-    text: "Orders",
-    icon: <CalendarMonth />,
+    text: "Order Central",
+    icon: null,
+  },
+  {
+    text: "Overview",
+    icon: <TodayOutlined />,
+    name: "overview-orders",
+  },
+  {
+    text: "View All",
+    icon: <CalendarMonthOutlined />,
+    name: "all-orders",
+  },
+  {
+    text: "Customers",
+    icon: <Groups2Outlined />,
+    name: "customers",
+  },
+  {
+    text: "Contractors",
+    icon: <ReceiptLongOutlined />,
+    name: "contractors",
+  },
+
+  {
+    text: "Revenue",
+    icon: null,
+  },
+  {
+    text: "Overview",
+    icon: <PointOfSaleOutlined />,
+    name: "overview-revenue",
+  },
+  {
+    text: "Daily",
+    icon: <TodayOutlined />,
+    name: "daily",
+  },
+  {
+    text: "Monthly",
+    icon: <CalendarMonthOutlined />,
+    name: "monthly",
+  },
+  {
+    text: "Breakdown",
+    icon: <PieChartOutlined />,
+    name: "breakdown",
   },
   {
     text: "Payments",
-    icon: <Money />,
+    icon: <Payments />,
+    name: "payments",
   },
   {
-    text: "Drivers",
-    icon: <People />,
+    text: "Reports",
+    icon: <TrendingUpOutlined />,
+    name: "performance",
+  },
+  {
+    text: "Management",
+    icon: null,
+  },
+  {
+    text: "Admin",
+    icon: <AdminPanelSettingsOutlined />,
+    name: "admins",
   },
   {
     text: "Vehicles",
-    icon: <DriveEta />,
+    icon: <LocalShipping />,
+    name: "vehicles",
+  },
+  {
+    text: "Drivers",
+    icon: <GroupOutlined />,
+    name: "drivers",
   },
 ];
 
@@ -99,7 +162,7 @@ const Sidebar = ({
             </Box>
 
             <List>
-              {navItems.map(({ text, icon }) => {
+              {navItems.map(({ text, icon, name }) => {
                 if (!icon) {
                   return (
                     <Typography key={text} m="1.5rem 2rem 0rem 3rem">
@@ -112,7 +175,7 @@ const Sidebar = ({
                   <ListItem key={text} disablePadding>
                     <ListItemButton
                       onClick={() => {
-                        navigate(`/del-${lcText}`);
+                        navigate(`/${name}`);
                       }}
                       sx={{
                         backgroundColor:
@@ -146,26 +209,36 @@ const Sidebar = ({
 
           {/**Part 2 */}
           <Box width={"100%"} bottom={"0rem"}>
-            <Divider/>
-           <FlexBetween display={"flex"} gap={"1.5rem"} m="1.5rem 2rem 0rem 2rem">
-            <Box component={"img"}
-            alt="profile-img"
-            height={"32px"}
-            width={"32px"}
-            borderRadius={"50%"}
-            sx={{objectFit:"cover"}}
-            />
-            <Box>
-              <Typography fontWeight={"bold"} fontSize={"0.9rem"} sx={{color:theme.palette.secondary[100]}}>
-                Tapiwa Muranda
-              </Typography>
-              <Typography fontSize={"0.8rem"} sx={{color:theme.palette.secondary[200]}}>
-                Super Admin 
-              </Typography>
-            </Box>
-           </FlexBetween>
-
-
+            <Divider />
+            <FlexBetween
+              display={"flex"}
+              gap={"1.5rem"}
+              m="1.5rem 2rem 0rem 2rem"
+            >
+              <Box
+                component={"img"}
+                alt="profile-img"
+                height={"32px"}
+                width={"32px"}
+                borderRadius={"50%"}
+                sx={{ objectFit: "cover" }}
+              />
+              <Box>
+                <Typography
+                  fontWeight={"bold"}
+                  fontSize={"0.9rem"}
+                  sx={{ color: theme.palette.secondary[100] }}
+                >
+                  Tapiwa Muranda
+                </Typography>
+                <Typography
+                  fontSize={"0.8rem"}
+                  sx={{ color: theme.palette.secondary[200] }}
+                >
+                  Super Admin
+                </Typography>
+              </Box>
+            </FlexBetween>
           </Box>
         </Drawer>
       )}
