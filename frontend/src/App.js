@@ -20,12 +20,14 @@ import {
   DelDashRevenuePage
 
 } from "./route/delRoutes";
-import DelLayout from "component/deliverer/DelLayout";
+
 import ToasterProvider from "providers/ToastProvider";
 import Store from "redux/store";
 import { loadUser } from "redux/actions/user";
 
 //getting the layouts
+import DelLayout from "component/deliverer/DelLayout";
+
 
 const App = () => {
   useEffect(() => {
@@ -56,7 +58,7 @@ const App = () => {
             <Route path="/del-dash-orders" element={<DelDashOrdersPage />} />
             <Route path="/del-dash-revenue" element={<DelDashRevenuePage />} />
             <Route path="/del-all-orders" element={<DelAllOrdersPage />} />
-
+            <Route path="/add-order" element={<AddOrderPage/>}/>
               <Route path="/del-dashboard" element={<DelDashboardPage />} />
             </Route>
             <Route path="/del-register" element={<DelRegisterPage />} />
