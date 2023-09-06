@@ -5,12 +5,13 @@ import Step from "@mui/material/Step";
 import StepButton from "@mui/material/StepButton";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { TextField, TextareaAutosize, useTheme } from "@mui/material";
+import { MenuItem, TextField, TextareaAutosize, useTheme } from "@mui/material";
 import { Add, LocalShipping } from "@mui/icons-material";
 import FlexBetween from "components/FlexBetween";
 import Header from "components/Header";
 import { useState } from "react";
-import ReactDatePicker from "react-datepicker";
+import { DatePicker } from "@mui/x-date-pickers";
+import DateProvider from "components/DateProvider";
 
 const steps = ["Order Details", "Company Info", "Preview"];
 
@@ -20,17 +21,19 @@ const AddOrder = () => {
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState({});
   //the customer info
-  const [customers, setCustomer] = useState("");
+  const [customer, setCustomer] = useState("");
   const [from, setFrom] = useState("");
   const [description, setDescription] = useState("");
   const [address, setAddress] = useState("");
   const [extraInfo, setExtraInfo] = useState("");
   const [contractorId, setContractorId] = useState("");
-  const [orderDate, setOrderDate] = useState("");
+  const [orderDate, setOrderDate] = useState(null);
 
   //the company info
   const [driverId, setDriverId] = useState("");
   const [vehicleId, setVehicleId] = useState("");
+  const [mileageOut, setMileageOut] = useState("");
+  const [mileageIn, setMileageIn] = useState("");
 
   //the preview
   const [cost, setCost] = useState("");
@@ -84,16 +87,47 @@ const AddOrder = () => {
 
   const contractors = [
     {
-      value: "Lammel",
+      value: "Private",
     },
     {
       value: "Besthule",
     },
+    {
+      value: "PicknPay",
+    },
   ];
+  const drivers = [
+    {
+      value: "Tapiwa Muranda",
+    },
+    {
+      value: "Takunda Muranda",
+    },
+    {
+      value: "Paul Suspense",
+    },
+  ];
+  const vehicles = [
+    {
+      value: "Daf AFE 4881",
+    },
+    {
+      value: "Iveco Eurocargo AAV 4331",
+    },
+  ];
+
+  const handleDateChange = (e) => {
+    const orderDate = new Date(e.target.value);
+    //minEndDate is not used
+    //const minEndDate = new Date(startDate.getTime() + 3 * 24 * 60 * 60 * 1000);
+    setOrderDate(orderDate);
+    //THis lines causes a bug where the isoString is not a function
+    //document.getElementById("end-date").min = minEndDate.toISOString.slice(0,10);
+  };
 
   return (
     <>
-      <Box m="1.5rem 2.5rem">
+      <Box m="0.1rem 5rem">
         <Box
           display="flex"
           margin={"auto"}
@@ -118,7 +152,7 @@ const AddOrder = () => {
           <div>
             {allStepsCompleted() ? (
               <React.Fragment>
-                <Typography sx={{ mt: 2, mb: 1 }}>
+                <Typography sx={{ mt: 1, mb: 1 }}>
                   All steps completed - you&apos;re finished
                 </Typography>
                 <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
@@ -128,14 +162,11 @@ const AddOrder = () => {
               </React.Fragment>
             ) : (
               <React.Fragment>
-                <Typography sx={{ mt: 2, mb: 1, py: 1 }}>
-                  Step {activeStep + 1}
-                </Typography>
-
                 <Box
+                  sx={{ mt: "0.5rem" }}
                   display="flex"
-                  maxWidth={"350px"}
-                  padding={"12px"}
+                  maxWidth={"400px"}
+                  padding={"20px 20px 20px 20px"}
                   margin={"auto"}
                   flexDirection="column"
                   alignItems={"center"}
@@ -146,84 +177,176 @@ const AddOrder = () => {
                   boxShadow={"1px 1px 2px #cca752"}
                 >
                   {activeStep === 0 && (
-                    <Box display={"flex"} gap={"0rem"} flexDirection={"column"}>
-                      <Box display={"flex"} gap="0.2rem">
+                    <Box display={"flex"} gap={"1rem"} flexDirection={"column"}>
+                      <Box display={"flex"} gap="0.5rem">
                         <TextField
-                          variant="outlined"
-                          type="text"
+                          required
+                          select
                           label="Contractor"
-                          color="info"
-                          margin="normal"
-                        />
-                        <TextField
+                          defaultValue="Private"
                           variant="outlined"
-                          type="text"
-                          label="Date"
-                          color="info"
-                          margin="normal"
+                        >
+                          {contractors.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.value}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                        <DateProvider
+                          title={"Order Date"}
+                          date={orderDate}
+                          onChange={handleDateChange}
                         />
-                      
                       </Box>
                       <TextField
+                        required
                         variant="outlined"
                         type="text"
                         label="From"
                         color="info"
-                        margin="normal"
+                        value={from}
+                        onChange={(e) => setFrom(e.target.value)}
                       />
                       <TextField
+                        required
                         variant="outlined"
                         type="text"
                         label="Customer"
+                        value={customer}
+                        onChange={(e) => setCustomer(e.target.value)}
                         color="info"
-                        margin="normal"
                       />
 
                       <TextareaAutosize
+                        required
                         placeholder="Order details"
                         disabled={false}
                         minRows={5}
                         size="lg"
                         variant="outlined"
-                        color={theme.palette.background.main}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
                       />
                     </Box>
                   )}
 
                   {activeStep === 1 && (
-                    <Box display={"flex"} flexDirection={"column"}>
+                    <Box display={"flex"} gap={"1rem"} flexDirection={"column"}>
                       <TextField
-                        variant="outlined"
-                        type="email"
+                        select
                         label="Driver"
-                        color="info"
-                        margin="normal"
-                      />
-                      <TextField
+                        defaultValue="Takunda Muranda"
                         variant="outlined"
-                        type="password"
-                        label="Password"
-                        margin="normal"
-                        color="info"
-                      />
+                        value={driverId}
+                        onChange={(e) => setDriverId(e.target.value)}
+                      >
+                        {drivers.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.value}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                      <TextField
+                        select
+                        label="Vehicle"
+                        defaultValue="Iveco Eurocargo AAV 4331"
+                        variant="outlined"
+                        value={vehicleId}
+                        onChange={(e) => setVehicleId(e.target.value)}
+                      >
+                        {vehicles.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.value}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                      <Box display={"flex"} gap="0.5rem">
+                        <TextField
+                          variant="outlined"
+                          type="text"
+                          label="Mileage Out"
+                          color="info"
+                          value={mileageOut}
+                          onChange={(e) => setMileageOut(e.target.value)}
+                        />
+                        <TextField
+                          variant="outlined"
+                          type="text"
+                          label="Mileage In"
+                          color="info"
+                          value={mileageIn}
+                          onChange={(e) => setMileageIn(e.target.value)}
+                        />
+                      </Box>
                     </Box>
                   )}
                   {activeStep === 2 && (
-                    <Box display={"flex"} flexDirection={"column"}>
+                    <Box display={"flex"} gap={"1rem"} flexDirection={"column"}>
                       <TextField
+                        disabled
                         variant="outlined"
-                        type="email"
-                        label="Brand"
+                        type="text"
+                        label="From"
                         color="info"
-                        margin="normal"
+                        value={from}
                       />
                       <TextField
+                        disabled
                         variant="outlined"
-                        type="password"
-                        label="Password"
-                        margin="normal"
+                        type="text"
+                        label="Customer"
                         color="info"
+                        value={customer}
                       />
+
+                      <Box display={"flex"} gap="0.5rem">
+                        <TextField
+                          select
+                          label="Driver"
+                          defaultValue="Takunda Muranda"
+                          variant="outlined"
+                          value={driverId}
+                          disabled
+                        >
+                          {drivers.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.value}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                        <TextField
+                          select
+                          label="Vehicle"
+                          defaultValue="Iveco Eurocargo AAV 4331"
+                          variant="outlined"
+                          value={vehicleId}
+                          disabled
+                        >
+                          {vehicles.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.value}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      </Box>
+                      <Box display={"flex"} gap="0.5rem">
+                        <TextField
+                          disabled
+                          variant="outlined"
+                          type="text"
+                          label="Distance"
+                          color="info"
+                          value={distance}
+                        />
+                        <TextField
+                          disabled
+                          variant="outlined"
+                          type="text"
+                          label="Cost"
+                          color="info"
+                          value={cost}
+                        />
+                      </Box>
                     </Box>
                   )}
                   <Box display={"flex"}>
