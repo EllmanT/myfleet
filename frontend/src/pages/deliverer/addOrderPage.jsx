@@ -15,11 +15,9 @@ import {
   useTheme,
 } from "@mui/material";
 import { Add, LocalShipping } from "@mui/icons-material";
-import FlexBetween from "components/FlexBetween";
-import Header from "components/Header";
 import { useState } from "react";
-import { DatePicker } from "@mui/x-date-pickers";
-import DateProvider from "components/DateProvider";
+import DateProvider from "component/deliverer/DateProvider";
+import Header from "component/deliverer/Header";
 
 const steps = ["Order Details", "Company Info", "Preview"];
 const contractors = [
@@ -53,7 +51,7 @@ const vehicles = [
   },
 ];
 
-const AddOrder = () => {
+const AddOrderPage = () => {
   const theme = useTheme();
 
   const [activeStep, setActiveStep] = React.useState(0);
@@ -462,4 +460,4 @@ const AddOrder = () => {
   );
 };
 
-export default AddOrder;
+export default AddOrderPage;
