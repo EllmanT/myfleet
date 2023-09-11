@@ -5,16 +5,43 @@ const jwt = require("jsonwebtoken");
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, "enter Name"],
+    required: [true, "Enter your name"],
   },
   email: {
     type: String,
-    required: [true, "enter Email"],
+    required: [true, "Enter your email"],
   },
   password: {
     type: String,
-    required: [true, "enter Password"],
+    required: [true, "Enter your password"],
   },
+  phoneNumber:{
+    type:String,
+    required:true,
+  },
+  role:{
+    type:String,
+    default:"deliverer",
+  },
+  address:{
+    type:String,
+    required:true,
+  },
+  city:{
+    type:String,
+    required:true,
+  },
+  companyId:{
+      type:String,
+  },
+  createdAt:{
+    type:Date,
+    default:Date.now()
+  },
+  resetPasswordToken:{
+    String,
+  },
+  resetPasswordTime:{Date}
 });
 
 //hashing the password
