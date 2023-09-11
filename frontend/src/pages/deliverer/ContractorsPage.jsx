@@ -34,6 +34,7 @@ import {
 import FlexBetween from "component/deliverer/FlexBetween";
 import Header from "component/deliverer/Header";
 import GoodsTypes from "component/deliverer/GoodsType";
+import Cities from "component/Cities";
 
 const Product = ({
   _id,
@@ -231,7 +232,6 @@ const ContractorsPage = () => {
       setOpen(false);
     }
   };
-  console.log(open);
 
   return (
     <Box m="1.5rem 2.5rem">
@@ -259,6 +259,9 @@ const ContractorsPage = () => {
               fontSize: "14px",
               fontWeight: "bold",
               padding: "10px 20px",
+              ":hover": {
+                backgroundColor: theme.palette.secondary[100],
+              },
             }}
             onClick={handleClickOpen}
           >
@@ -341,28 +344,7 @@ const ContractorsPage = () => {
                             </FormControl>
                             <Box display={"flex"}>
                               <FormControl sx={{ m: 1, minWidth: 150 }}>
-                                <InputLabel id="demo-simple-select-autowidth-label">
-                                  City
-                                </InputLabel>
-                                <Select
-                                  labelId="simple-select-autowidth-label"
-                                  id="demo-simple-select-autowidth"
-                                  value={contractorId}
-                                  onChange={(e) =>
-                                    setContractorId(e.target.value)
-                                  }
-                                  autoWidth
-                                  label="City"
-                                >
-                                  {contractors.map((option) => (
-                                    <MenuItem
-                                      key={option.value}
-                                      value={option.value}
-                                    >
-                                      {option.value}
-                                    </MenuItem>
-                                  ))}
-                                </Select>
+                             <Cities name={city} onChange={(e)=>setCity(e.target.value)}/>
                               </FormControl>
                               <FormControl sx={{ m: 1, minWidth: 250 }}>
                                 <TextField
