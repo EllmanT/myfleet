@@ -24,6 +24,7 @@ import GoodsTypes from "component/deliverer/GoodsType";
 import FlexBetween from "component/deliverer/FlexBetween";
 import Header from "component/deliverer/Header";
 import DateProvider from "component/deliverer/DateProvider";
+import Cities from "component/Cities";
 
 const steps = ["General Details", "Rates", "Preview"];
 
@@ -173,7 +174,7 @@ const CustomersPage = () => {
       setOpen(false);
     }
   };
-  console.log(open);
+  console.log(city);
 
   const columns = [
     {
@@ -223,12 +224,14 @@ const CustomersPage = () => {
 
         <Box>
           <Button
+          disabled
             sx={{
               backgroundColor: theme.palette.secondary.light,
               color: theme.palette.background.alt,
-              fontSize: "14px",
+              fontSize: "16px",
               fontWeight: "bold",
               padding: "10px 20px",
+           
             }}
           >
             <Group sx={{ mr: "10px" }} />
@@ -244,6 +247,9 @@ const CustomersPage = () => {
               fontSize: "14px",
               fontWeight: "bold",
               padding: "10px 20px",
+              ":hover":{
+                backgroundColor: theme.palette.secondary[100],
+              }
             }}
             onClick={handleClickOpen}
           >
@@ -282,87 +288,92 @@ const CustomersPage = () => {
           </DialogTitle>
           <DialogContent>
             <form>
-              <Box display={"flex"} flexDirection={"column"}>
-                <FormControl sx={{ m: 1, minWidth: 250 }}>
-                  <TextField
-                    required
-                    variant="outlined"
-                    type="text"
-                    label="Name"
-                    color="info"
-                  />
-                </FormControl>
-                <Box display={"flex"}>
-                  <FormControl sx={{ m: 1, minWidth: 150 }}>
-                    <InputLabel id="demo-simple-select-autowidth-label">
-                      City
-                    </InputLabel>
-                    <Select
-                      labelId="simple-select-autowidth-label"
-                      id="demo-simple-select-autowidth"
-                      autoWidth
-                      label="City"
-                    ></Select>
-                  </FormControl>
-                  <FormControl sx={{ m: 1, minWidth: 100 }}>
+              <Box
+                sx={{ mt: "0.5rem" }}
+                display="flex"
+                maxWidth={"400px"}
+                margin={"auto"}
+                flexDirection="column"
+                alignItems={"center"}
+                justifyContent={"center"}
+              >
+                <Box display={"flex"} flexDirection={"column"}>
+                  <FormControl sx={{ m: 1, minWidth: 250 }}>
                     <TextField
                       required
                       variant="outlined"
                       type="text"
-                      label="Phone Number"
+                      label="Name"
                       color="info"
                     />
                   </FormControl>
-                </Box>
+                  <Box display={"flex"}>
+                    <FormControl sx={{ m: 1, minWidth: 200 }}>
+                      <Cities
+                        name={city}
+                        onChange={(e) => setCity(e.target.value)}
+                      />
+                    </FormControl>
+                    <FormControl sx={{ m: 1, minWidth: 150 }}>
+                      <TextField
+                        required
+                        variant="outlined"
+                        type="text"
+                        label="Phone Number"
+                        color="info"
+                      />
+                    </FormControl>
+                  </Box>
 
-                <FormControl sx={{ m: 1, minWidth: 250 }}>
-                  <TextField
-                    required
-                    variant="outlined"
-                    type="text"
-                    label="Address"
-                    color="info"
-                  />
-                </FormControl>
+                  <FormControl sx={{ m: 1, minWidth: 250 }}>
+                    <TextField
+                      required
+                      variant="outlined"
+                      type="text"
+                      label="Address"
+                      color="info"
+                    />
+                  </FormControl>
 
-                <Box display={"flex"} sx={{ m: "1rem 3rem " }}>
-                  <Button
-                    onClick={handleClose}
-                    variant="contained"
-                    size="large"
-                    sx={{
-                      color: theme.palette.secondary[300],
+                  <Box display={"flex"} sx={{ m: "1rem 3rem " }}>
+                    <Button
+                      onClick={handleClose}
+                      variant="contained"
+                      size="large"
+                      sx={{
+                        color: theme.palette.secondary[300],
 
-                      margin: "1rem",
-                      border: "solid 1px",
-                      ":hover": {
-                        backgroundColor: theme.palette.secondary[800],
-                      },
-                      ":disabled": {
-                        backgroundColor: theme.palette.secondary[800],
-                      },
-                    }}
-                  >
-                    Close
-                  </Button>
-                  <Button
-                    variant="contained"
-                    fontWeight="bold"
-                    sx={{
-                      color: theme.palette.secondary[100],
-                      backgroundColor: theme.palette.secondary[300],
-                      margin: "1rem  ",
-                      border: "solid 0.5px",
-                      ":hover": {
+                        margin: "1rem",
+                        border: "solid 1px",
+                        ":hover": {
+                          backgroundColor: theme.palette.secondary[800],
+                        },
+                        ":disabled": {
+                          backgroundColor: theme.palette.secondary[800],
+                        },
+                      }}
+                    >
+                      Close
+                    </Button>
+                    <Button
+                      variant="contained"
+                      fontWeight="bold"
+                      sx={{
+                        color: theme.palette.secondary[100],
                         backgroundColor: theme.palette.secondary[300],
-                      },
-                      ":disabled": {
-                        backgroundColor: theme.palette.secondary[300],
-                      },
-                    }}
-                  >
-                    Add Customer
-                  </Button>
+                        margin: "1rem  ",
+                        border: "solid 0.5px",
+                        ":hover": {
+                          backgroundColor: theme.palette.secondary[300],
+                        },
+                        ":disabled": {
+                          backgroundColor: theme.palette.secondary[300],
+                        },
+                      }}
+                    >
+                      Add Customer
+                    </Button>
+                  </Box>
                 </Box>
               </Box>
             </form>
@@ -374,8 +385,7 @@ const CustomersPage = () => {
 
       {/**This is where the content goes */}
       <Box></Box>
-            {/**This is where the content ends */}
-
+      {/**This is where the content ends */}
     </Box>
   );
 };
