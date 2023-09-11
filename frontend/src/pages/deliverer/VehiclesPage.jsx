@@ -182,6 +182,9 @@ const VehiclesPage = () => {
       fontSize: "14px",
       fontWeight: "bold",
       padding: "10px 20px",
+      ":hover": {
+        backgroundColor: theme.palette.secondary[100],
+      },
     }}
     onClick={handleClickOpen}
   >
@@ -216,7 +219,17 @@ const VehiclesPage = () => {
           </DialogTitle>
           <DialogContent>
             <form>
-              <Box display={"flex"} flexDirection={"column"}>
+            <Box
+                        sx={{ mt: "0.5rem" }}
+                        display="flex"
+                        maxWidth={"400px"}
+                        margin={"auto"}
+                        flexDirection="column"
+                        alignItems={"center"}
+                        justifyContent={"center"}
+                      >
+
+<Box display={"flex"} flexDirection={"column"}>
                 <FormControl sx={{ m: 1, minWidth: 250 }}>
                   <TextField
                     required
@@ -309,6 +322,8 @@ const VehiclesPage = () => {
                   </Button>
                 </Box>
               </Box>
+                      </Box>
+    
             </form>
           </DialogContent>
           <DialogActions></DialogActions>
