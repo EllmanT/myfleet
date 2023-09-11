@@ -7,112 +7,35 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
-  InputLabel,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  Step,
-  StepButton,
-  Stepper,
   TextField,
-  Typography,
   useTheme,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { Add, Close, Group, GroupAdd, LocalShipping, PhotoSizeSelectActual } from "@mui/icons-material";
-import GoodsTypes from "component/deliverer/GoodsType";
+import { Add, Close, GroupAdd, SecurityOutlined } from "@mui/icons-material";
 import FlexBetween from "component/deliverer/FlexBetween";
 import Header from "component/deliverer/Header";
-import DateProvider from "component/deliverer/DateProvider";
-
-
-const adminType= [
-  {
-    value:"admin",
-  },
-  {
-    value:"Super Admin",
-  },
-  {
-    value:"Deliver",
-
-
-  },
-  {
-    value:"Contractor",
-  }
-]
+import Cities from "component/Cities";
+import Roles from "component/Roles";
 
 const AdminsPage = () => {
   const theme = useTheme();
 
   const [open, setOpen] = useState("");
-
-
-
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
   const [city, setCity] = useState("");
-  const [description, setDescription] = useState("");
-
-
-  //the steps
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [completed, setCompleted] = React.useState({});
-  //the customer info
-  const [customer, setCustomer] = useState("");
-  const [from, setFrom] = useState("");
+  const [role, setRole] = useState("");
   const [address, setAddress] = useState("");
-  const [extraInfo, setExtraInfo] = useState("");
-  const [contractorId, setContractorId] = useState("");
-  const [orderDate, setOrderDate] = useState(null);
-
-  //the company info
-  const [driverId, setDriverId] = useState("");
-  const [vehicleId, setVehicleId] = useState("");
-  const [mileageOut, setMileageOut] = useState("");
-  const [mileageIn, setMileageIn] = useState("");
-
-  //the preview
-  const distance = mileageIn - mileageOut;
-  const cost = distance * 1.65;
-
-//start of add Contractor
-  //for the goods type add contractor
-  const [goodsType, setGoodsType] = useState([]);
-
-
-  //end of add contractor
-
-  //start of add Order
-
-  //end of add Order
-
-  //start of add driver
-
-  //end of add drover
-
-
-
-
-
-
-
-
-  //the steps
+  const [companyId] = useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
-
-
-
   const handleClose = (event, reason) => {
     if (reason !== "backdropClick") {
       setOpen(false);
-    
-
     }
   };
 
@@ -159,43 +82,43 @@ const AdminsPage = () => {
 
   return (
     <Box m="1.5rem 2.5rem">
-    <FlexBetween>
-<Header title="Admins" subtitle="See all your admins." />
-<Box >
+      <FlexBetween>
+        <Header title="Admins" subtitle="See all your admins." />
+        <Box>
+          <Button
+            sx={{
+              backgroundColor: theme.palette.secondary.light,
+              color: theme.palette.background.alt,
+              fontSize: "14px",
+              fontWeight: "bold",
+              padding: "10px 20px",
+            }}
+          >
+            <SecurityOutlined sx={{ mr: "10px" }} />4
+          </Button>
+        </Box>
+        <Box>
+          <Button
+            sx={{
+              backgroundColor: theme.palette.secondary.light,
+              color: theme.palette.background.alt,
+              fontSize: "14px",
+              fontWeight: "bold",
+              padding: "10px 20px",
+              ":hover":{
+                backgroundColor: theme.palette.secondary[100],
 
-  <Button
-    sx={{
-      backgroundColor: theme.palette.secondary.light,
-      color: theme.palette.background.alt,
-      fontSize: "14px",
-      fontWeight: "bold",
-      padding: "10px 20px",
-    }}
-  >
-    <LocalShipping sx={{ mr: "10px" }} />
-    4
-  </Button>
-</Box>
-<Box >
+              }
+            }}
+            onClick={handleClickOpen}
+          >
+            <Add sx={{ mr: "10px" }} />
+            Add
+          </Button>
+        </Box>
+      </FlexBetween>
 
-  <Button
-    sx={{
-      backgroundColor: theme.palette.secondary.light,
-      color: theme.palette.background.alt,
-      fontSize: "14px",
-      fontWeight: "bold",
-      padding: "10px 20px",
-    }}
-    onClick={handleClickOpen}
-  >
-    <Add sx={{ mr: "10px" }} />
-    Add
-  </Button>
-</Box>
-
-</FlexBetween>
-
-<div>
+      <div>
         <Dialog disableEscapeKeyDown open={open} onClose={handleClose}>
           <DialogTitle variant="h3" sx={{ m: "0rem 6rem" }}>
             <Button
@@ -213,146 +136,138 @@ const AdminsPage = () => {
               <GroupAdd sx={{ mr: "10px", fontSize: "25px" }} />
               Admin
             </Button>
-            <Button variant="outlined" color="info" sx={{ml: "30px"}} onClick={handleClose}>
-              <Close sx={{fontSize:"25px"}}/>
+            <Button
+              variant="outlined"
+              color="info"
+              sx={{ ml: "30px" }}
+              onClick={handleClose}
+            >
+              <Close sx={{ fontSize: "25px" }} />
             </Button>
           </DialogTitle>
           <DialogContent>
             <form>
-              <Box display={"flex"} flexDirection={"column"}>
-                <FormControl sx={{ m: 1, minWidth: 250 }}>
-                  <TextField
-                    required
-                    variant="outlined"
-                    type="text"
-                    label="Name"
-                    color="info"
-                  />
-                </FormControl>
-                <FormControl sx={{ m: 1, minWidth: 250 }}>
-                  <TextField
-                    required
-                    variant="outlined"
-                    type="text"
-                    label="Email Address"
-                    color="info"
-                  />
-                </FormControl>
-                <FormControl sx={{ m: 1, minWidth: 250 }}>
-                  <TextField
-                    required
-                    variant="outlined"
-                    type="text"
-                    label="Company Id"
-                    color="info"
-                  />
-                </FormControl>
-                <Box display={"flex"}>
-                  <FormControl sx={{ m: 1, minWidth: 150 }}>
-                    <InputLabel id="demo-simple-select-autowidth-label">
-                      Role
-                    </InputLabel>
-                    <Select
-                      labelId="simple-select-autowidth-label"
-                      id="demo-simple-select-autowidth"
-                      autoWidth
-                      label="Size"
-                    > 
-                     {adminType.map((option) => (
-                                    <MenuItem
-                                      key={option.value}
-                                      value={option.value}
-                                    >
-                                      {option.value}
-                                    </MenuItem>
-                                  ))}
-
-                    </Select>
-                  </FormControl>
-                  <FormControl sx={{ m: 1, minWidth: 100 }}>
+              <Box
+                sx={{ mt: "0.5rem" }}
+                display="flex"
+                maxWidth={"400px"}
+                margin={"auto"}
+                flexDirection="column"
+                alignItems={"center"}
+                justifyContent={"center"}
+              >
+                <Box display={"flex"} flexDirection={"column"}>
+                  <FormControl sx={{ m: 1, minWidth: 250 }}>
                     <TextField
                       required
                       variant="outlined"
                       type="text"
-                      label="Phone Number"
+                      label="Name"
                       color="info"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
                     />
                   </FormControl>
-                </Box>
-                <Box display={"flex"}>
-                  <FormControl sx={{ m: 1, minWidth: 150 }}>
-                    <InputLabel id="demo-simple-select-autowidth-label">
-                      City
-                    </InputLabel>
-                    <Select
-                      labelId="simple-select-autowidth-label"
-                      id="demo-simple-select-autowidth"
-                      autoWidth
-                      label="Size"
-                    > 
-                     {adminType.map((option) => (
-                                    <MenuItem
-                                      key={option.value}
-                                      value={option.value}
-                                    >
-                                      {option.value}
-                                    </MenuItem>
-                                  ))}
-
-                    </Select>
-                  </FormControl>
-                  <FormControl sx={{ m: 1, minWidth: 100 }}>
+                  <FormControl sx={{ m: 1, minWidth: 250 }}>
                     <TextField
                       required
                       variant="outlined"
                       type="text"
-                      label="Home Address"
+                      label="Email Address"
                       color="info"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </FormControl>
-                  
-                </Box>
+                  <FormControl sx={{ m: 1, minWidth: 250 }}>
+                    <TextField
+                      required
+                      variant="outlined"
+                      type="text"
+                      label="Company Id"
+                      color="info"
+                      value={companyId}
+                      disabled
+                    />
+                  </FormControl>
+                  <Box display={"flex"}>
+                    <FormControl sx={{ m: 1, minWidth: 150 }}>
+                      <Roles
+                        name={role}
+                        onChange={(e) => setRole(e.target.value)}
+                      />
+                    </FormControl>
+                    <FormControl sx={{ m: 1, minWidth: 100 }}>
+                      <TextField
+                        required
+                        variant="outlined"
+                        type="text"
+                        label="Phone Number"
+                        color="info"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                      />
+                    </FormControl>
+                  </Box>
+                  <Box display={"flex"}>
+                    <FormControl sx={{ m: 1, minWidth: 150 }}>
+                      <Cities
+                        name={city}
+                        onChange={(e) => setCity(e.target.value)}
+                      />
+                    </FormControl>
+                    <FormControl sx={{ m: 1, minWidth: 100 }}>
+                      <TextField
+                        required
+                        variant="outlined"
+                        type="text"
+                        label="Home Address"
+                        color="info"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                      />
+                    </FormControl>
+                  </Box>
 
-              
+                  <Box display={"flex"} sx={{ m: "1rem 3rem " }}>
+                    <Button
+                      onClick={handleClose}
+                      variant="contained"
+                      size="large"
+                      sx={{
+                        color: theme.palette.secondary[300],
 
-                <Box display={"flex"} sx={{ m: "1rem 3rem " }}>
-                  <Button
-                    onClick={handleClose}
-                    variant="contained"
-                    size="large"
-                    sx={{
-                      color: theme.palette.secondary[300],
-
-                      margin: "1rem",
-                      border: "solid 1px",
-                      ":hover": {
-                        backgroundColor: theme.palette.secondary[800],
-                      },
-                      ":disabled": {
-                        backgroundColor: theme.palette.secondary[800],
-                      },
-                    }}
-                  >
-                    Close
-                  </Button>
-                  <Button
-                    variant="contained"
-                    fontWeight="bold"
-                    sx={{
-                      color: theme.palette.secondary[100],
-                      backgroundColor: theme.palette.secondary[300],
-                      margin: "1rem  ",
-                      border: "solid 0.5px",
-                      ":hover": {
+                        margin: "1rem",
+                        border: "solid 1px",
+                        ":hover": {
+                          backgroundColor: theme.palette.secondary[800],
+                        },
+                        ":disabled": {
+                          backgroundColor: theme.palette.secondary[800],
+                        },
+                      }}
+                    >
+                      Close
+                    </Button>
+                    <Button
+                      variant="contained"
+                      fontWeight="bold"
+                      sx={{
+                        color: theme.palette.secondary[100],
                         backgroundColor: theme.palette.secondary[300],
-                      },
-                      ":disabled": {
-                        backgroundColor: theme.palette.secondary[300],
-                      },
-                    }}
-                  >
-                    Add Vehicle
-                  </Button>
+                        margin: "1rem  ",
+                        border: "solid 0.5px",
+                        ":hover": {
+                          backgroundColor: theme.palette.secondary[300],
+                        },
+                        ":disabled": {
+                          backgroundColor: theme.palette.secondary[300],
+                        },
+                      }}
+                    >
+                      Add Admin
+                    </Button>
+                  </Box>
                 </Box>
               </Box>
             </form>
@@ -361,11 +276,10 @@ const AdminsPage = () => {
         </Dialog>
       </div>
 
-{/**Content starts here */}
+      {/**Content starts here */}
 
-{/**Content ends here */}
-
-</Box>
+      {/**Content ends here */}
+    </Box>
   );
 };
 
