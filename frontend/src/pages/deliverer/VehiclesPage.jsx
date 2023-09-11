@@ -192,7 +192,6 @@ const VehiclesPage = () => {
     Add
   </Button>
 </Box>
-
 </FlexBetween>
 
 <div>
