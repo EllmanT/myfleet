@@ -21,6 +21,7 @@ import {
   ChevronLeftOutlined,
   DriveEta,
   GroupOutlined,
+  GroupWorkOutlined,
   Groups2Outlined,
   HomeOutlined,
   LocalShipping,
@@ -117,6 +118,11 @@ const navItems = [
     text: "Drivers",
     icon: <GroupOutlined />,
     name: "drivers",
+  },
+  {
+    text: "Deliverers",
+    icon: <GroupWorkOutlined />,
+    name: "deliverers",
   },
 ];
 
