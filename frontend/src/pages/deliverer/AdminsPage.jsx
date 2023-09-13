@@ -86,10 +86,11 @@ const AdminsPage = () => {
         <Header title="Admins" subtitle="See all your admins." />
         <Box>
           <Button
+          disabled
             sx={{
               backgroundColor: theme.palette.secondary.light,
               color: theme.palette.background.alt,
-              fontSize: "14px",
+              fontSize: "16px",
               fontWeight: "bold",
               padding: "10px 20px",
             }}
