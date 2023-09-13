@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import React from "react";
 
-const GoodsTypes = ({ selected, onChange }) => {
+const GoodsTypes = ({ selected, onChange ,disabled }) => {
   function handleCBClick(ev) {
     const { checked, name } = ev.target;
     if (checked) {
@@ -16,6 +16,7 @@ const GoodsTypes = ({ selected, onChange }) => {
       <Box display={"flex"} gap={"0.5rem"}>
         <label className=" border p-4 flex rounded  items-center cursor-pointer">
           <input
+            disabled = {disabled}
             type="checkbox"
             checked={selected.includes("furniture")}
             name="furniture"
@@ -28,6 +29,8 @@ const GoodsTypes = ({ selected, onChange }) => {
       
         <label className=" border p-4 flex rounded gap-2 items-center cursor-pointer">
           <input
+                      disabled = {disabled}
+
             type="checkbox"
             checked={selected.includes("building_material")}
             name="building_material"
@@ -38,16 +41,20 @@ const GoodsTypes = ({ selected, onChange }) => {
         </label>
         <label className=" border p-4 flex rounded gap-2 items-center cursor-pointer">
           <input
+                      disabled = {disabled}
+
             type="checkbox"
             checked={selected.includes("dangerous")}
             name="dangerous"
             onChange={handleCBClick}
           />
 
-          <span>Flammable / toxic gases fluids or solids </span>
+          <span>Flammable / toxic  </span>
         </label>
         <label className=" border p-4 flex rounded gap-2 items-center cursor-pointer">
           <input
+                      disabled = {disabled}
+
             type="checkbox"
             checked={selected.includes("heavy_machinery")}
             name="heavy_machinery"
@@ -58,6 +65,8 @@ const GoodsTypes = ({ selected, onChange }) => {
         </label>
         <label className=" border p-4 flex rounded gap-2 items-center cursor-pointer">
           <input
+                      disabled = {disabled}
+
             type="checkbox"
             checked={selected.includes("animals")}
             name="animals"
@@ -68,6 +77,8 @@ const GoodsTypes = ({ selected, onChange }) => {
         </label>
         <label className=" border p-4 flex rounded gap-2 items-center cursor-pointer">
           <input
+                      disabled = {disabled}
+
             type="checkbox"
             checked={selected.includes("frozen_goods")}
             name="frozen_goods"
@@ -78,6 +89,8 @@ const GoodsTypes = ({ selected, onChange }) => {
         </label>
         <label className=" border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
           <input
+                      disabled = {disabled}
+
             type="checkbox"
             checked={selected.includes("dry_goods")}
             name="dry_goods"
