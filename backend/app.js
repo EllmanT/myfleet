@@ -12,7 +12,7 @@ app.use("/", express.static("uploads"));
 app.use(
   cors({
     origin: "http://localhost:3000",
-    credentials:true,
+    credentials: true,
   })
 );
 app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
@@ -27,8 +27,10 @@ if (process.env.NODE_URL !== "PRODUCTION") {
 
 //declaring controllers
 const user = require("./controller/user");
+const customer = require("./controller/customer");
 //using controllers
 app.use("/api/v2/user", user);
+app.use("/api/v2/customer", customer);
 
 app.use(ErrorHandler);
 
