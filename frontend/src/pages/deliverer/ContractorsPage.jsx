@@ -35,6 +35,7 @@ import FlexBetween from "component/deliverer/FlexBetween";
 import Header from "component/deliverer/Header";
 import GoodsTypes from "component/deliverer/GoodsType";
 import Cities from "component/Cities";
+import { useDispatch } from "react-redux";
 
 const Product = ({
   _id,
@@ -124,45 +125,19 @@ const ContractorsPage = () => {
 
   const [open, setOpen] = useState("");
 
-  const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const dispatch = useDispatch();
+
+  const [companyName, setCompanyName] = useState("");
+  const [address, setAddress] = useState("");
+  const [goodsType, setGoodsType] = useState([]);
   const [city, setCity] = useState("");
-  const [description, setDescription] = useState("");
 
   //the steps
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState({});
-  //the customer info
-  const [customer, setCustomer] = useState("");
-  const [from, setFrom] = useState("");
-  const [address, setAddress] = useState("");
-  const [extraInfo, setExtraInfo] = useState("");
-  const [contractorId, setContractorId] = useState("");
-  const [orderDate, setOrderDate] = useState(null);
 
-  //the company info
-  const [driverId, setDriverId] = useState("");
-  const [vehicleId, setVehicleId] = useState("");
-  const [mileageOut, setMileageOut] = useState("");
-  const [mileageIn, setMileageIn] = useState("");
 
-  //the preview
-  const distance = mileageIn - mileageOut;
-  const cost = distance * 1.65;
 
-  //start of add Contractor
-  //for the goods type add contractor
-  const [goodsType, setGoodsType] = useState([]);
-
-  //end of add contractor
-
-  //start of add Order
-
-  //end of add Order
-
-  //start of add driver
-
-  //end of add drover
 
   const totalSteps = () => {
     return steps.length;
@@ -188,17 +163,7 @@ const ContractorsPage = () => {
           steps.findIndex((step, i) => !(i in completed))
         : activeStep + 1;
     setActiveStep(newActiveStep);
-    if (
-      customer !== "" &&
-      from !== "" &&
-      customer !== "" &&
-      contractorId !== "" &&
-      orderDate !== null
-    ) {
-      const newCompleted = completed;
-      newCompleted[activeStep] = true;
-      setCompleted(newCompleted);
-    }
+   
   };
 
   const handleBack = () => {
@@ -239,10 +204,11 @@ const ContractorsPage = () => {
         <Header title="Contractors" subtitle="See all your contractors." />
         <Box>
           <Button
+          disabled
             sx={{
               backgroundColor: theme.palette.secondary.light,
               color: theme.palette.background.alt,
-              fontSize: "14px",
+              fontSize: "16px",
               fontWeight: "bold",
               padding: "10px 20px",
             }}
@@ -338,8 +304,7 @@ const ContractorsPage = () => {
                                 type="text"
                                 label="Company Name"
                                 color="info"
-                                value={from}
-                                onChange={(e) => setFrom(e.target.value)}
+                              
                               />
                             </FormControl>
                             <Box display={"flex"}>
@@ -352,8 +317,7 @@ const ContractorsPage = () => {
                                   variant="outlined"
                                   type="text"
                                   label="Address"
-                                  value={address}
-                                  onChange={(e) => setAddress(e.target.value)}
+                                 
                                   color="info"
                                 />
                               </FormControl>
@@ -397,10 +361,7 @@ const ContractorsPage = () => {
                                   type="text"
                                   label="vehicle <=5T"
                                   color="info"
-                                  value={mileageOut}
-                                  onChange={(e) =>
-                                    setMileageOut(e.target.value)
-                                  }
+                                 
                                 />
                               </FormControl>
                               <FormControl sx={{ m: 1, minWidth: 100 }}>
@@ -409,8 +370,7 @@ const ContractorsPage = () => {
                                   type="text"
                                   label="Vehicle <=10T"
                                   color="info"
-                                  value={mileageIn}
-                                  onChange={(e) => setMileageIn(e.target.value)}
+                                 
                                 />
                               </FormControl>
                               <FormControl sx={{ m: 1, minWidth: 100 }}>
@@ -419,8 +379,7 @@ const ContractorsPage = () => {
                                   type="text"
                                   label="Horse"
                                   color="info"
-                                  value={mileageIn}
-                                  onChange={(e) => setMileageIn(e.target.value)}
+                                 
                                 />
                               </FormControl>
                             </Box>
@@ -441,10 +400,7 @@ const ContractorsPage = () => {
                                   type="text"
                                   label="vehicle <=5T"
                                   color="info"
-                                  value={mileageOut}
-                                  onChange={(e) =>
-                                    setMileageOut(e.target.value)
-                                  }
+                                
                                 />
                               </FormControl>
                               <FormControl sx={{ m: 1, minWidth: 100 }}>
@@ -453,8 +409,7 @@ const ContractorsPage = () => {
                                   type="text"
                                   label="Vehicle <=10T"
                                   color="info"
-                                  value={mileageIn}
-                                  onChange={(e) => setMileageIn(e.target.value)}
+                                  
                                 />
                               </FormControl>
                               <FormControl sx={{ m: 1, minWidth: 100 }}>
@@ -463,8 +418,7 @@ const ContractorsPage = () => {
                                   type="text"
                                   label="Horse"
                                   color="info"
-                                  value={mileageIn}
-                                  onChange={(e) => setMileageIn(e.target.value)}
+                                 
                                 />
                               </FormControl>
                             </Box>
@@ -478,7 +432,7 @@ const ContractorsPage = () => {
                                 type="text"
                                 label="Company Name"
                                 color="info"
-                                value={from}
+                                
                                 disabled
                               />
                             </FormControl>
@@ -509,10 +463,7 @@ const ContractorsPage = () => {
                                   label="vehicle <=5T"
                                   color="info"
                                   disabled
-                                  value={mileageOut}
-                                  onChange={(e) =>
-                                    setMileageOut(e.target.value)
-                                  }
+                              
                                 />
                               </FormControl>
                               <FormControl sx={{ m: 1, minWidth: 100 }}>
@@ -552,10 +503,7 @@ const ContractorsPage = () => {
                                   label="vehicle <=5T"
                                   color="info"
                                   disabled
-                                  value={mileageOut}
-                                  onChange={(e) =>
-                                    setMileageOut(e.target.value)
-                                  }
+                                 
                                 />
                               </FormControl>
                               <FormControl sx={{ m: 1, minWidth: 100 }}>
