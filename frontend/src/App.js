@@ -18,8 +18,8 @@ import {
   DelAllOrdersPage,
   DelDashOrdersPage,
   DelDashRevenuePage,
-  DelAddOrderPage
-
+  DelAddOrderPage,
+  DelDeliverersPage,
 } from "./route/delRoutes";
 
 import ToasterProvider from "providers/ToastProvider";
@@ -28,7 +28,6 @@ import { loadUser } from "redux/actions/user";
 
 //getting the layouts
 import DelLayout from "component/deliverer/DelLayout";
-
 
 const App = () => {
   useEffect(() => {
@@ -50,22 +49,24 @@ const App = () => {
                 path="/"
                 element={<Navigate to="/del-dashboard" replace />}
               />
-               <Route path="/del-vehicles" element={<DelVehiclesPage />} />
-            <Route path="/del-drivers" element={<DelDriversPage />} />
-            <Route path="/del-payments" element={<DelPaymentsPage />} />
-            <Route path="/del-admins" element={<DelAdminsPage />} />
-            <Route path="/del-contractors" element={<DelContractorsPage />} />
-            <Route path="/del-customers" element={<DelCustomersPage />} />
-            <Route path="/del-dash-orders" element={<DelDashOrdersPage />} />
-            <Route path="/del-dash-revenue" element={<DelDashRevenuePage />} />
-            <Route path="/del-all-orders" element={<DelAllOrdersPage />} />
-            <Route path="/add-order" element={<DelAddOrderPage/>}/>
+              <Route path="/del-vehicles" element={<DelVehiclesPage />} />
+              <Route path="/del-drivers" element={<DelDriversPage />} />
+              <Route path="/del-payments" element={<DelPaymentsPage />} />
+              <Route path="/del-admins" element={<DelAdminsPage />} />
+              <Route path="/del-contractors" element={<DelContractorsPage />} />
+              <Route path="/del-deliverers" element={<DelDeliverersPage />} />
+              <Route path="/del-customers" element={<DelCustomersPage />} />
+              <Route path="/del-dash-orders" element={<DelDashOrdersPage />} />
+              <Route
+                path="/del-dash-revenue"
+                element={<DelDashRevenuePage />}
+              />
+              <Route path="/del-all-orders" element={<DelAllOrdersPage />} />
+              <Route path="/add-order" element={<DelAddOrderPage />} />
               <Route path="/del-dashboard" element={<DelDashboardPage />} />
             </Route>
             <Route path="/del-register" element={<DelRegisterPage />} />
             <Route path="/del-login" element={<DelLoginPage />} />
-           
-
           </Routes>
         </ThemeProvider>
         <ToasterProvider />
