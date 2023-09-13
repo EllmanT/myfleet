@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -7,163 +7,31 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
-  InputLabel,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  Step,
-  StepButton,
-  Stepper,
   TextField,
-  Typography,
   useTheme,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Close, Group, GroupAdd } from "@mui/icons-material";
-import GoodsTypes from "component/deliverer/GoodsType";
 import FlexBetween from "component/deliverer/FlexBetween";
 import Header from "component/deliverer/Header";
-import DateProvider from "component/deliverer/DateProvider";
 import Cities from "component/Cities";
-
-const steps = ["General Details", "Rates", "Preview"];
-
-const contractors = [
-  {
-    value: "Private",
-  },
-  {
-    value: "Besthule",
-  },
-  {
-    value: "PicknPay",
-  },
-];
-const drivers = [
-  {
-    value: "Tapiwa Muranda",
-  },
-  {
-    value: "Takunda Muranda",
-  },
-  {
-    value: "Paul Suspense",
-  },
-];
-const vehicles = [
-  {
-    value: "Daf AFE 4881",
-  },
-  {
-    value: "Iveco Eurocargo AAV 4331",
-  },
-];
+import { toast } from "react-hot-toast";
+import axios from "axios";
+import { server } from "server";
+import { useDispatch, useSelector } from "react-redux";
+import { createCustomer } from "redux/actions/customer";
 
 const CustomersPage = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
+
+  const { success, error } = useSelector((state) => state.customer);
 
   const [open, setOpen] = useState("");
-  const [open2, setOpen2] = useState("");
-  const [open3, setOpen3] = useState("");
-
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [city, setCity] = useState("");
-  const [description, setDescription] = useState("");
-
-  //the steps
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [completed, setCompleted] = React.useState({});
-  //the customer info
-  const [customer, setCustomer] = useState("");
-  const [from, setFrom] = useState("");
   const [address, setAddress] = useState("");
-  const [extraInfo, setExtraInfo] = useState("");
-  const [contractorId, setContractorId] = useState("");
-  const [orderDate, setOrderDate] = useState(null);
-
-  //the company info
-  const [driverId, setDriverId] = useState("");
-  const [vehicleId, setVehicleId] = useState("");
-  const [mileageOut, setMileageOut] = useState("");
-  const [mileageIn, setMileageIn] = useState("");
-
-  //the preview
-  const distance = mileageIn - mileageOut;
-  const cost = distance * 1.65;
-
-  //start of add Contractor
-  //for the goods type add contractor
-  const [goodsType, setGoodsType] = useState([]);
-
-  //end of add contractor
-
-  //start of add Order
-
-  //end of add Order
-
-  //start of add driver
-
-  //end of add drover
-
-  const totalSteps = () => {
-    return steps.length;
-  };
-
-  const completedSteps = () => {
-    return Object.keys(completed).length;
-  };
-
-  const isLastStep = () => {
-    return activeStep === totalSteps() - 1;
-  };
-
-  const allStepsCompleted = () => {
-    return completedSteps() === totalSteps();
-  };
-
-  const handleNext = () => {
-    const newActiveStep =
-      isLastStep() && !allStepsCompleted()
-        ? // It's the last step, but not all steps have been completed,
-          // find the first step that has been completed
-          steps.findIndex((step, i) => !(i in completed))
-        : activeStep + 1;
-    setActiveStep(newActiveStep);
-    if (
-      customer !== "" &&
-      from !== "" &&
-      customer !== "" &&
-      contractorId !== "" &&
-      orderDate !== null
-    ) {
-      const newCompleted = completed;
-      newCompleted[activeStep] = true;
-      setCompleted(newCompleted);
-    }
-  };
-
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleStep = (step) => () => {
-    setActiveStep(step);
-  };
-
-  const handleComplete = () => {
-    const newCompleted = completed;
-    newCompleted[activeStep] = true;
-    setCompleted(newCompleted);
-    handleNext();
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
-    setCompleted({});
-  };
-
-  //the steps
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -174,7 +42,28 @@ const CustomersPage = () => {
       setOpen(false);
     }
   };
-  console.log(city);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+    if (success) {
+      toast.success("Customer added successfully");
+      window.location.reload();
+    }
+  }, [dispatch, error, success]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const newForm = new FormData();
+
+    newForm.append("name", name);
+    newForm.append("city", city);
+    newForm.append("phoneNumber", phoneNumber);
+    newForm.append("address", address);
+    dispatch(createCustomer(newForm));
+  };
 
   const columns = [
     {
@@ -224,14 +113,13 @@ const CustomersPage = () => {
 
         <Box>
           <Button
-          disabled
+            disabled
             sx={{
               backgroundColor: theme.palette.secondary.light,
               color: theme.palette.background.alt,
               fontSize: "16px",
               fontWeight: "bold",
               padding: "10px 20px",
-           
             }}
           >
             <Group sx={{ mr: "10px" }} />
@@ -247,9 +135,9 @@ const CustomersPage = () => {
               fontSize: "14px",
               fontWeight: "bold",
               padding: "10px 20px",
-              ":hover":{
+              ":hover": {
                 backgroundColor: theme.palette.secondary[100],
-              }
+              },
             }}
             onClick={handleClickOpen}
           >
@@ -287,7 +175,7 @@ const CustomersPage = () => {
             </Button>
           </DialogTitle>
           <DialogContent>
-            <form>
+            <form onSubmit={handleSubmit}>
               <Box
                 sx={{ mt: "0.5rem" }}
                 display="flex"
@@ -305,6 +193,8 @@ const CustomersPage = () => {
                       type="text"
                       label="Name"
                       color="info"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
                     />
                   </FormControl>
                   <Box display={"flex"}>
@@ -321,6 +211,8 @@ const CustomersPage = () => {
                         type="text"
                         label="Phone Number"
                         color="info"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
                       />
                     </FormControl>
                   </Box>
@@ -332,6 +224,8 @@ const CustomersPage = () => {
                       type="text"
                       label="Address"
                       color="info"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
                     />
                   </FormControl>
 
@@ -356,6 +250,7 @@ const CustomersPage = () => {
                       Close
                     </Button>
                     <Button
+                      type="submit"
                       variant="contained"
                       fontWeight="bold"
                       sx={{
