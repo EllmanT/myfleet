@@ -61,7 +61,7 @@ const cities = [
 export default function Cities({ name, onChange }) {
   return (
     <>
-      <InputLabel id="demo-simple-select-autowidth-label">Cities</InputLabel>
+      <InputLabel id="demo-simple-select-autowidth-label">City</InputLabel>
       <Select
         color="info"
         labelId="simple-select-autowidth-label"
