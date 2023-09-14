@@ -36,76 +36,11 @@ import Header from "component/deliverer/Header";
 import GoodsTypes from "component/deliverer/GoodsType";
 import Cities from "component/Cities";
 import { useDispatch } from "react-redux";
+import VehicleTypes from "component/deliverer/VehicleTypes";
+import DeliveryTypes from "component/deliverer/DeliveryTypes";
+import { createDeliverer } from "redux/actions/deliverer";
 
-const Product = ({
-  _id,
-  name,
-  description,
-  price,
-  rating,
-  category,
-  supply,
-  stat,
-}) => {
-  const theme = useTheme();
-  const [isExpanded, setIsExpanded] = useState(false);
 
-  return (
-    <Card
-      sx={{
-        backgroundImage: "none",
-        backgroundColor: theme.palette.background.alt,
-        borderRadius: "0.55rem",
-      }}
-    >
-      <CardContent>
-        <Typography
-          sx={{ fontSize: 14 }}
-          color={theme.palette.secondary[700]}
-          gutterBottom
-        >
-          {category}
-        </Typography>
-        <Typography variant="h5" component="div">
-          {name}
-        </Typography>
-        <Typography sx={{ mb: "1.5rem" }} color={theme.palette.secondary[400]}>
-          ${Number(price).toFixed(2)}
-        </Typography>
-
-        <Typography variant="body2">{description}</Typography>
-      </CardContent>
-      <CardActions>
-        <Button
-          variant="primary"
-          size="small"
-          onClick={() => setIsExpanded(!isExpanded)}
-        >
-          See More
-        </Button>
-      </CardActions>
-      <Collapse
-        in={isExpanded}
-        timeout="auto"
-        unmountOnExit
-        sx={{
-          color: theme.palette.neutral[300],
-        }}
-      >
-        <CardContent>
-          <Typography>id: {_id}</Typography>
-          <Typography>Supply Left: {supply}</Typography>
-          <Typography>
-            Yearly Sales This Year: {stat.yearlySalesTotal}
-          </Typography>
-          <Typography>
-            Yearly Units Sold This Year: {stat.yearlyTotalSoldUnits}
-          </Typography>
-        </CardContent>
-      </Collapse>
-    </Card>
-  );
-};
 const steps = ["General Details", "Rates", "Preview"];
 
 const DeliverersPage = () => {
@@ -119,33 +54,17 @@ const DeliverersPage = () => {
   const [address, setAddress] = useState("");
   const [goodsType, setGoodsType] = useState([]);
   const [vehiclesType, setVehiclesType] = useState([]);
-  const [deliveryType, expressLarge] = useState([]);
+  const [deliveryType, setDeliveryType] = useState([]);
 
   const [city, setCity] = useState("");
-
-
 
   //the steps
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState({});
 
-  const [select, setSelect] = useState(false);
-  const [select1, setSelect1] = useState(false);
-  const [select2, setSelect2] = useState(false);
-  const [select3, setSelect3] = useState(false);
-  const [select4, setSelect4] = useState(false);
+  const [selected] = useState("");
 
-  const [selected] = useState("")
-
-  function vehicleTypes (e){
-    const {checked,name}=e.target;
-    if(checked){
-      onChange([...selected,name]);
-    } else{
-      onChange([...selected.filter(selectedName=>selectedName!==name)]);
-    }
-  }
-
+  //function to populate the array
 
   const totalSteps = () => {
     return steps.length;
@@ -189,10 +108,7 @@ const DeliverersPage = () => {
     }
 
     if (activeStep === 1) {
-      if (
-       
-        expressLarge !== ""
-      ) {
+      if (vehiclesType.length !== 0 && deliveryType !== 0) {
         const newCompleted = completed;
         newCompleted[activeStep] = true;
         setCompleted(newCompleted);
@@ -201,8 +117,6 @@ const DeliverersPage = () => {
         newCompleted[activeStep] = false;
         setCompleted(newCompleted);
       }
-    }
-    if (activeStep === 2) {
     }
   };
   console.log(goodsType);
@@ -213,13 +127,6 @@ const DeliverersPage = () => {
 
   const handleStep = (step) => () => {
     setActiveStep(step);
-  };
-
-  const handleComplete = () => {
-    const newCompleted = completed;
-    newCompleted[activeStep] = true;
-    setCompleted(newCompleted);
-    handleNext();
   };
 
   const handleReset = () => {
@@ -239,7 +146,7 @@ const DeliverersPage = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newForm = new FormData();
@@ -248,6 +155,9 @@ const DeliverersPage = () => {
     newForm.append("address", address);
     newForm.append("city", city);
     newForm.append("goodsType", goodsType);
+    newForm.append("vehiclesType", vehiclesType);
+    newForm.append("goodsType", deliveryType);
+    dispatch(createDeliverer(newForm));
   };
 
   return (
@@ -317,38 +227,36 @@ const DeliverersPage = () => {
             </Button>
           </DialogTitle>
           <DialogContent>
-            <form onSubmit={handleSubmit}>
-              <Box sx={{ width: "100%" }}>
-                <Stepper nonLinear activeStep={activeStep}>
-                  {steps.map((label, index) => (
-                    <Step key={label} completed={completed[index]}>
-                      <StepButton color="inherent" onClick={handleStep(index)}>
-                        {label}
-                      </StepButton>
-                    </Step>
-                  ))}
-                </Stepper>
-                <div>
-                  {allStepsCompleted() ? (
-                    <React.Fragment>
-                      <Typography sx={{ mt: 1, mb: 1 }}>
-                        All steps completed - you&apos;re finished
-                      </Typography>
-                      <Box
-                        sx={{ display: "flex", flexDirection: "row", pt: 2 }}
-                      >
-                        <Box sx={{ flex: "1 1 auto" }} />
-                        <Button onClick={handleReset}>Reset</Button>
-                      </Box>
-                    </React.Fragment>
-                  ) : (
-                    <React.Fragment>
+            <Box sx={{ width: "100%" }}>
+              <Stepper nonLinear activeStep={activeStep}>
+                {steps.map((label, index) => (
+                  <Step key={label} completed={completed[index]}>
+                    <StepButton color="inherent" onClick={handleStep(index)}>
+                      {label}
+                    </StepButton>
+                  </Step>
+                ))}
+              </Stepper>
+              <div>
+                {allStepsCompleted() ? (
+                  <React.Fragment>
+                    <Typography sx={{ mt: 1, mb: 1 }}>
+                      All steps completed - you&apos;re finished
+                    </Typography>
+                    <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                      <Box sx={{ flex: "1 1 auto" }} />
+                      <Button onClick={handleReset}>Reset</Button>
+                    </Box>
+                  </React.Fragment>
+                ) : (
+                  <React.Fragment>
+                    <form onSubmit={handleSubmit}>
                       <Box
                         sx={{ mt: "0.5rem" }}
                         display="flex"
                         maxWidth={"400px"}
                         margin={"auto"}
-                        padding={"0rem 5rem" }
+                        padding={"0rem 5rem"}
                         flexDirection="column"
                         alignItems={"center"}
                         justifyContent={"center"}
@@ -407,14 +315,7 @@ const DeliverersPage = () => {
 
                         {activeStep === 1 && (
                           <Box display={"flex"} flexDirection={"column"}>
-                            <FormControl sx={{ m: 1, minWidth: 250 }}>
-                              <TextField
-                                disabled
-                                variant="standard"
-                                type="text"
-                                label="Only select what applies to your company!"
-                                color="info"
-                              />
+                            <FormControl sx={{ m: 1, minWidth: 300 }}>
                               <TextField
                                 disabled
                                 variant="standard"
@@ -424,53 +325,15 @@ const DeliverersPage = () => {
                               />
                             </FormControl>
 
-                            <Box display={"flex"}>
-                              <FormControl sx={{ m: 1, minWidth: 120 }}>
-                                <TextField
-                                type="button"
-                                  variant="outlined"
-                                  color={select ? "info" : "inherit"}
-                                  label= "small"
-                                  size="small"
-                                  onClick={(e) => setSelect(!select)}
-                                  sx={{
-                                    border: "solid 0.2rem",
-                                  }}
-                                >
-                                  Small <br />
-                                  (0-5T)
-                              </TextField>
-                              </FormControl>
-                              <FormControl sx={{ m: 1, minWidth: 120 }}>
-                                <Button
-                                  variant="outlined"
-                                  color={select1 ? "info" : "inherit"}
-                                  size="small"
-                                  onClick={(e) => setSelect1(!select1)}
-                                  sx={{
-                                    border: "solid 0.2rem",
-                                  }}
-                                >
-                                  Medium
-                                  <br />
-                                  (5-10T)
-                                </Button>
-                              </FormControl>
-                              <FormControl sx={{ m: 1, minWidth: 120 }}>
-                                <Button
-                                  variant="outlined"
-                                  color={select2 ? "info" : "inherit"}
-                                  size="small"
-                                  onClick={(e) => setSelect2(!select2)}
-                                  sx={{
-                                    border: "solid 0.2rem",
-                                  }}
-                                >
-                                  Large <br />
-                                  (10T+)
-                                </Button>
-                              </FormControl>
-                            </Box>
+                            <FormControl sx={{ m: 1, minWidth: 250 }}>
+                              <Box>
+                                <VehicleTypes
+                                  selected={vehiclesType}
+                                  onChange={setVehiclesType}
+                                />
+                              </Box>
+                            </FormControl>
+
                             <FormControl sx={{ m: 1, minWidth: 250 }}>
                               <TextField
                                 disabled
@@ -481,42 +344,21 @@ const DeliverersPage = () => {
                               />
                             </FormControl>
 
-                            <Box display={"flex"}>
-                              <FormControl sx={{ m: 1, minWidth: 120 }}>
-                                <Button
-                                  size="small"
-                                  variant="outlined"
-                                  color={select3 ? "info" : "inherit"}
-                                  onClick={(e) => setSelect3(!select3)}
-                                  sx={{
-                                    border: "solid 0.2rem",
-                                  }}
-                                >
-                                  Local <br />
-                                  (inside the City)
-                                </Button>
-                              </FormControl>
-                              <FormControl sx={{ m: 1, minWidth: 120 }}>
-                                <Button
-                                size="small"
-                                  variant="outlined"
-                                  color={select4 ? "info" : "inherit"}
-                                  onClick={(e) => setSelect4(!select4)}
-                                  sx={{
-                                    border: "solid 0.2rem",
-                                  }}
-                                >
-                                  Express <br /> (Outside the city)
-                                </Button>
-                              </FormControl>
-                            </Box>
+                            <FormControl sx={{ m: 1, minWidth: 250 }}>
+                              <Box>
+                                <DeliveryTypes
+                                  selected={deliveryType}
+                                  onChange={setDeliveryType}
+                                />
+                              </Box>
+                            </FormControl>
                           </Box>
                         )}
                         {activeStep === 2 && (
                           <Box display={"flex"} flexDirection={"column"}>
                             <FormControl sx={{ m: 1, minWidth: 250 }}>
                               <TextField
-                            size="small"
+                                size="small"
                                 variant="outlined"
                                 type="text"
                                 label="Company Name"
@@ -534,205 +376,108 @@ const DeliverersPage = () => {
                                 />
                               </Box>
                             </FormControl>
-
-                            <FormControl sx={{ m: 1, minWidth: 250 }}>
-                              <TextField
-                              size="small"
-                                disabled
-                                variant="standard"
-                                type="text"
-                                label="What type of vehicles do you have?"
-                                color="info"
-                              />
-                            </FormControl>
-
                             <Box display={"flex"}>
-                              <FormControl sx={{ m: 1, minWidth: 100 }}>
-                               
-                                  <Button
-                                  
-                                    disabled
-                                    variant="outlined"
+                              <Box display={"flex"} flexDirection={"column"}>
+                                <FormControl sx={{ m: 1, minWidth: 150 }}>
+                                  <TextField
                                     size="small"
-                                    sx={{
-                                      border: "solid 0.2rem",
-                                      ":disabled": {
-                                        color: select ? theme.palette.primary[100] : "",
-                                        backgroundColor: select ?  theme.palette.primary[900]: ""
-                                      },
-                                    }}
-                                  >
-                                    Small
-                                   
-                                  
-                                  </Button>
-                               
-                              </FormControl>
-                              <FormControl sx={{ m: 1, minWidth: 100 }}>
-                              <Button
                                     disabled
-                                    variant="outlined"
-                                    size="small"
-                                    sx={{
-                                      border: "solid 0.2rem",
-                                      ":disabled": {
-                                        color: select1 ? theme.palette.primary[100] : "",
-                                        backgroundColor: select1 ?  theme.palette.primary[900]: ""
-                                      },
-                                    }}
-                                  >
-                                    Medium
-                                   
-                                  
-                                  </Button>
-                              </FormControl>
-                              <FormControl sx={{ m: 1, minWidth: 100 }}>
-                              <Button
-                                    disabled
-                                    variant="outlined"
-                                    size="small"
-                                    sx={{
-                                      border: "solid 0.2rem",
-                                      ":disabled": {
-                                        color: select2 ? theme.palette.primary[100] : "",
-                                        backgroundColor: select2 ?  theme.palette.primary[900]: ""
-                                      },
-                                    }}
-                                  >
-                                    Large
-                                   
-                                  
-                                  </Button>
-                              </FormControl>
-                            </Box>
-                            <FormControl sx={{ m: 1, minWidth: 250 }}>
-                              <TextField
-                              size="small"
-                                disabled
-                                variant="standard"
-                                type="text"
-                                label="Where can you deliver to?"
-                                color="info"
-                              />
-                            </FormControl>
+                                    variant="standard"
+                                    type="text"
+                                    label="What  vehicles do you have?"
+                                    color="info"
+                                  />
+                                </FormControl>
 
-                            <Box display={"flex"}>
-                              <FormControl sx={{ m: 1, minWidth: 100 }}>
-                              <Button
-                                    disabled
-                                    variant="outlined"
+                                <FormControl sx={{ m: 1, minWidth: 150 }}>
+                                  <Box>
+                                    <VehicleTypes
+                                      disabled={true}
+                                      selected={vehiclesType}
+                                      onChange={setVehiclesType}
+                                    />
+                                  </Box>
+                                </FormControl>
+                              </Box>
+                              <Box display={"flex"} flexDirection={"column"}>
+                                <FormControl sx={{ m: 1, minWidth: 150 }}>
+                                  <TextField
                                     size="small"
-                                    sx={{
-                                      border: "solid 0.2rem",
-                                      ":disabled": {
-                                        color: select3 ? theme.palette.primary[100] : "",
-                                        backgroundColor: select3 ?  theme.palette.primary[900]: ""
-                                      },
-                                    }}
-                                  >
-                                    Local
-                                   
-                                  
-                                  </Button>
-                              </FormControl>
-                              <FormControl sx={{ m: 1, minWidth: 100 }}>
-                              <Button
                                     disabled
-                                    variant="outlined"
-                                    size="small"
-                                    sx={{
-                                      border: "solid 0.2rem",
-                                      ":disabled": {
-                                        color: select4 ? theme.palette.primary[100] : "",
-                                        backgroundColor: select4 ?  theme.palette.primary[900]: ""
-                                      },
-                                    }}
-                                  >
-                                    Express
-                                   
-                                  
-                                  </Button>
-                              </FormControl>
+                                    variant="standard"
+                                    type="text"
+                                    label="Where can you deliver?"
+                                    color="info"
+                                  />
+                                </FormControl>
+
+                                <FormControl sx={{ m: 1, minWidth: 150 }}>
+                                  <Box>
+                                    <DeliveryTypes
+                                      disabled={true}
+                                      selected={deliveryType}
+                                      onChange={deliveryType}
+                                    />
+                                  </Box>
+                                </FormControl>
+                              </Box>
                             </Box>
                           </Box>
                         )}
-                  
                       </Box>
-                      <Box
-                        sx={{ display: "flex", flexDirection: "row", pt: 2 }}
-                      >
-                        {activeStep !== steps.length &&
-                          (completed[activeStep] ? (
-                            <Typography
-                              variant="caption"
-                              sx={{ display: "inline-block" }}
-                            >
-                              Step {activeStep + 1} already completed
-                            </Typography>
-                          ) : (
-                            <Button onClick={handleComplete}>
-                              {completedSteps() === totalSteps() - 1
-                                ? "Finish"
-                                : "Complete Step"}
-                            </Button>
-                          ))}
-                      </Box>
-                    </React.Fragment>
-                  )}
-                </div>
-              </Box>
-            </form>
+                    </form>
+                  </React.Fragment>
+                )}
+              </div>
+            </Box>
           </DialogContent>
           <DialogActions
-                        sx={{  
-                      justifyContent:"center"
-                      }}
-              
-                     
-                        >
-          <Box display={"flex"}>
-                          <Button
-                            disabled={activeStep === 0}
-                            onClick={handleBack}
-                            variant="contained"
-                            size="large"
-                            sx={{
-                              color: theme.palette.secondary[300],
+            sx={{
+              justifyContent: "center",
+            }}
+          >
+            <Box display={"flex"}>
+              <Button
+                disabled={activeStep === 0}
+                onClick={handleBack}
+                variant="contained"
+                size="large"
+                sx={{
+                  color: theme.palette.secondary[300],
 
-                              margin: "0.5rem",
-                              border: "solid 1px",
-                              ":hover": {
-                                backgroundColor: theme.palette.secondary[800],
-                              },
-                              ":disabled": {
-                                backgroundColor: theme.palette.secondary[800],
-                              },
-                            }}
-                          >
-                            Back
-                          </Button>
-                          <Button
-                            type={activeStep === 2 ? "submit" : "button"}
-                            onClick={handleNext}
-                            variant="contained"
-                            fontWeight="bold"
-                            sx={{
-                              color: theme.palette.secondary[100],
-                              backgroundColor: theme.palette.secondary[300],
-                              margin: "0.5rem  ",
-                              border: "solid 0.5px",
-                              ":hover": {
-                                backgroundColor: theme.palette.secondary[300],
-                              },
-                              ":disabled": {
-                                backgroundColor: theme.palette.secondary[300],
-                              },
-                            }}
-                          >
-                            {activeStep === 2 ? <>Add Contractor</> : <>Next</>}
-                          </Button>
-                        </Box>
-
+                  margin: "0.5rem",
+                  border: "solid 1px",
+                  ":hover": {
+                    backgroundColor: theme.palette.secondary[800],
+                  },
+                  ":disabled": {
+                    backgroundColor: theme.palette.secondary[800],
+                  },
+                }}
+              >
+                Back
+              </Button>
+              <Button
+                type={activeStep === 2 ? "submit" : "button"}
+                onClick={handleNext}
+                variant="contained"
+                fontWeight="bold"
+                sx={{
+                  color: theme.palette.secondary[100],
+                  backgroundColor: theme.palette.secondary[300],
+                  margin: "0.5rem  ",
+                  border: "solid 0.5px",
+                  ":hover": {
+                    backgroundColor: theme.palette.secondary[300],
+                  },
+                  ":disabled": {
+                    backgroundColor: theme.palette.secondary[300],
+                  },
+                }}
+              >
+                {activeStep === 2 ? <>Add Contractor</> : <>Next</>}
+              </Button>
+            </Box>
           </DialogActions>
         </Dialog>
       </div>
