@@ -1,4 +1,3 @@
-
 const mongoose = require("mongoose");
 
 const delivererSchema = new mongoose.Schema({
@@ -14,6 +13,25 @@ const delivererSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  goodsType: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
+
+  vehiclesType: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
+  deliveryType: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
   Rates: [
     {
       rateType: {
@@ -41,4 +59,4 @@ const delivererSchema = new mongoose.Schema({
   ],
 });
 module.exports = mongoose.model("Deliverer", delivererSchema);
-``
+``;
