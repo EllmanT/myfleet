@@ -28,9 +28,15 @@ if (process.env.NODE_URL !== "PRODUCTION") {
 //declaring controllers
 const user = require("./controller/user");
 const customer = require("./controller/customer");
+const deliverer = require("./controller/deliverer");
+const contractor = require("./controller/contractor");
+
+
 //using controllers
 app.use("/api/v2/user", user);
 app.use("/api/v2/customer", customer);
+app.use("/api/v2/deliverer", deliverer);
+app.use("/api/v2/contractor", contractor);
 
 app.use(ErrorHandler);
 
