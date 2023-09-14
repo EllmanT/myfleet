@@ -14,12 +14,13 @@ const roles = [
     value: "Contractor",
   },
 ];
-export default function Roles({ name, onChange }) {
+export default function Roles({ name, onChange ,disabled }) {
   return (
     <>
       <InputLabel id="demo-simple-select-autowidth-label">Role</InputLabel>
 
       <Select
+      disabled={disabled}
         labelId="simple-select-autowidth-label"
         id="demo-simple-select-autowidth"
         color="info"
