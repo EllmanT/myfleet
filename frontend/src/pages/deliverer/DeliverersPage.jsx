@@ -118,14 +118,12 @@ const DeliverersPage = () => {
   const [companyName, setCompanyName] = useState("");
   const [address, setAddress] = useState("");
   const [goodsType, setGoodsType] = useState([]);
+  const [vehiclesType, setVehiclesType] = useState([]);
+  const [deliveryType, expressLarge] = useState([]);
+
   const [city, setCity] = useState("");
 
-  const [localSmall, setLocalSmall] = useState("");
-  const [localMedium, setLocalMedium] = useState("");
-  const [localLarge, setLocalLarge] = useState("");
-  const [expressSmall, setExpressSmall] = useState("");
-  const [expressMedium, setExpressMedium] = useState("");
-  const [expressLarge, setExpressLarge] = useState("");
+
 
   //the steps
   const [activeStep, setActiveStep] = React.useState(0);
@@ -136,6 +134,18 @@ const DeliverersPage = () => {
   const [select2, setSelect2] = useState(false);
   const [select3, setSelect3] = useState(false);
   const [select4, setSelect4] = useState(false);
+
+  const [selected] = useState("")
+
+  function vehicleTypes (e){
+    const {checked,name}=e.target;
+    if(checked){
+      onChange([...selected,name]);
+    } else{
+      onChange([...selected.filter(selectedName=>selectedName!==name)]);
+    }
+  }
+
 
   const totalSteps = () => {
     return steps.length;
@@ -180,11 +190,7 @@ const DeliverersPage = () => {
 
     if (activeStep === 1) {
       if (
-        localSmall !== "" &&
-        localMedium !== "" &&
-        localLarge !== "" &&
-        expressSmall !== "" &&
-        expressMedium !== "" &&
+       
         expressLarge !== ""
       ) {
         const newCompleted = completed;
@@ -342,6 +348,7 @@ const DeliverersPage = () => {
                         display="flex"
                         maxWidth={"400px"}
                         margin={"auto"}
+                        padding={"0rem 5rem" }
                         flexDirection="column"
                         alignItems={"center"}
                         justifyContent={"center"}
@@ -360,7 +367,7 @@ const DeliverersPage = () => {
                               />
                             </FormControl>
                             <Box display={"flex"}>
-                              <FormControl sx={{ m: 1, minWidth: 150 }}>
+                              <FormControl sx={{ m: 1, minWidth: 180 }}>
                                 <Cities
                                   name={city}
                                   onChange={(e) => setCity(e.target.value)}
@@ -387,7 +394,7 @@ const DeliverersPage = () => {
                                 color="info"
                               />
                             </FormControl>
-                            <FormControl sx={{ m: 1, maxWidth: 250 }}>
+                            <FormControl sx={{ m: 1, minWidth: 250 }}>
                               <Box>
                                 <GoodsTypes
                                   selected={goodsType}
@@ -418,11 +425,13 @@ const DeliverersPage = () => {
                             </FormControl>
 
                             <Box display={"flex"}>
-                              <FormControl sx={{ m: 1, minWidth: 100 }}>
-                                <Button
+                              <FormControl sx={{ m: 1, minWidth: 120 }}>
+                                <TextField
+                                type="button"
                                   variant="outlined"
                                   color={select ? "info" : "inherit"}
-                                  size="large"
+                                  label= "small"
+                                  size="small"
                                   onClick={(e) => setSelect(!select)}
                                   sx={{
                                     border: "solid 0.2rem",
@@ -430,13 +439,13 @@ const DeliverersPage = () => {
                                 >
                                   Small <br />
                                   (0-5T)
-                                </Button>
+                              </TextField>
                               </FormControl>
-                              <FormControl sx={{ m: 1, minWidth: 100 }}>
+                              <FormControl sx={{ m: 1, minWidth: 120 }}>
                                 <Button
                                   variant="outlined"
                                   color={select1 ? "info" : "inherit"}
-                                  size="large"
+                                  size="small"
                                   onClick={(e) => setSelect1(!select1)}
                                   sx={{
                                     border: "solid 0.2rem",
@@ -447,11 +456,11 @@ const DeliverersPage = () => {
                                   (5-10T)
                                 </Button>
                               </FormControl>
-                              <FormControl sx={{ m: 1, minWidth: 100 }}>
+                              <FormControl sx={{ m: 1, minWidth: 120 }}>
                                 <Button
                                   variant="outlined"
                                   color={select2 ? "info" : "inherit"}
-                                  size="large"
+                                  size="small"
                                   onClick={(e) => setSelect2(!select2)}
                                   sx={{
                                     border: "solid 0.2rem",
@@ -473,8 +482,9 @@ const DeliverersPage = () => {
                             </FormControl>
 
                             <Box display={"flex"}>
-                              <FormControl sx={{ m: 1, minWidth: 100 }}>
+                              <FormControl sx={{ m: 1, minWidth: 120 }}>
                                 <Button
+                                  size="small"
                                   variant="outlined"
                                   color={select3 ? "info" : "inherit"}
                                   onClick={(e) => setSelect3(!select3)}
@@ -486,8 +496,9 @@ const DeliverersPage = () => {
                                   (inside the City)
                                 </Button>
                               </FormControl>
-                              <FormControl sx={{ m: 1, minWidth: 100 }}>
+                              <FormControl sx={{ m: 1, minWidth: 120 }}>
                                 <Button
+                                size="small"
                                   variant="outlined"
                                   color={select4 ? "info" : "inherit"}
                                   onClick={(e) => setSelect4(!select4)}
@@ -505,6 +516,7 @@ const DeliverersPage = () => {
                           <Box display={"flex"} flexDirection={"column"}>
                             <FormControl sx={{ m: 1, minWidth: 250 }}>
                               <TextField
+                            size="small"
                                 variant="outlined"
                                 type="text"
                                 label="Company Name"
@@ -513,7 +525,7 @@ const DeliverersPage = () => {
                                 disabled
                               />
                             </FormControl>
-                            <FormControl sx={{ m: 1, maxWidth: 250 }}>
+                            <FormControl sx={{ m: 1, minWidth: 250 }}>
                               <Box>
                                 <GoodsTypes
                                   disabled={true}
@@ -525,6 +537,7 @@ const DeliverersPage = () => {
 
                             <FormControl sx={{ m: 1, minWidth: 250 }}>
                               <TextField
+                              size="small"
                                 disabled
                                 variant="standard"
                                 type="text"
@@ -537,10 +550,10 @@ const DeliverersPage = () => {
                               <FormControl sx={{ m: 1, minWidth: 100 }}>
                                
                                   <Button
+                                  
                                     disabled
                                     variant="outlined"
-                                    size="large"
-                                    onClick={(e) => setSelect(!select)}
+                                    size="small"
                                     sx={{
                                       border: "solid 0.2rem",
                                       ":disabled": {
@@ -549,45 +562,52 @@ const DeliverersPage = () => {
                                       },
                                     }}
                                   >
-                                    Small <br />
-                                    (0-5T)
+                                    Small
+                                   
+                                  
                                   </Button>
                                
                               </FormControl>
                               <FormControl sx={{ m: 1, minWidth: 100 }}>
-                                <Button
-                                  disabled
-                                  variant="outlined"
-                                  color={select1 ? "info" : "inherit"}
-                                  size="large"
-                                  onClick={(e) => setSelect1(!select1)}
-                                  sx={{
-                                    border: "solid 0.2rem",
-                                  }}
-                                >
-                                  Medium
-                                  <br />
-                                  (5-10T)
-                                </Button>
+                              <Button
+                                    disabled
+                                    variant="outlined"
+                                    size="small"
+                                    sx={{
+                                      border: "solid 0.2rem",
+                                      ":disabled": {
+                                        color: select1 ? theme.palette.primary[100] : "",
+                                        backgroundColor: select1 ?  theme.palette.primary[900]: ""
+                                      },
+                                    }}
+                                  >
+                                    Medium
+                                   
+                                  
+                                  </Button>
                               </FormControl>
                               <FormControl sx={{ m: 1, minWidth: 100 }}>
-                                <Button
-                                  disabled
-                                  variant="outlined"
-                                  color={select2 ? "info" : "inherit"}
-                                  size="large"
-                                  onClick={(e) => setSelect2(!select2)}
-                                  sx={{
-                                    border: "solid 0.2rem",
-                                  }}
-                                >
-                                  Large <br />
-                                  (10T+)
-                                </Button>
+                              <Button
+                                    disabled
+                                    variant="outlined"
+                                    size="small"
+                                    sx={{
+                                      border: "solid 0.2rem",
+                                      ":disabled": {
+                                        color: select2 ? theme.palette.primary[100] : "",
+                                        backgroundColor: select2 ?  theme.palette.primary[900]: ""
+                                      },
+                                    }}
+                                  >
+                                    Large
+                                   
+                                  
+                                  </Button>
                               </FormControl>
                             </Box>
                             <FormControl sx={{ m: 1, minWidth: 250 }}>
                               <TextField
+                              size="small"
                                 disabled
                                 variant="standard"
                                 type="text"
@@ -598,36 +618,79 @@ const DeliverersPage = () => {
 
                             <Box display={"flex"}>
                               <FormControl sx={{ m: 1, minWidth: 100 }}>
-                                <Button
-                                  disabled
-                                  variant="outlined"
-                                  color={select3 ? "info" : "inherit"}
-                                  onClick={(e) => setSelect3(!select3)}
-                                  sx={{
-                                    border: "solid 0.2rem",
-                                  }}
-                                >
-                                  Local <br />
-                                  (inside the City)
-                                </Button>
+                              <Button
+                                    disabled
+                                    variant="outlined"
+                                    size="small"
+                                    sx={{
+                                      border: "solid 0.2rem",
+                                      ":disabled": {
+                                        color: select3 ? theme.palette.primary[100] : "",
+                                        backgroundColor: select3 ?  theme.palette.primary[900]: ""
+                                      },
+                                    }}
+                                  >
+                                    Local
+                                   
+                                  
+                                  </Button>
                               </FormControl>
                               <FormControl sx={{ m: 1, minWidth: 100 }}>
-                                <Button
-                                  disabled
-                                  variant="outlined"
-                                  color={select4 ? "info" : "inherit"}
-                                  onClick={(e) => setSelect4(!select4)}
-                                  sx={{
-                                    border: "solid 0.2rem",
-                                  }}
-                                >
-                                  Express <br /> (Outside the city)
-                                </Button>
+                              <Button
+                                    disabled
+                                    variant="outlined"
+                                    size="small"
+                                    sx={{
+                                      border: "solid 0.2rem",
+                                      ":disabled": {
+                                        color: select4 ? theme.palette.primary[100] : "",
+                                        backgroundColor: select4 ?  theme.palette.primary[900]: ""
+                                      },
+                                    }}
+                                  >
+                                    Express
+                                   
+                                  
+                                  </Button>
                               </FormControl>
                             </Box>
                           </Box>
                         )}
-                        <Box display={"flex"}>
+                  
+                      </Box>
+                      <Box
+                        sx={{ display: "flex", flexDirection: "row", pt: 2 }}
+                      >
+                        {activeStep !== steps.length &&
+                          (completed[activeStep] ? (
+                            <Typography
+                              variant="caption"
+                              sx={{ display: "inline-block" }}
+                            >
+                              Step {activeStep + 1} already completed
+                            </Typography>
+                          ) : (
+                            <Button onClick={handleComplete}>
+                              {completedSteps() === totalSteps() - 1
+                                ? "Finish"
+                                : "Complete Step"}
+                            </Button>
+                          ))}
+                      </Box>
+                    </React.Fragment>
+                  )}
+                </div>
+              </Box>
+            </form>
+          </DialogContent>
+          <DialogActions
+                        sx={{  
+                      justifyContent:"center"
+                      }}
+              
+                     
+                        >
+          <Box display={"flex"}>
                           <Button
                             disabled={activeStep === 0}
                             onClick={handleBack}
@@ -669,33 +732,8 @@ const DeliverersPage = () => {
                             {activeStep === 2 ? <>Add Contractor</> : <>Next</>}
                           </Button>
                         </Box>
-                      </Box>
-                      <Box
-                        sx={{ display: "flex", flexDirection: "row", pt: 2 }}
-                      >
-                        {activeStep !== steps.length &&
-                          (completed[activeStep] ? (
-                            <Typography
-                              variant="caption"
-                              sx={{ display: "inline-block" }}
-                            >
-                              Step {activeStep + 1} already completed
-                            </Typography>
-                          ) : (
-                            <Button onClick={handleComplete}>
-                              {completedSteps() === totalSteps() - 1
-                                ? "Finish"
-                                : "Complete Step"}
-                            </Button>
-                          ))}
-                      </Box>
-                    </React.Fragment>
-                  )}
-                </div>
-              </Box>
-            </form>
-          </DialogContent>
-          <DialogActions></DialogActions>
+
+          </DialogActions>
         </Dialog>
       </div>
       {/**Add contractor dialogue ends
