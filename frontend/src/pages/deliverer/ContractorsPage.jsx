@@ -1,19 +1,11 @@
 import React, { useState } from "react";
 import {
   Box,
-  Card,
-  CardActions,
-  CardContent,
-  Collapse,
   Button,
   Typography,
   Rating,
   useTheme,
   useMediaQuery,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  InputLabel,
   FormControl,
   DialogContent,
   DialogTitle,
@@ -24,88 +16,16 @@ import {
   StepButton,
   Step,
 } from "@mui/material";
-import {
-  AddBusiness,
-  AddToQueue,
-  Business,
-  Close,
-  GroupAdd,
-} from "@mui/icons-material";
+import { AddBusiness, Business, Close, GroupAdd } from "@mui/icons-material";
 import FlexBetween from "component/deliverer/FlexBetween";
 import Header from "component/deliverer/Header";
 import GoodsTypes from "component/deliverer/GoodsType";
 import Cities from "component/Cities";
 import { useDispatch } from "react-redux";
+import DeliveryTypes from "component/deliverer/DeliveryTypes";
+import VehicleTypes from "component/deliverer/VehicleTypes";
+import { createContractor } from "redux/actions/contractor";
 
-const Product = ({
-  _id,
-  name,
-  description,
-  price,
-  rating,
-  category,
-  supply,
-  stat,
-}) => {
-  const theme = useTheme();
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  return (
-    <Card
-      sx={{
-        backgroundImage: "none",
-        backgroundColor: theme.palette.background.alt,
-        borderRadius: "0.55rem",
-      }}
-    >
-      <CardContent>
-        <Typography
-          sx={{ fontSize: 14 }}
-          color={theme.palette.secondary[700]}
-          gutterBottom
-        >
-          {category}
-        </Typography>
-        <Typography variant="h5" component="div">
-          {name}
-        </Typography>
-        <Typography sx={{ mb: "1.5rem" }} color={theme.palette.secondary[400]}>
-          ${Number(price).toFixed(2)}
-        </Typography>
-
-        <Typography variant="body2">{description}</Typography>
-      </CardContent>
-      <CardActions>
-        <Button
-          variant="primary"
-          size="small"
-          onClick={() => setIsExpanded(!isExpanded)}
-        >
-          See More
-        </Button>
-      </CardActions>
-      <Collapse
-        in={isExpanded}
-        timeout="auto"
-        unmountOnExit
-        sx={{
-          color: theme.palette.neutral[300],
-        }}
-      >
-        <CardContent>
-          <Typography>id: {_id}</Typography>
-          <Typography>Supply Left: {supply}</Typography>
-          <Typography>
-            Yearly Sales This Year: {stat.yearlySalesTotal}
-          </Typography>
-          <Typography>
-            Yearly Units Sold This Year: {stat.yearlyTotalSoldUnits}
-          </Typography>
-        </CardContent>
-      </Collapse>
-    </Card>
-  );
-};
 const steps = ["General Details", "Rates", "Preview"];
 
 const contractors = [
@@ -131,13 +51,12 @@ const ContractorsPage = () => {
   const [address, setAddress] = useState("");
   const [goodsType, setGoodsType] = useState([]);
   const [city, setCity] = useState("");
+  const [vehiclesType, setVehiclesType] = useState([]);
+  const [deliveryType, setDeliveryType] = useState([]);
 
   //the steps
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState({});
-
-
-
 
   const totalSteps = () => {
     return steps.length;
@@ -163,7 +82,6 @@ const ContractorsPage = () => {
           steps.findIndex((step, i) => !(i in completed))
         : activeStep + 1;
     setActiveStep(newActiveStep);
-   
   };
 
   const handleBack = () => {
@@ -198,13 +116,27 @@ const ContractorsPage = () => {
     }
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const newForm = new FormData();
+
+    newForm.append("companyName", companyName);
+    newForm.append("address", address);
+    newForm.append("goodsType", goodsType);
+    newForm.append("vehiclesType", vehiclesType);
+    newForm.append("deliveryType", deliveryType);
+    newForm.append("city", city);
+    dispatch(createContractor(newForm))
+  };
+
   return (
     <Box m="1.5rem 2.5rem">
       <FlexBetween>
         <Header title="Contractors" subtitle="See all your contractors." />
         <Box>
           <Button
-          disabled
+            disabled
             sx={{
               backgroundColor: theme.palette.secondary.light,
               color: theme.palette.background.alt,
@@ -255,12 +187,16 @@ const ContractorsPage = () => {
               <GroupAdd sx={{ mr: "10px", fontSize: "25px" }} />
               Contractor
             </Button>
-            <Button onClick={handleClose} variant="outlined" color="info" sx={{ ml: "30px" }}>
-              <Close  sx={{ fontSize: "25px" }} />
+            <Button
+              onClick={handleClose}
+              variant="outlined"
+              color="info"
+              sx={{ ml: "30px" }}
+            >
+              <Close sx={{ fontSize: "25px" }} />
             </Button>
           </DialogTitle>
           <DialogContent>
-            <form>
               <Box sx={{ width: "100%" }}>
                 <Stepper nonLinear activeStep={activeStep}>
                   {steps.map((label, index) => (
@@ -286,7 +222,8 @@ const ContractorsPage = () => {
                     </React.Fragment>
                   ) : (
                     <React.Fragment>
-                      <Box
+                        <form onSubmit={handleSubmit}>
+                        <Box
                         sx={{ mt: "0.5rem" }}
                         display="flex"
                         maxWidth={"400px"}
@@ -295,6 +232,8 @@ const ContractorsPage = () => {
                         alignItems={"center"}
                         justifyContent={"center"}
                       >
+                                
+
                         {activeStep === 0 && (
                           <Box display={"flex"} flexDirection={"column"}>
                             <FormControl sx={{ m: 1, minWidth: 250 }}>
@@ -304,12 +243,14 @@ const ContractorsPage = () => {
                                 type="text"
                                 label="Company Name"
                                 color="info"
-                              
                               />
                             </FormControl>
                             <Box display={"flex"}>
                               <FormControl sx={{ m: 1, minWidth: 150 }}>
-                             <Cities name={city} onChange={(e)=>setCity(e.target.value)}/>
+                                <Cities
+                                  name={city}
+                                  onChange={(e) => setCity(e.target.value)}
+                                />
                               </FormControl>
                               <FormControl sx={{ m: 1, minWidth: 250 }}>
                                 <TextField
@@ -317,7 +258,8 @@ const ContractorsPage = () => {
                                   variant="outlined"
                                   type="text"
                                   label="Address"
-                                 
+                                  value={address}
+                                  onChange={(e) => setAddress(e.target.value)}
                                   color="info"
                                 />
                               </FormControl>
@@ -344,186 +286,112 @@ const ContractorsPage = () => {
 
                         {activeStep === 1 && (
                           <Box display={"flex"} flexDirection={"column"}>
+                            <FormControl sx={{ m: 1, minWidth: 300 }}>
+                              <TextField
+                                disabled
+                                variant="standard"
+                                type="text"
+                                label="What type of vehicles do you need?"
+                                color="info"
+                              />
+                            </FormControl>
+
+                            <FormControl sx={{ m: 1, minWidth: 250 }}>
+                              <Box>
+                                <VehicleTypes
+                                  selected={vehiclesType}
+                                  onChange={setVehiclesType}
+                                />
+                              </Box>
+                            </FormControl>
+
                             <FormControl sx={{ m: 1, minWidth: 250 }}>
                               <TextField
                                 disabled
                                 variant="standard"
                                 type="text"
-                                label="What do you pay for deliveries done locally(inside the city)?"
+                                label="Where are you customers?"
                                 color="info"
                               />
                             </FormControl>
 
-                            <Box display={"flex"}>
-                              <FormControl sx={{ m: 1, minWidth: 100 }}>
-                                <TextField
-                                  variant="outlined"
-                                  type="text"
-                                  label="vehicle <=5T"
-                                  color="info"
-                                 
-                                />
-                              </FormControl>
-                              <FormControl sx={{ m: 1, minWidth: 100 }}>
-                                <TextField
-                                  variant="outlined"
-                                  type="text"
-                                  label="Vehicle <=10T"
-                                  color="info"
-                                 
-                                />
-                              </FormControl>
-                              <FormControl sx={{ m: 1, minWidth: 100 }}>
-                                <TextField
-                                  variant="outlined"
-                                  type="text"
-                                  label="Horse"
-                                  color="info"
-                                 
-                                />
-                              </FormControl>
-                            </Box>
                             <FormControl sx={{ m: 1, minWidth: 250 }}>
-                              <TextField
-                                disabled
-                                variant="standard"
-                                type="text"
-                                label="What do you pay for deliveries done express(outside the city)?"
-                                color="info"
-                              />
+                              <Box>
+                                <DeliveryTypes
+                                  selected={deliveryType}
+                                  onChange={setDeliveryType}
+                                />
+                              </Box>
                             </FormControl>
-
-                            <Box display={"flex"}>
-                              <FormControl sx={{ m: 1, minWidth: 100 }}>
-                                <TextField
-                                  variant="outlined"
-                                  type="text"
-                                  label="vehicle <=5T"
-                                  color="info"
-                                
-                                />
-                              </FormControl>
-                              <FormControl sx={{ m: 1, minWidth: 100 }}>
-                                <TextField
-                                  variant="outlined"
-                                  type="text"
-                                  label="Vehicle <=10T"
-                                  color="info"
-                                  
-                                />
-                              </FormControl>
-                              <FormControl sx={{ m: 1, minWidth: 100 }}>
-                                <TextField
-                                  variant="outlined"
-                                  type="text"
-                                  label="Horse"
-                                  color="info"
-                                 
-                                />
-                              </FormControl>
-                            </Box>
                           </Box>
                         )}
                         {activeStep === 2 && (
                           <Box display={"flex"} flexDirection={"column"}>
                             <FormControl sx={{ m: 1, minWidth: 250 }}>
                               <TextField
+                                size="small"
                                 variant="outlined"
                                 type="text"
                                 label="Company Name"
                                 color="info"
-                                
+                                value={companyName}
                                 disabled
                               />
                             </FormControl>
-                            <FormControl sx={{ m: 1, maxWidth: 250 }}>
+                            <FormControl sx={{ m: 1, minWidth: 250 }}>
                               <Box>
                                 <GoodsTypes
-                                  disabled
+                                  disabled={true}
                                   selected={goodsType}
                                   onChange={setGoodsType}
                                 />
                               </Box>
                             </FormControl>
-                            <FormControl sx={{ m: 1, minWidth: 250 }}>
-                              <TextField
-                                disabled
-                                variant="standard"
-                                type="text"
-                                label="What do you pay for deliveries done locally(inside the city)?"
-                                color="info"
-                              />
-                            </FormControl>
-
                             <Box display={"flex"}>
-                              <FormControl sx={{ m: 1, minWidth: 100 }}>
-                                <TextField
-                                  variant="outlined"
-                                  type="text"
-                                  label="vehicle <=5T"
-                                  color="info"
-                                  disabled
-                              
-                                />
-                              </FormControl>
-                              <FormControl sx={{ m: 1, minWidth: 100 }}>
-                                <TextField
-                                  variant="outlined"
-                                  type="text"
-                                  label="Vehicle <=10T"
-                                  color="info"
-                                  disabled
-                                />
-                              </FormControl>
-                              <FormControl sx={{ m: 1, minWidth: 100 }}>
-                                <TextField
-                                  variant="outlined"
-                                  type="text"
-                                  label="Horse"
-                                  color="info"
-                                  disabled
-                                />
-                              </FormControl>
-                            </Box>
-                            <FormControl sx={{ m: 1, minWidth: 250 }}>
-                              <TextField
-                                disabled
-                                variant="standard"
-                                type="text"
-                                label="What do you pay for deliveries done express(outside the city)?"
-                                color="info"
-                              />
-                            </FormControl>
+                              <Box display={"flex"} flexDirection={"column"}>
+                                <FormControl sx={{ m: 1, minWidth: 150 }}>
+                                  <TextField
+                                    size="small"
+                                    disabled
+                                    variant="standard"
+                                    type="text"
+                                    label="What vehicles do you need?"
+                                    color="info"
+                                  />
+                                </FormControl>
 
-                            <Box display={"flex"}>
-                              <FormControl sx={{ m: 1, minWidth: 100 }}>
-                                <TextField
-                                  variant="outlined"
-                                  type="text"
-                                  label="vehicle <=5T"
-                                  color="info"
-                                  disabled
-                                 
-                                />
-                              </FormControl>
-                              <FormControl sx={{ m: 1, minWidth: 100 }}>
-                                <TextField
-                                  variant="outlined"
-                                  type="text"
-                                  label="Vehicle <=10T"
-                                  color="info"
-                                  disabled
-                                />
-                              </FormControl>
-                              <FormControl sx={{ m: 1, minWidth: 100 }}>
-                                <TextField
-                                  variant="outlined"
-                                  type="text"
-                                  disabled
-                                  label="Horse"
-                                  color="info"
-                                />
-                              </FormControl>
+                                <FormControl sx={{ m: 1, minWidth: 150 }}>
+                                  <Box>
+                                    <VehicleTypes
+                                      disabled={true}
+                                      selected={vehiclesType}
+                                      onChange={setVehiclesType}
+                                    />
+                                  </Box>
+                                </FormControl>
+                              </Box>
+                              <Box display={"flex"} flexDirection={"column"}>
+                                <FormControl sx={{ m: 1, minWidth: 150 }}>
+                                  <TextField
+                                    size="small"
+                                    disabled
+                                    variant="standard"
+                                    type="text"
+                                    label="Where are you customers?"
+                                    color="info"
+                                  />
+                                </FormControl>
+
+                                <FormControl sx={{ m: 1, minWidth: 150 }}>
+                                  <Box>
+                                    <DeliveryTypes
+                                      disabled={true}
+                                      selected={deliveryType}
+                                      onChange={deliveryType}
+                                    />
+                                  </Box>
+                                </FormControl>
+                              </Box>
                             </Box>
                           </Box>
                         )}
@@ -569,6 +437,8 @@ const ContractorsPage = () => {
                           </Button>
                         </Box>
                       </Box>
+                        </form>
+                   
                       <Box
                         sx={{ display: "flex", flexDirection: "row", pt: 2 }}
                       >
@@ -592,7 +462,7 @@ const ContractorsPage = () => {
                   )}
                 </div>
               </Box>
-            </form>
+          
           </DialogContent>
           <DialogActions></DialogActions>
         </Dialog>
@@ -603,8 +473,7 @@ const ContractorsPage = () => {
 
       {/**Where the info goes */}
       <Box></Box>
-            {/**Where the info ends */}
-
+      {/**Where the info ends */}
     </Box>
   );
 };
