@@ -4,14 +4,16 @@ import { userReducer } from "./reducers/user";
 import { customerReducer } from "./reducers/customer";
 import { contractorReducer } from "./reducers/contractor";
 import { vehicleReducer } from "./reducers/vehicle";
+import { delivererReducer } from "./reducers/deliverer";
 
 const Store = configureStore({
   reducer: {
     global: globalReducer,
     user: userReducer,
     customer: customerReducer,
-    contractor:contractorReducer,
-    vehicle:vehicleReducer,
+    contractor: contractorReducer,
+    vehicle: vehicleReducer,
+    deliverer: delivererReducer,
   },
 });
 
