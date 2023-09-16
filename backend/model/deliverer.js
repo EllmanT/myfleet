@@ -52,11 +52,7 @@ const delivererSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
-  goodsTypes: [
-    {
-      type: String,
-    },
-  ],
+ 
 });
 module.exports = mongoose.model("Deliverer", delivererSchema);
 ``;
