@@ -41,12 +41,14 @@ const AdminsPage = () => {
   const [city, setCity] = useState("");
   const [role, setRole] = useState("");
   const [address, setAddress] = useState("");
-  const [companyId] = useState("");
+  const [companyId, setCompanyId] = useState("");
   //the steps
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState({});
 
   const [disable, setDisable] = useState(false);
+
+  //steps stuff start here START
 
   const totalSteps = () => {
     return steps.length;
@@ -72,8 +74,34 @@ const AdminsPage = () => {
           steps.findIndex((step, i) => !(i in completed))
         : activeStep + 1;
     setActiveStep(newActiveStep);
+    stepChecker();
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    stepChecker();
+  };
+
+  const handleStep = (step) => () => {
+    setActiveStep(step);
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
+    setCompleted({});
+  };
+  //handle the changes from step to step check to see if step is complete
+  const stepChecker = () => {
     if (activeStep === 0) {
-      if (companyId !== "" && city !== "" && address !== "") {
+      if (
+        name !== "" &&
+        email !== "" &&
+        companyId !== "" &&
+        role !== "" &&
+        city !== "" &&
+        address !== "" &&
+        phoneNumber !== ""
+      ) {
         const newCompleted = completed;
         newCompleted[activeStep] = true;
         setCompleted(newCompleted);
@@ -85,7 +113,7 @@ const AdminsPage = () => {
     }
 
     if (activeStep === 1) {
-      if (email !== "" && password == "" && check !== "") {
+      if (password !== "" && check !== "" && password === check) {
         const newCompleted = completed;
         newCompleted[activeStep] = true;
         setCompleted(newCompleted);
@@ -97,18 +125,7 @@ const AdminsPage = () => {
     }
   };
 
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleStep = (step) => () => {
-    setActiveStep(step);
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
-    setCompleted({});
-  };
+  //the steps ENDS
 
   //the steps
 
@@ -136,6 +153,7 @@ const AdminsPage = () => {
     newForm.append("role", role);
     newForm.append("companyId", companyId);
     newForm.append("phoneNumber", phoneNumber);
+    newForm.append("name", name);
 
     setDisable(true);
 
@@ -151,6 +169,7 @@ const AdminsPage = () => {
           setPhoneNumber("");
           setRole("");
           setCity("");
+          setCompanyId("");
           setAddress("");
           setDisable(false);
         })
@@ -204,56 +223,58 @@ const AdminsPage = () => {
       {/**Add contractor dialogue start */}
       <div>
         <Dialog disableEscapeKeyDown open={open} onClose={handleClose}>
-          <DialogTitle variant="h3" sx={{ m: "0rem 6rem" }}>
-            <Button
-              disabled
-              variant="outlined"
-              sx={{
-                fontSize: "20px",
-                fontWeight: "bold",
-                padding: "10px 20px",
-                ":disabled": {
-                  color: theme.palette.primary[100],
-                },
-              }}
-            >
-              <GroupAdd sx={{ mr: "10px", fontSize: "25px" }} />
-              Admin
-            </Button>
-            <Button
-              onClick={handleClose}
-              variant="outlined"
-              color="info"
-              sx={{ ml: "30px" }}
-            >
-              <Close sx={{ fontSize: "25px" }} />
-            </Button>
-          </DialogTitle>
-          <DialogContent>
-            <Box sx={{ width: "100%" }}>
-              <Stepper nonLinear activeStep={activeStep}>
-                {steps.map((label, index) => (
-                  <Step key={label} completed={completed[index]}>
-                    <StepButton color="inherent" onClick={handleStep(index)}>
-                      {label}
-                    </StepButton>
-                  </Step>
-                ))}
-              </Stepper>
-              <div>
-                {allStepsCompleted() ? (
-                  <React.Fragment>
-                    <Typography sx={{ mt: 1, mb: 1 }}>
-                      All steps completed - you&apos;re finished
-                    </Typography>
-                    <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                      <Box sx={{ flex: "1 1 auto" }} />
-                      <Button onClick={handleReset}>Reset</Button>
-                    </Box>
-                  </React.Fragment>
-                ) : (
-                  <React.Fragment>
-                    <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}>
+            <DialogTitle variant="h3" sx={{ m: "0rem 6rem" }}>
+              <Button
+                disabled
+                variant="outlined"
+                sx={{
+                  fontSize: "20px",
+                  fontWeight: "bold",
+                  padding: "10px 20px",
+                  ":disabled": {
+                    color: theme.palette.primary[100],
+                  },
+                }}
+              >
+                <GroupAdd sx={{ mr: "10px", fontSize: "25px" }} />
+                Admin
+              </Button>
+              <Button
+                onClick={handleClose}
+                variant="outlined"
+                color="info"
+                sx={{ ml: "30px" }}
+              >
+                <Close sx={{ fontSize: "25px" }} />
+              </Button>
+            </DialogTitle>
+            <DialogContent>
+              <Box sx={{ width: "100%" }}>
+                <Stepper nonLinear activeStep={activeStep}>
+                  {steps.map((label, index) => (
+                    <Step key={label} completed={completed[index]}>
+                      <StepButton color="inherent" onClick={handleStep(index)}>
+                        {label}
+                      </StepButton>
+                    </Step>
+                  ))}
+                </Stepper>
+                <div>
+                  {allStepsCompleted() ? (
+                    <React.Fragment>
+                      <Typography sx={{ mt: 1, mb: 1 }}>
+                        All steps completed - you&apos;re finished
+                      </Typography>
+                      <Box
+                        sx={{ display: "flex", flexDirection: "row", pt: 2 }}
+                      >
+                        <Box sx={{ flex: "1 1 auto" }} />
+                        <Button onClick={handleReset}>Reset</Button>
+                      </Box>
+                    </React.Fragment>
+                  ) : (
+                    <React.Fragment>
                       <Box
                         sx={{ mt: "0.5rem" }}
                         display="flex"
@@ -296,11 +317,11 @@ const AdminsPage = () => {
                                 label="Company Id"
                                 color="info"
                                 value={companyId}
-                                disabled
+                                onChange={(e) => setCompanyId(e.target.value)}
                               />
                             </FormControl>
                             <Box display={"flex"}>
-                              <FormControl sx={{ m: 1, minWidth: 150 }}>
+                              <FormControl sx={{ m: 1, minWidth: 200 }}>
                                 <Roles
                                   name={role}
                                   onChange={(e) => setRole(e.target.value)}
@@ -321,13 +342,7 @@ const AdminsPage = () => {
                               </FormControl>
                             </Box>
                             <Box display={"flex"}>
-                              <FormControl sx={{ m: 1, minWidth: 150 }}>
-                                <Cities
-                                  name={city}
-                                  onChange={(e) => setCity(e.target.value)}
-                                />
-                              </FormControl>
-                              <FormControl sx={{ m: 1, minWidth: 150 }}>
+                              <FormControl sx={{ m: 1, minWidth: 200 }}>
                                 <TextField
                                   required
                                   variant="outlined"
@@ -336,6 +351,12 @@ const AdminsPage = () => {
                                   color="info"
                                   value={address}
                                   onChange={(e) => setAddress(e.target.value)}
+                                />
+                              </FormControl>
+                              <FormControl sx={{ m: 1, minWidth: 150 }}>
+                                <Cities
+                                  name={city}
+                                  onChange={(e) => setCity(e.target.value)}
                                 />
                               </FormControl>
                             </Box>
@@ -418,60 +439,85 @@ const AdminsPage = () => {
                           </Box>
                         )}
                       </Box>
-                    </form>
-                  </React.Fragment>
-                )}
-              </div>
-            </Box>
-          </DialogContent>
-          <DialogActions
-            sx={{
-              justifyContent: "center",
-            }}
-          >
-            <Box display={"flex"}>
-              <Button
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                variant="contained"
-                size="large"
-                sx={{
-                  color: theme.palette.secondary[300],
+                    </React.Fragment>
+                  )}
+                </div>
+              </Box>
+            </DialogContent>
+            <DialogActions
+              sx={{
+                justifyContent: "center",
+              }}
+            >
+              <Box display={"flex"}>
+                <Button
+                  disabled={activeStep === 0 || disable === true}
+                  onClick={handleBack}
+                  variant="contained"
+                  size="large"
+                  sx={{
+                    color: theme.palette.secondary[300],
 
-                  margin: "0.5rem",
-                  border: "solid 1px",
-                  ":hover": {
-                    backgroundColor: theme.palette.secondary[800],
-                  },
-                  ":disabled": {
-                    backgroundColor: theme.palette.secondary[800],
-                  },
-                }}
-              >
-                Back
-              </Button>
-              <Button
-                type={activeStep === 2 ? "submit" : "button"}
-                onClick={handleNext}
-                variant="contained"
-                fontWeight="bold"
-                sx={{
-                  color: theme.palette.secondary[100],
-                  backgroundColor: theme.palette.secondary[300],
-                  margin: "0.5rem  ",
-                  border: "solid 0.5px",
-                  ":hover": {
-                    backgroundColor: theme.palette.secondary[300],
-                  },
-                  ":disabled": {
-                    backgroundColor: theme.palette.secondary[300],
-                  },
-                }}
-              >
-                {activeStep === 2 ? <>Add Admin</> : <>Next</>}
-              </Button>
-            </Box>
-          </DialogActions>
+                    margin: "0.5rem",
+                    border: "solid 1px",
+                    ":hover": {
+                      backgroundColor: theme.palette.secondary[800],
+                    },
+                    ":disabled": {
+                      backgroundColor: theme.palette.secondary[800],
+                    },
+                  }}
+                >
+                  Back
+                </Button>
+                {activeStep !== 2 && (
+                  <Button
+                    onClick={handleNext}
+                    variant="contained"
+                    fontWeight="bold"
+                    sx={{
+                      color: theme.palette.secondary[100],
+                      backgroundColor: theme.palette.secondary[300],
+                      margin: "0.5rem  ",
+                      border: "solid 0.5px",
+                      ":hover": {
+                        backgroundColor: theme.palette.secondary[300],
+                      },
+                      ":disabled": {
+                        backgroundColor: theme.palette.secondary[300],
+                      },
+                    }}
+                  >
+                    Next
+                  </Button>
+                )}
+
+                {activeStep === 2 && (
+                  <Button
+                    type={"submit"}
+                    disabled={disable}
+                    onClick={handleNext}
+                    variant="contained"
+                    fontWeight="bold"
+                    sx={{
+                      color: theme.palette.secondary[100],
+                      backgroundColor: theme.palette.secondary[300],
+                      margin: "0.5rem  ",
+                      border: "solid 0.5px",
+                      ":hover": {
+                        backgroundColor: theme.palette.secondary[300],
+                      },
+                      ":disabled": {
+                        backgroundColor: theme.palette.secondary[300],
+                      },
+                    }}
+                  >
+                    Add Admin
+                  </Button>
+                )}
+              </Box>
+            </DialogActions>
+          </form>
         </Dialog>
       </div>
       {/**Add contractor dialogue ends
