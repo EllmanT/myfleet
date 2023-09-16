@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -31,8 +31,10 @@ import GoodsTypes from "component/deliverer/GoodsType";
 import FlexBetween from "component/deliverer/FlexBetween";
 import Header from "component/deliverer/Header";
 import DateProvider from "component/deliverer/DateProvider";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createVehicle } from "redux/actions/vehicle";
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const sizes = [
   {
@@ -49,6 +51,8 @@ const sizes = [
 const VehiclesPage = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { success, error } = useSelector((state) => state.vehicle);
 
   const [open, setOpen] = useState("");
 
@@ -56,6 +60,17 @@ const VehiclesPage = () => {
   const [size, setSize] = useState("");
   const [regNumber, setRegNumber] = useState("");
   const [companyId, setCompanyId] = useState("");
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message);
+    }
+    if (success) {
+      toast.success("Vehicle added successfully");
+      navigate("/del-vehicles");
+      window.location.reload();
+    }
+  });
 
   const handleClickOpen = () => {
     setOpen(true);
