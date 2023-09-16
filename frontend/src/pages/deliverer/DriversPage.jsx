@@ -41,6 +41,7 @@ const DriversPage = () => {
   const theme = useTheme();
 
   
+  
 
 
   const [open, setOpen] = useState("");
@@ -59,6 +60,20 @@ const DriversPage = () => {
       setOpen(false);
     }
   };
+
+  const handleSubmit= (e)=>{
+    e.preventDefault()
+
+    const newForm = new FormData()
+
+    newForm.append("name",name)
+    newForm.append("phoneNumber",phoneNumber)
+    newForm.append("city",city)
+    newForm.append("address",address)
+    
+  }
+
+  
 
   return (
     <Box m="1.5rem 2.5rem">
@@ -128,7 +143,8 @@ const DriversPage = () => {
             </Button>
           </DialogTitle>
           <DialogContent>
-            <form>
+          <form onSubmit={handleSubmit}>
+
               <Box
                 sx={{ mt: "0.5rem" }}
                 display="flex"
