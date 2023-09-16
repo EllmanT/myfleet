@@ -19,11 +19,16 @@ const driverSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  id: {
+  idNumber: {
     type:String,
+    required:true,
   },
   licence: {
     type:String,
+  },
+  companyId:{
+    type:String,
+    required
   },
   dateJoined:{
     type:Date,
