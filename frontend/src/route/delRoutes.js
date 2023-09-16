@@ -12,6 +12,8 @@ import DelDashRevenuePage from "../pages/deliverer/DashRevenuePage.jsx";
 import DelAllOrdersPage from "../pages/deliverer/AllOrdersPage.jsx";
 import DelAddOrderPage from "../pages/deliverer/AddOrderPage";
 import DelDeliverersPage from "../pages/deliverer/DeliverersPage";
+import ActivationPage from "../pages/ActivationPage";
+
 
 export {
   DelRegisterPage,
@@ -27,5 +29,6 @@ export {
   DelDashRevenuePage,
   DelAllOrdersPage,
   DelAddOrderPage,
-  DelDeliverersPage
+  DelDeliverersPage,
+  ActivationPage
 };
