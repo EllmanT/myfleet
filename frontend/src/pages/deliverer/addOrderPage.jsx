@@ -18,6 +18,9 @@ import { Add, LocalShipping } from "@mui/icons-material";
 import { useState } from "react";
 import DateProvider from "component/deliverer/DateProvider";
 import Header from "component/deliverer/Header";
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { addToOrdersCart } from "redux/actions/ordersCart";
 
 const steps = ["Order Details", "Company Info", "Preview"];
 const contractors = [
@@ -53,9 +56,13 @@ const vehicles = [
 
 const AddOrderPage = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
+
+  const { cart } = useSelector((state) => state.cart);
 
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState({});
+  const [disable, setDisable] = useState("");
   //the customer info
   const [customer, setCustomer] = useState("");
   const [from, setFrom] = useState("");
@@ -134,7 +141,22 @@ const AddOrderPage = () => {
 
   //calculating the distance of the trip
 
-  console.log(orderDate);
+  const addToOrdersCartHandler = (id) => {
+    const newForm = new FormData();
+    newForm.append("customer", customer);
+    newForm.append("from", from);
+
+    const isItemInCart = cart && cart.find((i) => i._id === id);
+
+    if (isItemInCart) {
+      toast.error("Order already present");
+    } else {
+      const cartData = { ...newForm };
+      dispatch(addToOrdersCart(cartData));
+      toast.success("Order added successfully");
+    }
+  };
+
   return (
     <>
       <Box m="0.1rem 5rem">
@@ -346,8 +368,6 @@ const AddOrderPage = () => {
                         </FormControl>
 
                         <Box display={"flex"}>
-                        
-
                           <FormControl sx={{ m: 1, minWidth: 200 }}>
                             <TextField
                               variant="outlined"
@@ -392,14 +412,14 @@ const AddOrderPage = () => {
                     )}
                     <Box display={"flex"}>
                       <Button
-                        disabled={activeStep === 0}
+                        disabled={activeStep === 0 || disable === true}
                         onClick={handleBack}
                         variant="contained"
                         size="large"
                         sx={{
                           color: theme.palette.secondary[300],
 
-                          margin: "1rem",
+                          margin: "0.5rem",
                           border: "solid 1px",
                           ":hover": {
                             backgroundColor: theme.palette.secondary[800],
@@ -411,44 +431,52 @@ const AddOrderPage = () => {
                       >
                         Back
                       </Button>
-                      <Button
-                        onClick={handleNext}
-                        variant="contained"
-                        fontWeight="bold"
-                        sx={{
-                          color: theme.palette.secondary[100],
-                          backgroundColor: theme.palette.secondary[300],
-                          margin: "1rem  ",
-                          border: "solid 0.5px",
-                          ":hover": {
+                      {activeStep !== 2 && (
+                        <Button
+                          onClick={handleNext}
+                          variant="contained"
+                          fontWeight="bold"
+                          sx={{
+                            color: theme.palette.secondary[100],
                             backgroundColor: theme.palette.secondary[300],
-                          },
-                          ":disabled": {
-                            backgroundColor: theme.palette.secondary[300],
-                          },
-                        }}
-                      >
-                        Next
-                      </Button>
-                    </Box>
-                  </Box>
-
-                  <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                    {activeStep !== steps.length &&
-                      (completed[activeStep] ? (
-                        <Typography
-                          variant="caption"
-                          sx={{ display: "inline-block" }}
+                            margin: "0.5rem  ",
+                            border: "solid 0.5px",
+                            ":hover": {
+                              backgroundColor: theme.palette.secondary[300],
+                            },
+                            ":disabled": {
+                              backgroundColor: theme.palette.secondary[300],
+                            },
+                          }}
                         >
-                          Step {activeStep + 1} already completed
-                        </Typography>
-                      ) : (
-                        <Button onClick={handleComplete}>
-                          {completedSteps() === totalSteps() - 1
-                            ? "Finish"
-                            : "Complete Step"}
+                          Next
                         </Button>
-                      ))}
+                      )}
+
+                      {activeStep === 2 && (
+                        <Button
+                          type={"submit"}
+                          disabled={disable}
+                          onClick={handleNext}
+                          variant="contained"
+                          fontWeight="bold"
+                          sx={{
+                            color: theme.palette.secondary[100],
+                            backgroundColor: theme.palette.secondary[300],
+                            margin: "0.5rem  ",
+                            border: "solid 0.5px",
+                            ":hover": {
+                              backgroundColor: theme.palette.secondary[300],
+                            },
+                            ":disabled": {
+                              backgroundColor: theme.palette.secondary[300],
+                            },
+                          }}
+                        >
+                          Add Contractor
+                        </Button>
+                      )}
+                    </Box>
                   </Box>
                 </React.Fragment>
               )}
