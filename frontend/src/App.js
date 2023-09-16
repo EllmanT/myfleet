@@ -20,6 +20,7 @@ import {
   DelDashRevenuePage,
   DelAddOrderPage,
   DelDeliverersPage,
+  ActivationPage,
 } from "./route/delRoutes";
 
 import ToasterProvider from "providers/ToastProvider";
@@ -67,6 +68,10 @@ const App = () => {
             </Route>
             <Route path="/del-register" element={<DelRegisterPage />} />
             <Route path="/del-login" element={<DelLoginPage />} />
+            <Route
+              path="/activation/:activation_token"
+              element={<ActivationPage />}
+            />
           </Routes>
         </ThemeProvider>
         <ToasterProvider />
