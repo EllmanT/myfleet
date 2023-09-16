@@ -2,25 +2,31 @@ import { InputLabel, Menu, MenuItem, Select } from "@mui/material";
 
 const roles = [
   {
-    value: "SuperAdmin",
+    value: "Super Admin",
   },
   {
-    value: "Admin",
+    value: "Site Admin",
   },
   {
-    value: "Deliverer",
+    value: "Deliverer Manager",
   },
   {
-    value: "Contractor",
+    value: "Contractor Manager",
+  },
+  {
+    value: "Deliverer Admin",
+  },
+  {
+    value: "Contractor Admin",
   },
 ];
-export default function Roles({ name, onChange ,disabled }) {
+export default function Roles({ name, onChange, disabled }) {
   return (
     <>
       <InputLabel id="demo-simple-select-autowidth-label">Role</InputLabel>
 
       <Select
-      disabled={disabled}
+        disabled={disabled}
         labelId="simple-select-autowidth-label"
         id="demo-simple-select-autowidth"
         color="info"
