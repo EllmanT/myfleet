@@ -21,7 +21,7 @@ export const createDeliverer = (newForm) => async (dispatch) => {
     });
   } catch (error) {
     dispatch({
-      type: "delivererCreateFailed",
+      type: "createDelivererFailed",
       payload: error.response.data.message,
     });
   }
