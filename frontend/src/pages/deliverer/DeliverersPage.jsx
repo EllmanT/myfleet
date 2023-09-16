@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Card,
@@ -35,36 +35,51 @@ import FlexBetween from "component/deliverer/FlexBetween";
 import Header from "component/deliverer/Header";
 import GoodsTypes from "component/deliverer/GoodsType";
 import Cities from "component/Cities";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import VehicleTypes from "component/deliverer/VehicleTypes";
 import DeliveryTypes from "component/deliverer/DeliveryTypes";
 import { createDeliverer } from "redux/actions/deliverer";
-
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const steps = ["General Details", "Rates", "Preview"];
 
 const DeliverersPage = () => {
   const isNonMobile = useMediaQuery("(min-width: 1000px)");
   const theme = useTheme();
-
-  const [open, setOpen] = useState("");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { success, error } = useSelector((state) => state.deliverer);
+  const [open, setOpen] = useState("");
 
   const [companyName, setCompanyName] = useState("");
   const [address, setAddress] = useState("");
   const [goodsType, setGoodsType] = useState([]);
   const [vehiclesType, setVehiclesType] = useState([]);
   const [deliveryType, setDeliveryType] = useState([]);
-
   const [city, setCity] = useState("");
 
   //the steps
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState({});
 
-  const [selected] = useState("");
+  const [disable, setDisable] = useState(false);
 
-  //function to populate the array
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+      
+    }
+    if (success) {
+      toast.success("Deliverer created successfully");
+      navigate("/del-deliverers");
+      window.location.reload();
+     
+    }
+  }, [dispatch, error, success]);
+
+  //steps stuff start here START
 
   const totalSteps = () => {
     return steps.length;
@@ -90,6 +105,24 @@ const DeliverersPage = () => {
           steps.findIndex((step, i) => !(i in completed))
         : activeStep + 1;
     setActiveStep(newActiveStep);
+    stepChecker();
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    stepChecker();
+  };
+
+  const handleStep = (step) => () => {
+    setActiveStep(step);
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
+    setCompleted({});
+  };
+  //handle the changes from step to step check to see if step is complete
+  const stepChecker = () => {
     if (activeStep === 0) {
       if (
         companyName !== "" &&
@@ -108,7 +141,7 @@ const DeliverersPage = () => {
     }
 
     if (activeStep === 1) {
-      if (vehiclesType.length !== 0 && deliveryType !== 0) {
+      if (vehiclesType.length !== 0 && deliveryType.length !== 0) {
         const newCompleted = completed;
         newCompleted[activeStep] = true;
         setCompleted(newCompleted);
@@ -119,22 +152,8 @@ const DeliverersPage = () => {
       }
     }
   };
-  console.log(goodsType);
 
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleStep = (step) => () => {
-    setActiveStep(step);
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
-    setCompleted({});
-  };
-
-  //the steps
+  //the steps ENDS
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -147,6 +166,8 @@ const DeliverersPage = () => {
   };
 
   const handleSubmit = async (e) => {
+    setDisable(true);
+
     e.preventDefault();
 
     const newForm = new FormData();
@@ -156,8 +177,21 @@ const DeliverersPage = () => {
     newForm.append("city", city);
     newForm.append("goodsType", goodsType);
     newForm.append("vehiclesType", vehiclesType);
-    newForm.append("goodsType", deliveryType);
-    dispatch(createDeliverer(newForm));
+    newForm.append("deliveryType", deliveryType);
+    if (
+      companyName !== "" &&
+      city !== "" &&
+      address !== "" &&
+      goodsType.length !== 0 &&
+      vehiclesType.length !== 0 &&
+      deliveryType.length !== 0
+    ) {
+      dispatch(createDeliverer(newForm));
+      setDisable(false);
+    } else {
+      toast.error("fill in all fields");
+      setDisable(false);
+    }
   };
 
   return (
@@ -201,56 +235,58 @@ const DeliverersPage = () => {
       {/**Add contractor dialogue start */}
       <div>
         <Dialog disableEscapeKeyDown open={open} onClose={handleClose}>
-          <DialogTitle variant="h3" sx={{ m: "0rem 6rem" }}>
-            <Button
-              disabled
-              variant="outlined"
-              sx={{
-                fontSize: "20px",
-                fontWeight: "bold",
-                padding: "10px 20px",
-                ":disabled": {
-                  color: theme.palette.primary[100],
-                },
-              }}
-            >
-              <GroupAdd sx={{ mr: "10px", fontSize: "25px" }} />
-              Deliverer
-            </Button>
-            <Button
-              onClick={handleClose}
-              variant="outlined"
-              color="info"
-              sx={{ ml: "30px" }}
-            >
-              <Close sx={{ fontSize: "25px" }} />
-            </Button>
-          </DialogTitle>
-          <DialogContent>
-            <Box sx={{ width: "100%" }}>
-              <Stepper nonLinear activeStep={activeStep}>
-                {steps.map((label, index) => (
-                  <Step key={label} completed={completed[index]}>
-                    <StepButton color="inherent" onClick={handleStep(index)}>
-                      {label}
-                    </StepButton>
-                  </Step>
-                ))}
-              </Stepper>
-              <div>
-                {allStepsCompleted() ? (
-                  <React.Fragment>
-                    <Typography sx={{ mt: 1, mb: 1 }}>
-                      All steps completed - you&apos;re finished
-                    </Typography>
-                    <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                      <Box sx={{ flex: "1 1 auto" }} />
-                      <Button onClick={handleReset}>Reset</Button>
-                    </Box>
-                  </React.Fragment>
-                ) : (
-                  <React.Fragment>
-                    <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}>
+            <DialogTitle variant="h3" sx={{ m: "0rem 6rem" }}>
+              <Button
+                disabled
+                variant="outlined"
+                sx={{
+                  fontSize: "20px",
+                  fontWeight: "bold",
+                  padding: "10px 20px",
+                  ":disabled": {
+                    color: theme.palette.primary[100],
+                  },
+                }}
+              >
+                <GroupAdd sx={{ mr: "10px", fontSize: "25px" }} />
+                Deliverer
+              </Button>
+              <Button
+                onClick={handleClose}
+                variant="outlined"
+                color="info"
+                sx={{ ml: "30px" }}
+              >
+                <Close sx={{ fontSize: "25px" }} />
+              </Button>
+            </DialogTitle>
+            <DialogContent>
+              <Box sx={{ width: "100%" }}>
+                <Stepper nonLinear activeStep={activeStep}>
+                  {steps.map((label, index) => (
+                    <Step key={label} completed={completed[index]}>
+                      <StepButton color="inherent" onClick={handleStep(index)}>
+                        {label}
+                      </StepButton>
+                    </Step>
+                  ))}
+                </Stepper>
+                <div>
+                  {allStepsCompleted() ? (
+                    <React.Fragment>
+                      <Typography sx={{ mt: 1, mb: 1 }}>
+                        All steps completed - you&apos;re finished
+                      </Typography>
+                      <Box
+                        sx={{ display: "flex", flexDirection: "row", pt: 2 }}
+                      >
+                        <Box sx={{ flex: "1 1 auto" }} />
+                        <Button onClick={handleReset}>Reset</Button>
+                      </Box>
+                    </React.Fragment>
+                  ) : (
+                    <React.Fragment>
                       <Box
                         sx={{ mt: "0.5rem" }}
                         display="flex"
@@ -425,60 +461,85 @@ const DeliverersPage = () => {
                           </Box>
                         )}
                       </Box>
-                    </form>
-                  </React.Fragment>
-                )}
-              </div>
-            </Box>
-          </DialogContent>
-          <DialogActions
-            sx={{
-              justifyContent: "center",
-            }}
-          >
-            <Box display={"flex"}>
-              <Button
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                variant="contained"
-                size="large"
-                sx={{
-                  color: theme.palette.secondary[300],
+                    </React.Fragment>
+                  )}
+                </div>
+              </Box>
+            </DialogContent>
+            <DialogActions
+              sx={{
+                justifyContent: "center",
+              }}
+            >
+              <Box display={"flex"}>
+                <Button
+                  disabled={activeStep === 0 || disable===true}
+                  onClick={handleBack}
+                  variant="contained"
+                  size="large"
+                  sx={{
+                    color: theme.palette.secondary[300],
 
-                  margin: "0.5rem",
-                  border: "solid 1px",
-                  ":hover": {
-                    backgroundColor: theme.palette.secondary[800],
-                  },
-                  ":disabled": {
-                    backgroundColor: theme.palette.secondary[800],
-                  },
-                }}
-              >
-                Back
-              </Button>
-              <Button
-                type={activeStep === 2 ? "submit" : "button"}
-                onClick={handleNext}
-                variant="contained"
-                fontWeight="bold"
-                sx={{
-                  color: theme.palette.secondary[100],
-                  backgroundColor: theme.palette.secondary[300],
-                  margin: "0.5rem  ",
-                  border: "solid 0.5px",
-                  ":hover": {
-                    backgroundColor: theme.palette.secondary[300],
-                  },
-                  ":disabled": {
-                    backgroundColor: theme.palette.secondary[300],
-                  },
-                }}
-              >
-                {activeStep === 2 ? <>Add Contractor</> : <>Next</>}
-              </Button>
-            </Box>
-          </DialogActions>
+                    margin: "0.5rem",
+                    border: "solid 1px",
+                    ":hover": {
+                      backgroundColor: theme.palette.secondary[800],
+                    },
+                    ":disabled": {
+                      backgroundColor: theme.palette.secondary[800],
+                    },
+                  }}
+                >
+                  Back
+                </Button>
+                {activeStep !== 2 && (
+                  <Button
+                    onClick={handleNext}
+                    variant="contained"
+                    fontWeight="bold"
+                    sx={{
+                      color: theme.palette.secondary[100],
+                      backgroundColor: theme.palette.secondary[300],
+                      margin: "0.5rem  ",
+                      border: "solid 0.5px",
+                      ":hover": {
+                        backgroundColor: theme.palette.secondary[300],
+                      },
+                      ":disabled": {
+                        backgroundColor: theme.palette.secondary[300],
+                      },
+                    }}
+                  >
+                    Next
+                  </Button>
+                )}
+
+                {activeStep === 2 && (
+                  <Button
+                    type={"submit"}
+                    disabled={disable}
+                    onClick={handleNext}
+                    variant="contained"
+                    fontWeight="bold"
+                    sx={{
+                      color: theme.palette.secondary[100],
+                      backgroundColor: theme.palette.secondary[300],
+                      margin: "0.5rem  ",
+                      border: "solid 0.5px",
+                      ":hover": {
+                        backgroundColor: theme.palette.secondary[300],
+                      },
+                      ":disabled": {
+                        backgroundColor: theme.palette.secondary[300],
+                      },
+                    }}
+                  >
+                    Add Contractor
+                  </Button>
+                )}
+              </Box>
+            </DialogActions>
+          </form>
         </Dialog>
       </div>
       {/**Add contractor dialogue ends
