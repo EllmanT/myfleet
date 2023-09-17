@@ -9,11 +9,7 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
-  OutlinedInput,
   Select,
-  Step,
-  StepButton,
-  Stepper,
   TextField,
   Typography,
   useTheme,
@@ -25,12 +21,9 @@ import {
   Group,
   GroupAdd,
   LocalShipping,
-  PhotoSizeSelectActual,
 } from "@mui/icons-material";
-import GoodsTypes from "component/deliverer/GoodsType";
 import FlexBetween from "component/deliverer/FlexBetween";
 import Header from "component/deliverer/Header";
-import DateProvider from "component/deliverer/DateProvider";
 import { useDispatch, useSelector } from "react-redux";
 import { createVehicle } from "redux/actions/vehicle";
 import { toast } from "react-hot-toast";
@@ -52,14 +45,16 @@ const VehiclesPage = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { success, error } = useSelector((state) => state.vehicle);
 
   const [open, setOpen] = useState("");
+  const [disable, setDisable] = useState(false);
+
+  const { success, error } = useSelector((state) => state.vehicle);
+  const { user } = useSelector((state) => state.user);
 
   const [make, setMake] = useState("");
   const [size, setSize] = useState("");
   const [regNumber, setRegNumber] = useState("");
-  const [companyId, setCompanyId] = useState("");
 
   useEffect(() => {
     if (error) {
@@ -67,13 +62,17 @@ const VehiclesPage = () => {
     }
     if (success) {
       toast.success("Vehicle added successfully");
-      navigate("/del-vehicles");
-      window.location.reload();
+
+      setOpen(false);
     }
-  });
+  }, [dispatch, error, success]);
 
   const handleClickOpen = () => {
+    setMake("");
+    setRegNumber("");
+    setSize("");
     setOpen(true);
+    setDisable(false);
   };
 
   const handleClose = (event, reason) => {
@@ -83,16 +82,21 @@ const VehiclesPage = () => {
   };
 
   const handleSubmit = (e) => {
+    setDisable(true);
     e.preventDefault();
 
     const newForm = new FormData();
+    if (make !== "" && regNumber !== "" && size !== "") {
+      newForm.append("make", make);
+      newForm.append("regNumber", regNumber);
+      newForm.append("size", size);
+      newForm.append("companyId", user.companyId);
 
-    newForm.append("make", make);
-    newForm.append("regNumber", regNumber);
-    newForm.append("size", size);
-    newForm.append("companyId", companyId);
-
-    dispatch(createVehicle(newForm));
+      dispatch(createVehicle(newForm));
+    } else {
+      toast.error("Enter all fields");
+      setDisable(false);
+    }
   };
 
   const columns = [
@@ -135,6 +139,8 @@ const VehiclesPage = () => {
       flex: 0.5,
     },
   ];
+
+  console.log(regNumber);
 
   return (
     <Box m="1.5rem 2.5rem">
@@ -249,10 +255,14 @@ const VehiclesPage = () => {
                         required
                         variant="outlined"
                         type="text"
-                        label="Reg Number"
+                        label="Reg Number (no space)"
                         color="info"
                         value={regNumber}
-                        onChange={(e) => setRegNumber(e.target.value)}
+                        onChange={(e) =>
+                          setRegNumber(
+                            e.target.value.replace(/ /g, "").toUpperCase()
+                          )
+                        }
                       />
                     </FormControl>
                   </Box>
@@ -264,12 +274,13 @@ const VehiclesPage = () => {
                       type="text"
                       label="Company Id"
                       color="info"
-                      value={companyId}
+                      value={user?.companyId}
                     />
                   </FormControl>
 
                   <Box display={"flex"} sx={{ m: "1rem 3rem " }}>
                     <Button
+                      disabled={disable}
                       onClick={handleClose}
                       variant="contained"
                       size="large"
@@ -289,6 +300,7 @@ const VehiclesPage = () => {
                       Close
                     </Button>
                     <Button
+                      disabled={disable}
                       type="submit"
                       variant="contained"
                       fontWeight="bold"

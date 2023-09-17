@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Typography,
-  Rating,
   useTheme,
   useMediaQuery,
   InputLabel,
@@ -25,12 +24,14 @@ import Roles from "component/Roles";
 import { toast } from "react-hot-toast";
 import { server } from "server";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const steps = ["General Info", "Access", "Preview"];
 
 const AdminsPage = () => {
   const isNonMobile = useMediaQuery("(min-width: 1000px)");
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const [open, setOpen] = useState("");
   const [name, setName] = useState("");
@@ -95,7 +96,6 @@ const AdminsPage = () => {
     if (activeStep === 0) {
       if (
         name !== "" &&
-        email !== "" &&
         companyId !== "" &&
         role !== "" &&
         city !== "" &&
@@ -113,7 +113,12 @@ const AdminsPage = () => {
     }
 
     if (activeStep === 1) {
-      if (password !== "" && check !== "" && password === check) {
+      if (
+        email !== "" &&
+        password !== "" &&
+        check !== "" &&
+        password === check
+      ) {
         const newCompleted = completed;
         newCompleted[activeStep] = true;
         setCompleted(newCompleted);
@@ -157,7 +162,17 @@ const AdminsPage = () => {
 
     setDisable(true);
 
-    if (password === check) {
+    if (
+      //ensure that all fields are filled
+      password !== "" &&
+      check !== "" &&
+      companyId !== "" &&
+      address !== "" &&
+      email !== "" &&
+      role !== "" &&
+      name !== "" &&
+      phoneNumber !== ""
+    ) {
       await axios
         .post(`${server}/user/create-user`, newForm, config)
         .then((res) => {
@@ -172,13 +187,20 @@ const AdminsPage = () => {
           setCompanyId("");
           setAddress("");
           setDisable(false);
+          setCompleted({});
+
+          navigate("/del-admins")
         })
         .catch((error) => {
           toast.error(error.response.data.message);
           setDisable(false);
         });
     } else {
-      toast.error("Passwords do not match");
+      if (password !== check) {
+        toast.error("Passwords do not match");
+        setDisable(false);
+      }
+      toast.error("Enter all fields");
       setDisable(false);
     }
   };
@@ -298,17 +320,7 @@ const AdminsPage = () => {
                                 onChange={(e) => setName(e.target.value)}
                               />
                             </FormControl>
-                            <FormControl sx={{ m: 1, minWidth: 250 }}>
-                              <TextField
-                                required
-                                variant="outlined"
-                                type="text"
-                                label="Email Address"
-                                color="info"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                              />
-                            </FormControl>
+
                             <FormControl sx={{ m: 1, minWidth: 250 }}>
                               <TextField
                                 required
@@ -365,6 +377,17 @@ const AdminsPage = () => {
 
                         {activeStep === 1 && (
                           <Box display={"flex"} flexDirection={"column"}>
+                            <FormControl sx={{ m: 1, minWidth: 250 }}>
+                              <TextField
+                                required
+                                variant="outlined"
+                                type="text"
+                                label="Email Address"
+                                color="info"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                              />
+                            </FormControl>
                             <TextField
                               required
                               color={

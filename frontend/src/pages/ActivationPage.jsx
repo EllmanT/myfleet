@@ -33,7 +33,7 @@ const ActivationPage = () => {
   }, []);
 
   const toLoginPage = () => {
-    navigate("/del-login");
+    navigate("/login");
   };
 
   return (

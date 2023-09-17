@@ -29,6 +29,7 @@ import { loadUser } from "redux/actions/user";
 
 //getting the layouts
 import DelLayout from "component/deliverer/DelLayout";
+import DelProtectedRoutes from "route/delProtectedRoutes";
 
 const App = () => {
   useEffect(() => {
@@ -50,24 +51,100 @@ const App = () => {
                 path="/"
                 element={<Navigate to="/del-dashboard" replace />}
               />
-              <Route path="/del-vehicles" element={<DelVehiclesPage />} />
-              <Route path="/del-drivers" element={<DelDriversPage />} />
-              <Route path="/del-payments" element={<DelPaymentsPage />} />
-              <Route path="/del-admins" element={<DelAdminsPage />} />
-              <Route path="/del-contractors" element={<DelContractorsPage />} />
-              <Route path="/del-deliverers" element={<DelDeliverersPage />} />
-              <Route path="/del-customers" element={<DelCustomersPage />} />
-              <Route path="/del-dash-orders" element={<DelDashOrdersPage />} />
+              <Route
+                path="/del-vehicles"
+                element={
+                  <DelProtectedRoutes>
+                    <DelVehiclesPage />
+                  </DelProtectedRoutes>
+                }
+              />
+              <Route
+                path="/del-drivers"
+                element={
+                  <DelProtectedRoutes>
+                    <DelDriversPage />
+                  </DelProtectedRoutes>
+                }
+              />
+              <Route
+                path="/del-payments"
+                element={
+                  <DelProtectedRoutes>
+                    <DelPaymentsPage />
+                  </DelProtectedRoutes>
+                }
+              />
+              <Route
+                path="/del-admins"
+                element={
+                  <DelProtectedRoutes>
+                    <DelAdminsPage />
+                  </DelProtectedRoutes>
+                }
+              />
+              <Route
+                path="/del-contractors"
+                element={
+                  <DelProtectedRoutes>
+                    <DelContractorsPage />
+                  </DelProtectedRoutes>
+                }
+              />
+              <Route
+                path="/del-deliverers"
+                element={
+                  <DelProtectedRoutes>
+                    <DelDeliverersPage />
+                  </DelProtectedRoutes>
+                }
+              />
+              <Route
+                path="/del-customers"
+                element={
+                  <DelProtectedRoutes>
+                    <DelCustomersPage />
+                  </DelProtectedRoutes>
+                }
+              />
+              <Route
+                path="/del-dash-orders"
+                element={
+                  <DelProtectedRoutes>
+                    <DelDashOrdersPage />
+                  </DelProtectedRoutes>
+                }
+              />
               <Route
                 path="/del-dash-revenue"
-                element={<DelDashRevenuePage />}
+                element={
+                <DelProtectedRoutes>
+
+<DelDashRevenuePage />
+                </DelProtectedRoutes>
+                }
               />
-              <Route path="/del-all-orders" element={<DelAllOrdersPage />} />
-              <Route path="/add-order" element={<DelAddOrderPage />} />
-              <Route path="/del-dashboard" element={<DelDashboardPage />} />
+              <Route path="/del-all-orders" element={
+              <DelProtectedRoutes>
+  <DelAllOrdersPage />
+
+              </DelProtectedRoutes>
+            } />
+              <Route path="/add-order" element={
+              <DelProtectedRoutes>
+<DelAddOrderPage />
+              </DelProtectedRoutes>
+              } />
+              <Route path="/del-dashboard" element={
+              <DelProtectedRoutes>
+<DelDashboardPage />
+              </DelProtectedRoutes>
+              } />
             </Route>
-            <Route path="/del-register" element={<DelRegisterPage />} />
-            <Route path="/del-login" element={<DelLoginPage />} />
+
+
+            <Route path="/login" element={
+            <DelLoginPage />} />
             <Route
               path="/activation/:activation_token"
               element={<ActivationPage />}
