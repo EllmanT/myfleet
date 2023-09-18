@@ -18,9 +18,9 @@ router.post(
       }
       checkVehicle = await Vehicle.create({
         make: make,
-        regNubmber: regNumber,
+        regNumber: regNumber,
         size: size,
-        compnayId: companyId,
+        companyId: companyId,
       });
       res.status(201).json({
         success: false,
@@ -31,3 +31,5 @@ router.post(
     }
   }
 );
+
+module.exports = router;
