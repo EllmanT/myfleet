@@ -27,7 +27,7 @@ router.post("/create-user", upload.single("file"), async (req, res, next) => {
     const checkEmail = await User.findOne({ email });
 
     if (checkEmail) {
-      return new ErrorHandler("The user already exists", 400);
+      return next(new ErrorHandler("User exists", 400));
     }
 
     const user = {
@@ -62,15 +62,17 @@ router.post("/create-user", upload.single("file"), async (req, res, next) => {
     return next(new ErrorHandler(error.message, 400));
   }
 });
-//create Activation Token
+// create activation token
 const createActivationToken = (user) => {
-  return jwt.sign(user, process.env.ACTIVATION_SECRET);
+  return jwt.sign(user, process.env.ACTIVATION_SECRET, {
+    expiresIn: "5m",
+  });
 };
 
 //activate-user
 
 router.post(
-  `/activate-deliverer`,
+  `/activation`,
   catchAsyncErrors(async (req, res, next) => {
     try {
       const { activation_token } = req.body;
@@ -83,10 +85,33 @@ router.post(
         return next(new ErrorHandler("Token is invalid", 400));
       }
 
-      const { name, email, phoneNumber, password, address, city, role } =
-        checkToken;
+      const {
+        name,
+        email,
+        phoneNumber,
+        password,
+        address,
+        city,
+        role,
+        companyId,
+      } = checkToken;
 
       let user = await User.findOne({ email });
+      if (user) {
+        return next(new ErrorHandler("User already exists", 400));
+      }
+
+      user = await User.create({
+        name: name,
+        email: email,
+        phoneNumber: phoneNumber,
+        city: city,
+        address: address,
+        role: role,
+        password: password,
+        companyId: companyId,
+      });
+      sendToken(user, 201, res);
     } catch (error) {
       return next(new ErrorHandler(error.message, 400));
     }
@@ -101,18 +126,18 @@ router.post(
     try {
       const { email, password } = req.body;
       const checkEmail = await User.findOne({ email }).select("+password");
-      if (!email || password) {
+      if (!email || !password) {
         return next(new ErrorHandler("Enter all the fields", 400));
       }
       if (!checkEmail) {
-        return new new ErrorHandler("User doesnt exist", 400)();
+        return next(new ErrorHandler("User doesnt exist", 400));
       }
 
       verifyPassword = await checkEmail.comparePassword(password);
       if (!verifyPassword) {
         return next(new ErrorHandler("Enter correct info", 400));
       }
-      sendToken(user, 201, res);
+      sendToken(checkEmail, 201, res);
     } catch (error) {
       return next(new ErrorHandler(error.message, 400));
     }
@@ -127,9 +152,12 @@ router.get(
     try {
       const user = await User.findById(req.user.id);
       if (!user) {
-        return next(new ErrorHandler("Login to continue", 400));
+        return next(new ErrorHandler("User doesnt exist", 400));
       }
-      sendToken(user, 200, res);
+      res.status(200).json({
+        success: true,
+        user,
+      });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
