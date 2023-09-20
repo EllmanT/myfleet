@@ -5,6 +5,7 @@ import { customerReducer } from "./reducers/customer";
 import { contractorReducer } from "./reducers/contractor";
 import { vehicleReducer } from "./reducers/vehicle";
 import { delivererReducer } from "./reducers/deliverer";
+import { driverReducer } from "./reducers/driver";
 
 const Store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ const Store = configureStore({
     contractor: contractorReducer,
     vehicle: vehicleReducer,
     deliverer: delivererReducer,
+    driver: driverReducer,
   },
 });
 
