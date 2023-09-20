@@ -4,7 +4,7 @@ import { server } from "server";
 export const createContractor = (newForm) => async (dispatch) => {
   try {
     dispatch({
-      type: "loadContractorCreateRequest",
+      type: "loadCreateContractorRequest",
     });
 
     const config = { Headers: { "Content-Type": "multipart/form-data" } };
@@ -15,12 +15,12 @@ export const createContractor = (newForm) => async (dispatch) => {
     );
 
     dispatch({
-      type: "loadContractorCreateSuccess",
+      type: "loadCreateContractorSuccess",
       payload: data.contractor,
     });
   } catch (error) {
     dispatch({
-      type: "loadContractorCreateFailed",
+      type: "loadCreateContractorFailed",
       payload: error.response.data.message,
     });
   }
