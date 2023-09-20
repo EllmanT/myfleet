@@ -25,4 +25,8 @@ export const vehicleReducer = createReducer(initialState, {
   clearErrors: (state) => {
     state.error = null;
   },
+  //clear success messages
+  clearMessages: (state) => {
+    state.success = null;
+  },
 });
