@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -16,7 +16,9 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import {
   Add,
+  CircleOutlined,
   Close,
+  FileUpload,
   Group,
   GroupAdd,
   Groups2Outlined,
@@ -24,6 +26,10 @@ import {
 import FlexBetween from "component/deliverer/FlexBetween";
 import Header from "component/deliverer/Header";
 import Cities from "component/Cities";
+import { MuiFileInput } from "mui-file-input";
+import { useDispatch, useSelector } from "react-redux";
+import { createDriver } from "redux/actions/driver";
+import { toast } from "react-hot-toast";
 
 const contractors = [
   {
@@ -39,20 +45,54 @@ const contractors = [
 
 const DriversPage = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
 
-  
-  
-
+  const { user } = useSelector((state) => state.user);
+  const { error, success } = useSelector((state) => state.driver);
 
   const [open, setOpen] = useState("");
+  const [disable, setDisable] = useState("");
+
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [city, setCity] = useState("");
-  const [contractorId, setContractorId] = useState("");
+  const [id, setId] = useState(null);
+  const [license, setLicense] = useState(null);
   const [address, setAddress] = useState("");
+  const [idNumber, setIdNumber] = useState("");
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message);
+    }
+    if (success) {
+      toast.success("Driver added successfully");
+
+      setOpen(false);
+    }
+  }, [dispatch, error, success]);
+
+  const handleIdInputChange = (e) => {
+    const file = e.target.files[0];
+    setId(file);
+  };
+
+  const handleLicenseInputChange = (e) => {
+    const file = e.target.files[0];
+    setLicense(file);
+  };
 
   const handleClickOpen = () => {
+    setName("");
+    setAddress("");
+    setPhoneNumber("");
+    setCity("");
+    setId("");
+    setLicense("");
+    setAddress("");
+    setIdNumber("");
     setOpen(true);
+    setDisable(false);
   };
 
   const handleClose = (event, reason) => {
@@ -61,19 +101,36 @@ const DriversPage = () => {
     }
   };
 
-  const handleSubmit= (e)=>{
-    e.preventDefault()
+  const handleSubmit = (e) => {
+    setDisable(true);
+    e.preventDefault();
 
-    const newForm = new FormData()
+    const newForm = new FormData();
 
-    newForm.append("name",name)
-    newForm.append("phoneNumber",phoneNumber)
-    newForm.append("city",city)
-    newForm.append("address",address)
-    
-  }
+    newForm.append("name", name);
+    newForm.append("phoneNumber", phoneNumber);
+    newForm.append("city", city);
+    newForm.append("address", address);
+    newForm.append("idNumber", idNumber);
+    newForm.append("id", id);
+    newForm.append("license", license);
+    newForm.append("companyId", user.companyId);
 
-  
+    if (
+      name !== "" &&
+      phoneNumber !== "" &&
+      city !== "" &&
+      address !== "" &&
+      idNumber !== "" &&
+      id !== null &&
+      license !== null
+    ) {
+      dispatch(createDriver(newForm));
+    } else {
+      toast.error("fill in all fields");
+      setDisable(false);
+    }
+  };
 
   return (
     <Box m="1.5rem 2.5rem">
@@ -81,7 +138,7 @@ const DriversPage = () => {
         <Header title="Drivers" subtitle="See all your drivers." />
         <Box>
           <Button
-          disabled
+            disabled
             sx={{
               backgroundColor: theme.palette.secondary.light,
               color: theme.palette.background.alt,
@@ -102,9 +159,9 @@ const DriversPage = () => {
               fontSize: "14px",
               fontWeight: "bold",
               padding: "10px 20px",
-              ":hover":{
+              ":hover": {
                 backgroundColor: theme.palette.secondary[100],
-              }
+              },
             }}
           >
             <Add sx={{ mr: "10px" }} />
@@ -143,8 +200,7 @@ const DriversPage = () => {
             </Button>
           </DialogTitle>
           <DialogContent>
-          <form onSubmit={handleSubmit}>
-
+            <form onSubmit={handleSubmit}>
               <Box
                 sx={{ mt: "0.5rem" }}
                 display="flex"
@@ -178,9 +234,10 @@ const DriversPage = () => {
                         labelId="demo-simple-select-autowidth-label"
                         required
                         variant="outlined"
-                        type="number"
+                        type="tel"
                         color="info"
                         label="Phone Number"
+                        inputProps={{ minLength: 10, maxLength: 13 }}
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
                       />
@@ -198,40 +255,53 @@ const DriversPage = () => {
                       onChange={(e) => setAddress(e.target.value)}
                     />
                   </FormControl>
-                  <Box display={"flex"}>
-                    <FormControl sx={{ m: 1, maxWidth: 100 }}>
-                      <TextField
-                        required
-                        label="licence"
-                        variant="outlined"
+                  <FormControl sx={{ m: 1, minWidth: 250 }}>
+                    <TextField
+                      required
+                      variant="outlined"
+                      type="text"
+                      label="ID Number"
+                      color="info"
+                      inputProps={{ maxLength: 13 }}
+                      value={idNumber}
+                      onChange={(e) =>
+                        setIdNumber(
+                          e.target.value.replace(/ /g, "").toUpperCase()
+                        )
+                      }
+                    />
+                  </FormControl>
+
+                  <FormControl sx={{ m: 1, maxWidth: 250 }}>
+                    <Box>
+                      <span>Driver's Licence</span>
+                      <input
                         type="file"
-                        color="info"
+                        name="id"
+                        id="file-input"
+                        accept=".jpg,.jpeg,.png"
+                        onChange={handleLicenseInputChange}
+                        className="sr-only"
                       />
-                    </FormControl>
-                    <FormControl sx={{ m: 1, maxWidth: 100 }}>
-                      <TextField
-                        required
-                        label="id"
-                        variant="outlined"
+                    </Box>
+                  </FormControl>
+                  <FormControl sx={{ m: 1, maxWidth: 250 }}>
+                    <Box>
+                      <span>Drivers ID</span>
+                      <input
                         type="file"
-                        color="info"
+                        name="id"
+                        id="file-input"
+                        accept=".jpg,.jpeg,.png"
+                        onChange={handleIdInputChange}
+                        className="sr-only"
                       />
-                    </FormControl>
-                    <FormControl sx={{ m: 1, minWidth: 150 }}>
-                      <InputLabel id="demo-simple-select-autowidth-label">
-                        Contractor
-                      </InputLabel>
-                      <Select
-                        labelId="simple-select-autowidth-label"
-                        id="demo-simple-select-autowidth"
-                        autoWidth
-                        label="Contractor"
-                      ></Select>
-                    </FormControl>
-                  </Box>
+                    </Box>
+                  </FormControl>
 
                   <Box display={"flex"} sx={{ m: "1rem 3rem " }}>
                     <Button
+                      disabled={disable}
                       onClick={handleClose}
                       variant="contained"
                       size="large"
@@ -251,6 +321,8 @@ const DriversPage = () => {
                       Close
                     </Button>
                     <Button
+                      disabled={disable}
+                      type="submit"
                       variant="contained"
                       fontWeight="bold"
                       sx={{
