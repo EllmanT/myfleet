@@ -164,14 +164,7 @@ const AdminsPage = () => {
 
     if (
       //ensure that all fields are filled
-      password !== "" &&
-      check !== "" &&
-      companyId !== "" &&
-      address !== "" &&
-      email !== "" &&
-      role !== "" &&
-      name !== "" &&
-      phoneNumber !== ""
+      completed[0] && completed[1]
     ) {
       await axios
         .post(`${server}/user/create-user`, newForm, config)
