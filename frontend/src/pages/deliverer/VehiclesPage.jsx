@@ -44,7 +44,6 @@ const sizes = [
 const VehiclesPage = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const [open, setOpen] = useState("");
   const [disable, setDisable] = useState(false);
@@ -71,8 +70,9 @@ const VehiclesPage = () => {
     setMake("");
     setRegNumber("");
     setSize("");
-    setOpen(true);
     setDisable(false);
+    setOpen(true);
+    
   };
 
   const handleClose = (event, reason) => {
@@ -86,7 +86,7 @@ const VehiclesPage = () => {
     e.preventDefault();
 
     const newForm = new FormData();
-    if (make !== "" && regNumber !== "" && size !== "") {
+    if (completed) {
       newForm.append("make", make);
       newForm.append("regNumber", regNumber);
       newForm.append("size", size);
@@ -256,6 +256,7 @@ const VehiclesPage = () => {
                         variant="outlined"
                         type="text"
                         label="Reg Number (no space)"
+                        inputProps={{ maxLength: 7 }}
                         color="info"
                         value={regNumber}
                         onChange={(e) =>
