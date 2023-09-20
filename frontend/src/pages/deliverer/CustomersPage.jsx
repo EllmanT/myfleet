@@ -27,7 +27,9 @@ const CustomersPage = () => {
 
   const { success, error } = useSelector((state) => state.customer);
 
+  const [disable, setDisable] = useState(false);
   const [open, setOpen] = useState("");
+
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [city, setCity] = useState("");
@@ -54,6 +56,7 @@ const CustomersPage = () => {
   }, [dispatch, error, success]);
 
   const handleSubmit = async (e) => {
+    setDisable(true);
     e.preventDefault();
 
     const newForm = new FormData();
@@ -62,7 +65,12 @@ const CustomersPage = () => {
     newForm.append("city", city);
     newForm.append("phoneNumber", phoneNumber);
     newForm.append("address", address);
-    dispatch(createCustomer(newForm));
+    if (name !== "" && address !== "") {
+      dispatch(createCustomer(newForm));
+    } else {
+      toast.error("Name or address missing");
+      setDisable(false);
+    }
   };
 
   const columns = [
@@ -231,6 +239,7 @@ const CustomersPage = () => {
 
                   <Box display={"flex"} sx={{ m: "1rem 3rem " }}>
                     <Button
+                      disabled={disable}
                       onClick={handleClose}
                       variant="contained"
                       size="large"
@@ -250,6 +259,7 @@ const CustomersPage = () => {
                       Close
                     </Button>
                     <Button
+                      disabled={disable}
                       type="submit"
                       variant="contained"
                       fontWeight="bold"
