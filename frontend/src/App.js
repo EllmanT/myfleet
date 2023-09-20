@@ -118,33 +118,38 @@ const App = () => {
               <Route
                 path="/del-dash-revenue"
                 element={
-                <DelProtectedRoutes>
-
-<DelDashRevenuePage />
-                </DelProtectedRoutes>
+                  <DelProtectedRoutes>
+                    <DelDashRevenuePage />
+                  </DelProtectedRoutes>
                 }
               />
-              <Route path="/del-all-orders" element={
-              <DelProtectedRoutes>
-  <DelAllOrdersPage />
-
-              </DelProtectedRoutes>
-            } />
-              <Route path="/add-order" element={
-              <DelProtectedRoutes>
-<DelAddOrderPage />
-              </DelProtectedRoutes>
-              } />
-              <Route path="/del-dashboard" element={
-              <DelProtectedRoutes>
-<DelDashboardPage />
-              </DelProtectedRoutes>
-              } />
+              <Route
+                path="/del-all-orders"
+                element={
+                  <DelProtectedRoutes>
+                    <DelAllOrdersPage />
+                  </DelProtectedRoutes>
+                }
+              />
+              <Route
+                path="/add-order"
+                element={
+                  <DelProtectedRoutes>
+                    <DelAddOrderPage />
+                  </DelProtectedRoutes>
+                }
+              />
+              <Route
+                path="/del-dashboard"
+                element={
+                  <DelProtectedRoutes>
+                    <DelDashboardPage />
+                  </DelProtectedRoutes>
+                }
+              />
             </Route>
 
-
-            <Route path="/login" element={
-            <DelLoginPage />} />
+            <Route path="/login" element={<DelLoginPage />} />
             <Route
               path="/activation/:activation_token"
               element={<ActivationPage />}
