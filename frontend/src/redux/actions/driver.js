@@ -7,7 +7,7 @@ export const createDriver = (newForm) => async (dispatch) => {
       type: "loadCreateDriverRequest",
     });
 
-    const config = { Headers: { "Content-type": "multipart/form-data" } };
+    const config = { Headers: { "Content-Type": "multipart/form-data" } };
     const { data } = await axios.post(
       `${server}/driver/create-driver`,
       newForm,
