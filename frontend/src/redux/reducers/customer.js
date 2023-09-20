@@ -3,7 +3,7 @@ const initialState = {
   isLoading: true,
 };
 
-export const customerReducer = createReducer(initialState,{
+export const customerReducer = createReducer(initialState, {
   //request
   loadCustomerCreateRequest: (state) => {
     state.isLoading = true;
@@ -27,5 +27,10 @@ export const customerReducer = createReducer(initialState,{
 
   clearErrors: (state) => {
     state.error = null;
+  },
+  //clea success messagess
+
+  clearMessages: (state) => {
+    state.success = null;
   },
 });
