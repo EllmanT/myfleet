@@ -5,12 +5,11 @@ const driverSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  phoneNumber: [
-    {
-        type: Number,
-        required: true,
-    }
-  ],
+  phoneNumber: {
+    type: String,
+    required: true,
+  },
+
   address: {
     type: String,
     required: true,
@@ -20,26 +19,30 @@ const driverSchema = new mongoose.Schema({
     required: true,
   },
   idNumber: {
-    type:String,
-    required:true,
+    type: String,
+    required: true,
   },
-  licence: {
-    type:String,
+  id: {
+    type: String,
+    required: true,
   },
-  companyId:{
-    type:String,
-    required
+  license: {
+    type: String,
   },
-  dateJoined:{
-    type:Date,
+  companyId: {
+    type: String,
+    required: true,
   },
-  dateEnded:{
-    type:Date,
+  //dateJoined:{
+  //type:Date,
+  // },
+  dateEnded: {
+    type: Date,
   },
-  createdAt:{
-    type:Date,
-    default:Date.now()
-  }
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+  },
 });
 
 module.exports = mongoose.model("Driver", driverSchema);
