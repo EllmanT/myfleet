@@ -6,23 +6,26 @@ const initialState = {
 
 export const driverReducer = createReducer(initialState, {
   //load vehicle request
-  loadDriverCreateRequest: (state) => {
+  loadCreateDriverRequest: (state) => {
     state.isLoading = true;
   },
   //load vehicle added success
-  loadDriverCreateSuccess: (state, action) => {
+  loadCreateDriverSuccess: (state, action) => {
     state.isLoading = false;
     state.success = true;
     state.vehicle = action.payload;
   },
   //load vehicle added failed
-  loadDriverCreateFailed: (state, action) => {
+  loadCreateDriverFailed: (state, action) => {
     state.isLoading = false;
-    state.succes = false;
+    state.success = false;
     state.error = action.payload;
   },
   //clear errors
   clearErrors: (state) => {
     state.error = null;
   },
+  clearMessages:(state)=>{
+    state.success=null;
+  }
 });
