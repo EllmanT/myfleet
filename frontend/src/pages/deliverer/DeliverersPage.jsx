@@ -1,19 +1,10 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
-  Card,
-  CardActions,
-  CardContent,
-  Collapse,
   Button,
   Typography,
-  Rating,
   useTheme,
   useMediaQuery,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  InputLabel,
   FormControl,
   DialogContent,
   DialogTitle,
@@ -69,13 +60,11 @@ const DeliverersPage = () => {
   useEffect(() => {
     if (error) {
       toast.error(error);
-      
     }
     if (success) {
       toast.success("Deliverer created successfully");
       navigate("/del-deliverers");
       window.location.reload();
-     
     }
   }, [dispatch, error, success]);
 
@@ -156,7 +145,15 @@ const DeliverersPage = () => {
   //the steps ENDS
 
   const handleClickOpen = () => {
+    setCompanyName("");
+    setAddress("");
+    setCity("");
+    setGoodsType([]);
+    setVehiclesType([]);
+    setDeliveryType([]);
+    setCompleted({});
     setOpen(true);
+    setDisable(false);
   };
 
   const handleClose = (event, reason) => {
@@ -178,16 +175,8 @@ const DeliverersPage = () => {
     newForm.append("goodsType", goodsType);
     newForm.append("vehiclesType", vehiclesType);
     newForm.append("deliveryType", deliveryType);
-    if (
-      companyName !== "" &&
-      city !== "" &&
-      address !== "" &&
-      goodsType.length !== 0 &&
-      vehiclesType.length !== 0 &&
-      deliveryType.length !== 0
-    ) {
+    if (completed[0] && completed[1]) {
       dispatch(createDeliverer(newForm));
-      setDisable(false);
     } else {
       toast.error("fill in all fields");
       setDisable(false);
@@ -473,7 +462,7 @@ const DeliverersPage = () => {
             >
               <Box display={"flex"}>
                 <Button
-                  disabled={activeStep === 0 || disable===true}
+                  disabled={activeStep === 0 || disable === true}
                   onClick={handleBack}
                   variant="contained"
                   size="large"
