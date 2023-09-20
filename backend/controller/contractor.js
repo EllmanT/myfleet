@@ -9,7 +9,14 @@ router.post(
   upload.single("file"),
   async (req, res, next) => {
     try {
-      const { companyName, address, city, goodsType } = req.body;
+      const {
+        companyName,
+        address,
+        city,
+        goodsTypes,
+        vehiclesTypes,
+        deliveryTypes,
+      } = req.body;
 
       let checkCompany = await Contractor.findOne({ companyName });
 
@@ -21,7 +28,9 @@ router.post(
         companyName: companyName,
         address: address,
         city: city,
-        goodsType,
+        goodsTypes: goodsTypes,
+        vehiclesTypes: vehiclesTypes,
+        deliveryTypes: deliveryTypes,
       });
       res.status(201).json({
         success: true,
