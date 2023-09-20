@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema({
   role:{
     type:String,
     default:"deliverer",
+    required:true,
   },
   address:{
     type:String,
@@ -33,6 +34,7 @@ const userSchema = new mongoose.Schema({
   },
   companyId:{
       type:String,
+    
   },
   createdAt:{
     type:Date,
