@@ -42,7 +42,7 @@ const DeliverersPage = () => {
   const navigate = useNavigate();
 
   const { success, error } = useSelector((state) => state.deliverer);
-  const [open, setOpen] = useState("");
+  const [open, setOpen] = useState(false);
 
   const [companyName, setCompanyName] = useState("");
   const [address, setAddress] = useState("");
