@@ -36,7 +36,7 @@ const ContractorsPage = () => {
 
   const { error, success } = useSelector((state) => state.contractor);
 
-  const [open, setOpen] = useState("");
+  const [open, setOpen] = useState(false);
   const [disable, setDisable] = useState(false);
 
   const [companyName, setCompanyName] = useState("");
