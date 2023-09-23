@@ -33,7 +33,7 @@ const AdminsPage = () => {
   const theme = useTheme();
   const navigate = useNavigate();
 
-  const [open, setOpen] = useState("");
+  const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
