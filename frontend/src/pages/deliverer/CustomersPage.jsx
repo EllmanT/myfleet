@@ -16,8 +16,6 @@ import FlexBetween from "component/deliverer/FlexBetween";
 import Header from "component/deliverer/Header";
 import Cities from "component/Cities";
 import { toast } from "react-hot-toast";
-import axios from "axios";
-import { server } from "server";
 import { useDispatch, useSelector } from "react-redux";
 import { createCustomer } from "redux/actions/customer";
 
@@ -25,10 +23,11 @@ const CustomersPage = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
 
+  const { user } = useSelector((state) => state.user);
   const { success, error } = useSelector((state) => state.customer);
 
   const [disable, setDisable] = useState(false);
-  const [open, setOpen] = useState("");
+  const [open, setOpen] = useState(false);
 
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -56,7 +55,7 @@ const CustomersPage = () => {
   }, [dispatch, error, success]);
 
   const handleSubmit = async (e) => {
-    setDisable(true);
+    setDisable(false);
     e.preventDefault();
 
     const newForm = new FormData();
@@ -65,6 +64,7 @@ const CustomersPage = () => {
     newForm.append("city", city);
     newForm.append("phoneNumber", phoneNumber);
     newForm.append("address", address);
+    newForm.append("companyId", user.companyId);
     if (name !== "" && address !== "") {
       dispatch(createCustomer(newForm));
     } else {
@@ -72,7 +72,7 @@ const CustomersPage = () => {
       setDisable(false);
     }
   };
-
+  //console.log(user.companyId);
   const columns = [
     {
       field: "_id",
@@ -131,7 +131,7 @@ const CustomersPage = () => {
             }}
           >
             <Group sx={{ mr: "10px" }} />
-            255
+            255  {user?.companyId}
           </Button>
         </Box>
 
