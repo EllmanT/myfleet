@@ -71,7 +71,7 @@ const navItems = [
     icon: null,
   },
   {
-    text: "Overview",
+    text: "$ Overview",
     icon: <PointOfSaleOutlined />,
     name: "dash-revenue",
   },
