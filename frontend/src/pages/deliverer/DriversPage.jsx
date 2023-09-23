@@ -50,8 +50,8 @@ const DriversPage = () => {
   const { user } = useSelector((state) => state.user);
   const { error, success } = useSelector((state) => state.driver);
 
-  const [open, setOpen] = useState("");
-  const [disable, setDisable] = useState("");
+  const [open, setOpen] = useState(false);
+  const [disable, setDisable] = useState(false);
 
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
