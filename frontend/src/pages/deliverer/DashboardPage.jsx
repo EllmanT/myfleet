@@ -21,7 +21,7 @@ import { Link } from "react-router-dom";
 const DashboardPage = () => {
   const theme = useTheme();
 
-  const [open, setOpen] = useState("");
+  const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
