@@ -1,58 +1,64 @@
 const mongoose = require("mongoose");
 
-const delivererSchema = new mongoose.Schema({
-  companyName: {
-    type: String,
-    required: true,
-  },
-  address: {
-    type: String,
-    required: true,
-  },
-  city: {
-    type: String,
-    required: true,
-  },
-  goodsType: [
-    {
+const delivererSchema = new mongoose.Schema(
+  {
+    companyName: {
       type: String,
       required: true,
     },
-  ],
-
-  vehiclesType: [
-    {
+    address: {
       type: String,
       required: true,
     },
-  ],
-  deliveryType: [
-    {
+    city: {
       type: String,
       required: true,
     },
-  ],
-  Rates: [
-    {
-      rateType: {
+    goodsType: [
+      {
         type: String,
+        required: true,
       },
-      smallVehicle: {
-        type: Number,
+    ],
+
+    vehiclesType: [
+      {
+        type: String,
+        required: true,
       },
-      mediumVehicle: {
-        type: Number,
+    ],
+    deliveryType: [
+      {
+        type: String,
+        required: true,
       },
-      largeVehicle: {
-        type: Number,
+    ],
+    Rates: [
+      {
+        rateType: {
+          type: String,
+        },
+        smallVehicle: {
+          type: Number,
+        },
+        mediumVehicle: {
+          type: Number,
+        },
+        largeVehicle: {
+          type: Number,
+        },
       },
+    ],
+    customers: {
+      type: [mongoose.Types.ObjectId],
+      ref: "Customer",
     },
-  ],
-  createdAt: {
-    type: Date,
-    default: Date.now(),
+    contractors: {
+      type: [mongoose.Types.ObjectId],
+      ref: "Contractor",
+    },
   },
- 
-});
+  { timestamps: true }
+);
 module.exports = mongoose.model("Deliverer", delivererSchema);
 ``;
