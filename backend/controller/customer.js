@@ -5,7 +5,7 @@ const { upload } = require("../multer");
 const Deliverer = require("../model/deliverer");
 const Contractor = require("../model/contractor");
 const { isAuthenticated } = require("../middleware/auth");
-const customer = require("../model/customer");
+const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const router = express.Router();
 
 //create customer
@@ -30,7 +30,7 @@ router.post(
         if (isCompanyDeliverer) {
           //check if customer already exists as a client for deliverer
           const isDeliveryCustomer = isCompanyDeliverer.customers.find(
-            (customer) => customer = checkCustomer._id
+            (customer) => (customer = checkCustomer._id)
           );
           if (isDeliveryCustomer) {
             return next(
@@ -55,7 +55,12 @@ router.post(
               (customer) => customer === checkCustomer._id
             );
             if (isContractorCustomer) {
-              return next(new ErrorHandler(`${checkCustomer.name} is already your customer`, 500));
+              return next(
+                new ErrorHandler(
+                  `${checkCustomer.name} is already your customer`,
+                  500
+                )
+              );
             }
             isCompanyContractor.customers.push(checkCustomer._id);
             await isCompanyContractor.save();
@@ -101,7 +106,49 @@ router.post(
   }
 );
 
-//get user
-router.post("/get-customers-deliverer/:id")
+//get all customers for deliverer
+router.get(
+  "/get-all-customers-deliverer",
+  isAuthenticated,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      //1. find out if the user is deliverer or supplier
+      const deliverer = await Deliverer.findById(req.user.id);
+
+      // check to see if deliverer
+      if (!deliverer) {
+        const contractor = await Contractor.findById(req.user.id);
+      }
+
+      //2.Getting the array of the customers for the deliverer
+
+      const delivererWithCustomers = await Deliverer.aggregate([
+        {
+          $lookup: {
+            from: "Customers",
+            localField: " customers",
+            foreignField: "_id",
+            as: "Customers",
+          },
+        },
+        { $project: { customers: 0 } },
+      ]);
+      //const delivererCustomers = await Promise.all(
+      //delivererWithCustomers[0].DeliverersCustomers.map((id) => {
+      //return Customer.findById(id);
+      // })
+      //  );
+
+      res.status(201).json({
+        success: true,
+        delivererWithCustomers,
+      });
+
+      // Display the info about the particular customers for the deliverer
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  })
+);
 
 module.exports = router;
