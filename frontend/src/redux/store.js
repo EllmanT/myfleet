@@ -6,7 +6,8 @@ import { contractorReducer } from "./reducers/contractor";
 import { vehicleReducer } from "./reducers/vehicle";
 import { delivererReducer } from "./reducers/deliverer";
 import { driverReducer } from "./reducers/driver";
-
+import {tripReducer} from "./reducers/trip"
+ 
 const Store = configureStore({
   reducer: {
     global: globalReducer,
@@ -16,6 +17,7 @@ const Store = configureStore({
     vehicle: vehicleReducer,
     deliverer: delivererReducer,
     driver: driverReducer,
+    trip:tripReducer
   },
 });
 
