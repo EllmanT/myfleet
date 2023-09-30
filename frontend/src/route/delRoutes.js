@@ -13,7 +13,7 @@ import DelAllOrdersPage from "../pages/deliverer/AllOrdersPage.jsx";
 import DelAddOrderPage from "../pages/deliverer/AddOrderPage";
 import DelDeliverersPage from "../pages/deliverer/DeliverersPage";
 import ActivationPage from "../pages/ActivationPage";
-
+import DelAddJobPage from "../pages/deliverer/AddJobPage";
 
 export {
   DelRegisterPage,
@@ -30,5 +30,6 @@ export {
   DelAllOrdersPage,
   DelAddOrderPage,
   DelDeliverersPage,
-  ActivationPage
+  ActivationPage,
+  DelAddJobPage,
 };
