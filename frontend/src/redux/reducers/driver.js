@@ -21,11 +21,31 @@ export const driverReducer = createReducer(initialState, {
     state.success = false;
     state.error = action.payload;
   },
+
+  //load all drivers of a company
+
+  getAllDriversCompanyRequest: (state) => {
+    state.isLoading = true;
+  },
+  //load all drivers of a company success
+  getAllDriversCompanySuccess: (state, action) => {
+    state.isLoading = false;
+    state.success = true;
+    state.drivers = action.payload;
+  },
+
+  //load all drivers of a company failed
+  getAllDriversCompanyFailed: (state, action) => {
+    state.isLoading = false;
+    state.success = false;
+    state.error = action.payload;
+  },
+
   //clear errors
   clearErrors: (state) => {
     state.error = null;
   },
-  clearMessages:(state)=>{
-    state.success=null;
-  }
+  clearMessages: (state) => {
+    state.success = null;
+  },
 });
