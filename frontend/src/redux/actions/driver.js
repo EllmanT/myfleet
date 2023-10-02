@@ -25,3 +25,24 @@ export const createDriver = (newForm) => async (dispatch) => {
     });
   }
 };
+//load the drivers for the company
+export const loadAllDriversCompany = (id) => async (dispatch) => {
+  try {
+    dispatch({
+      type: "getAllDriversCompanyRequest",
+    });
+
+    const { data } = await axios.post(
+      `${server}/vehicle/get-all-drivers-company/${id}`
+    );
+    dispatch({
+      type: "getAllDriversCompanySuccess",
+      payload: data.vehicles,
+    });
+  } catch (error) {
+    dispatch({
+      type: "loadAllDriversCompanyFailed",
+      payload: error.response.data.message,
+    });
+  }
+};
