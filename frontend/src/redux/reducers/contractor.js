@@ -24,6 +24,24 @@ export const contractorReducer = createReducer(initialState, {
     state.error = action.payload;
   },
 
+  // get all Contractors deliverer request
+
+  getAllContrDelReq: (state) => {
+    state.isLoading = true;
+  },
+
+  //get all Contractors deliverer success
+  getAllContrDelSuccess: (state, action) => {
+    state.isLoading = false;
+    state.contractors = action.payload;
+  },
+
+  //get all Contractors deliverer failed
+  getAllContrDelFailed: (state, action) => {
+    state.isLoading = false;
+    state.error = action.payload;
+  },
+
   //clear errors
   clearErrors: (state) => {
     state.error = null;
