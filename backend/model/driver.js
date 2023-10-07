@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+  const mongoose = require("mongoose");
 
 const driverSchema = new mongoose.Schema({
   name: {
@@ -39,10 +39,8 @@ const driverSchema = new mongoose.Schema({
   dateEnded: {
     type: Date,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now(),
-  },
-});
+ 
+},  { timestamps: true }
+);
 
 module.exports = mongoose.model("Driver", driverSchema);
