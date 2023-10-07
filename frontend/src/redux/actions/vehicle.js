@@ -23,3 +23,25 @@ export const createVehicle = (newForm) => async (dispatch) => {
     });
   }
 };
+
+export const getAllVehiclesCompany = () => async (dispatch) => {
+  try {
+    dispatch({
+      type: "getAllVehiclesCompanyRequest",
+    });
+
+    const { data } = await axios.get(
+      `${server}/vehicle/get-all-vehicles-company`,
+      { withCredentials: true }
+    );
+    dispatch({
+      type: "getAllVehiclesCompanySuccess",
+      action: data.vehicles,
+    });
+  } catch (error) {
+    dispatch({
+      type: "getAllVehiclesCompanyFailed",
+      action: error.response.data.message,
+    });
+  }
+};
