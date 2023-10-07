@@ -5,6 +5,8 @@ const router = express.Router();
 const ErrorHandler = require("../utils/ErrorHandler");
 const { isAuthenticated } = require("../middleware/auth");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
+const Deliverer = require("../model/deliverer");
+const { default: mongoose } = require("mongoose");
 
 router.post(
   "/create-contractor",
@@ -25,24 +27,23 @@ router.post(
       const isCompanyDeliverer = await Deliverer.findById(companyId);
 
       if (checkCompany) {
-        //return next(new ErrorHandler("Contractor already exists", 400));
         //checking the deliverer table
         if (isCompanyDeliverer) {
           //check if customer already exists as a client for deliverer
-          const isDeliveryContractor = isCompanyDeliverer.contractors.find(
+          const isDeliveryContractor = isCompanyDeliverer.contractor_ids.find(
             (contractor) => (contractor = checkCompany._id)
           );
           if (isDeliveryContractor) {
             return next(
               new ErrorHandler(
-                `  ${checkContractor.name} is already your contractor`,
+                `  ${checkCompany.name} is already your contractor`,
                 500
               )
             );
           }
 
-          isCompanyDeliverer.contractors.push(checkContractor._id);
-          await isCompanyContractor.save();
+          isCompanyDeliverer.contractor_ids.push(checkCompany._id);
+          await isCompanyDeliverer.save();
           res.status(201).json({
             success: true,
 
@@ -60,7 +61,7 @@ router.post(
         });
         //pushing the data into deliverer
         if (isCompanyDeliverer) {
-          isCompanyDeliverer.contractors.push(checkContractor._id);
+          isCompanyDeliverer.contractor_ids.push(checkCompany._id);
           await isCompanyDeliverer.save();
           res.status(201).json({
             success: true,
@@ -79,7 +80,6 @@ router.post(
   }
 );
 
-
 //get all contractors for deliverer
 router.get(
   "/get-all-contractors-deliverer",
@@ -87,37 +87,65 @@ router.get(
   catchAsyncErrors(async (req, res, next) => {
     try {
       //1. find out if the user is deliverer or supplier
-      const contractor = await Contractor.findById(req.user.id);
-
+      const deliverer = await Deliverer.findById(req.user.companyId);
       // check to see if deliverer
-      if (!contractor) {
-        return next(new ErrorHandler("Login Please", 401))
+      if (!deliverer) {
+        return next(new ErrorHandler("Login Pleaseee", 401));
       }
 
       //2.Getting the array of the customers for the deliverer
 
       const delivererWithContractors = await Deliverer.aggregate([
+        //get only information about the one deliverer
+        {
+          $match: { _id: new mongoose.Types.ObjectId(req.user.companyId) },
+        },
         {
           $lookup: {
-            from: "Contractors",
-            localField: " contractors",
-            foreignField: "_id",
-            as: "Contractors",
+            from: "contractors",
+            let: { contractorIds: "$contractor_ids" },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $in: ["$_id", "$$contractorIds"],
+                  },
+                },
+              },
+              {
+                $project: {
+                  rates: 0,
+                  customers: 0,
+                },
+              },
+            ],
+            as: "contractors",
           },
         },
-        { $project: { contractors: 0 } },
+        {
+          $project: {
+            contractors: 1,
+          },
+        },
       ]);
-      //const delivererCustomers = await Promise.all(
-      //delivererWithCustomers[0].DeliverersCustomers.map((id) => {
-      //return Customer.findById(id);
-      // })
-      //  );
-
+      //.then((result) => {
+      // if (result.length === 0) {
+      // res.status(201).json({
+      // success: true,
+      //message: "No results ",
+      //});
+      // }
+      //});
+      if (delivererWithContractors.length === 0) {
+        res.status(201).json({
+          success: false,
+          message: "no results",
+        });
+      }
       res.status(201).json({
         success: true,
         delivererWithContractors,
       });
-
       // Display the info about the particular customers for the deliverer
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
