@@ -21,6 +21,24 @@ export const vehicleReducer = createReducer(initialState, {
     state.succes = false;
     state.error = action.payload;
   },
+
+  //get all vehicles request
+
+  getAllVehiclesCompanyRequest: (state) => {
+    state.isLoading = true;
+  },
+
+  //get all vehicles company success
+  getAllVehiclesCompanySuccess: (state, action) => {
+    state.isLoading = false;
+    state.vehicles = action.payload;
+  },
+  // get all vehicles company failed
+  getAllVehiclesCompanyFailed: (state, action) => {
+    state.isLoading = false;
+    state.error = action.payload;
+  },
+
   //clear errors
   clearErrors: (state) => {
     state.error = null;
