@@ -1,54 +1,60 @@
 const mongoose = require("mongoose");
 
-const contractorSchema = new mongoose.Schema({
-  companyName: {
-    type: String,
-    required: true,
-  },
-  address: {
-    type: String,
-    required: true,
-  },
-  city: {
-    type: String,
-    required: true,
-  },
-  Rates: [
-    {
-      rateType: {
+const contractorSchema = new mongoose.Schema(
+  {
+    companyName: {
+      type: String,
+      required: true,
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    city: {
+      type: String,
+      required: true,
+    },
+    rates: [
+      {
+        rateType: {
+          type: String,
+        },
+        smallVehicle: {
+          type: Number,
+        },
+        mediumVehicle: {
+          type: Number,
+        },
+        largeVehicle: {
+          type: Number,
+        },
+      },
+    ],
+
+    goodsTypes: [
+      {
         type: String,
       },
-      smallVehicle: {
-        type: Number,
+    ],
+    vehiclesTypes: [
+      {
+        type: String,
       },
-      mediumVehicle: {
-        type: Number,
+    ],
+    deliveryTypes: [
+      {
+        type: String,
       },
-      largeVehicle: {
-        type: Number,
-      },
+    ],
+    customers: {
+      type: [mongoose.Types.ObjectId],
+      ref: "Customer",
     },
-  ],
-
-  goodsTypes: [
-    {
-      type: String,
+    createdAt: {
+      type: Date,
+      default: Date.now(),
     },
-  ],
-  vehiclesTypes: [
-    {
-      type: String,
-    },
-  ],
-  deliveryTypes: [
-    {
-      type: String,
-    },
-  ],
-  createdAt: {
-    type: Date,
-    default: Date.now(),
   },
-});
+  { timestamps: true }
+);
 module.exports = mongoose.model("Contractor", contractorSchema);
-``;
