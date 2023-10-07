@@ -23,6 +23,19 @@ export const customerReducer = createReducer(initialState, {
     state.success = false;
   },
 
+  //load the customers for the deliverer
+  getAllCustomersDelivererRequest: (state) => {
+    state.isLoading = true;
+  },
+  getAllCustomersDelivererSuccess: (state, action) => {
+    state.isLoading = false;
+    state.customers = action.payload;
+  },
+  getAllCustomersDelivererFailed: (state, action) => {
+    state.isLoading = false;
+    state.error = action.payload;
+  },
+
   //clear errors
 
   clearErrors: (state) => {
