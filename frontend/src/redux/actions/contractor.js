@@ -25,3 +25,24 @@ export const createContractor = (newForm) => async (dispatch) => {
     });
   }
 };
+
+export const getAllContractorsDeliverer = () => async (dispatch) => {
+  try {
+    dispatch({
+      type: "getAllContrDelReq",
+    });
+    const { data } = await axios.get(
+      `${server}/contractor/get-all-contractors-deliverer`,
+      { withCredentials: true }
+    );
+    dispatch({
+      type: "getAllContrDelSuccess",
+      payload: data.contractors,
+    });
+  } catch (error) {
+    dispatch({
+      type: "getAllContrDelFailed",
+      payload: error.response.data.message,
+    });
+  }
+};
