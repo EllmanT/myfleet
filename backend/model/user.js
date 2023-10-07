@@ -15,36 +15,34 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Enter your password"],
   },
-  phoneNumber:{
-    type:String,
-    required:true,
+  phoneNumber: {
+    type: String,
+    required: true,
   },
-  role:{
-    type:String,
-    default:"deliverer",
-    required:true,
+  role: {
+    type: String,
+    default: "deliverer",
+    required: true,
   },
-  address:{
-    type:String,
-    required:true,
+  address: {
+    type: String,
+    required: true,
   },
-  city:{
-    type:String,
-    required:true,
+  city: {
+    type: String,
+    required: true,
   },
-  companyId:{
-      type:String,
-    
+  companyId: {
+    type: mongoose.Types.ObjectId,
   },
-  createdAt:{
-    type:Date,
-    default:Date.now()
-  },
-  resetPasswordToken:{
+
+  resetPasswordToken: {
     String,
   },
-  resetPasswordTime:{Date}
-});
+  resetPasswordTime: { Date },
+},
+{ timestamps: true }
+);
 
 //hashing the password
 userSchema.pre("save", async function (next) {
