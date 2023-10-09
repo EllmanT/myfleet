@@ -140,7 +140,7 @@ router.get(
               },
               {
                 $project: {
-                  _id:1,
+                  _id: 1,
                   name: 1,
                   city: 1,
                   phoneNumber: 1,
@@ -157,14 +157,16 @@ router.get(
             customers: 1,
           },
         },
-      ]).then((result) => {
-        if (result.length === 0) {
-          return "No results to show";
-        }
+      ]);
+      if (delivererWithCustomers.length === 0) {
         res.status(201).json({
           success: true,
-          result,
+          message: "No customer in the system",
         });
+      }
+      res.status(201).json({
+        success: true,
+        delivererWithCustomers,
       });
 
       // Display the info about the particular customers for the deliverer
