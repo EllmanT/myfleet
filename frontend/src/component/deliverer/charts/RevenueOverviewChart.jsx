@@ -23,14 +23,10 @@ const RevenueOverviewChart = ({ isDashboard = false, view }) => {
       color: theme.palette.secondary.main,
       data: [],
     };
-    const totalExpensesLine = {
-      id: "totalExpenses",
-      color: theme.palette.secondary[600],
-      data: [],
-    };
+ 
 
     Object.values(monthlyData).forEach(
-      ({ month, totalRevenue, totalExpenses }) => {
+      ({ month, totalRevenue,  }) => {
         var shortMonth = new Date(
           Date.parse(month + " 1, 2000")
         ).toLocaleString("default", { month: "short" });
@@ -40,14 +36,11 @@ const RevenueOverviewChart = ({ isDashboard = false, view }) => {
           { x: shortMonth, y: totalRevenue },
         ];
 
-        totalExpensesLine.data = [
-          ...totalExpensesLine.data,
-          { x: shortMonth, y: totalExpenses },
-        ];
+     
       }
     );
 
-    const formattedData = [totalRevenueLine, totalExpensesLine];
+    const formattedData = [totalRevenueLine];
     return [formattedData];
   }, [coOverallStats]); // eslint-disable-line react-hooks/exhaustive-deps
 
