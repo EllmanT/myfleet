@@ -28,24 +28,18 @@ const RevenueOverviewChart = ({ isDashboard = false, view }) => {
       color: theme.palette.secondary[600],
       data: [],
     };
-   
 
     Object.values(monthlyData).forEach(
       ({ month, totalRevenue, totalExpenses }) => {
-
-        var shortMonth = new Date(Date.parse(month + " 1, 2000")).toLocaleString(
-          "default",
-          { month: "short" }
-        );
+        var shortMonth = new Date(
+          Date.parse(month + " 1, 2000")
+        ).toLocaleString("default", { month: "short" });
         // Format the splitDate as "dd-mm"
         totalRevenueLine.data = [
           ...totalRevenueLine.data,
           { x: shortMonth, y: totalRevenue },
         ];
-        totalProfitLine.data = [
-          ...totalProfitLine.data,
-          { x: shortMonth, y: totalProfit },
-        ];
+
         totalExpensesLine.data = [
           ...totalExpensesLine.data,
           { x: shortMonth, y: totalExpenses },
@@ -53,10 +47,7 @@ const RevenueOverviewChart = ({ isDashboard = false, view }) => {
       }
     );
 
-    const formattedData = [
-      totalRevenueLine,
-      totalExpensesLine,
-    ];
+    const formattedData = [totalRevenueLine, totalExpensesLine];
     return [formattedData];
   }, [coOverallStats]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -64,68 +55,68 @@ const RevenueOverviewChart = ({ isDashboard = false, view }) => {
 
   return (
     <ResponsiveLine
-    data={formattedData}
-    margin={{ top: 20, right: 110, bottom: 50, left: 60 }}
-    xScale={{ type: 'point' }}
-    yScale={{
-        type: 'linear',
-        min: '0',
-        max: 'auto',
+      data={formattedData}
+      margin={{ top: 20, right: 110, bottom: 50, left: 60 }}
+      xScale={{ type: "point" }}
+      yScale={{
+        type: "linear",
+        min: "0",
+        max: "auto",
         stacked: true,
-        reverse: false
-    }}
-    yFormat=" >-.2f"
-    axisTop={null}
-    axisRight={null}
-    axisBottom={{
+        reverse: false,
+      }}
+      yFormat=" >-.2f"
+      axisTop={null}
+      axisRight={null}
+      axisBottom={{
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: ' ',
+        legend: " ",
         legendOffset: 30,
-        legendPosition: 'middle'
-    }}
-    axisLeft={{
+        legendPosition: "middle",
+      }}
+      axisLeft={{
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: 'Total Amounts',
+        legend: "Total Amounts",
         legendOffset: -50,
-        legendPosition: 'middle'
-    }}
-    pointSize={10}
-    pointColor={{ theme: 'background' }}
-    pointBorderWidth={2}
-    pointBorderColor={{ from: 'serieColor' }}
-    pointLabelYOffset={-12}
-    useMesh={true}
-    legends={[
+        legendPosition: "middle",
+      }}
+      pointSize={10}
+      pointColor={{ theme: "background" }}
+      pointBorderWidth={2}
+      pointBorderColor={{ from: "serieColor" }}
+      pointLabelYOffset={-12}
+      useMesh={true}
+      legends={[
         {
-            anchor: 'bottom-right',
-            direction: 'column',
-            justify: false,
-            translateX: 100,
-            translateY: 0,
-            itemsSpacing: 0,
-            itemDirection: 'left-to-right',
-            itemWidth: 80,
-            itemHeight: 20,
-            itemOpacity: 0.75,
-            symbolSize: 12,
-            symbolShape: 'circle',
-            symbolBorderColor: 'rgba(0, 0, 0, .5)',
-            effects: [
-                {
-                    on: 'hover',
-                    style: {
-                        itemBackground: 'rgba(0, 0, 0, .03)',
-                        itemOpacity: 1
-                    }
-                }
-            ]
-        }
-    ]}
-/>
+          anchor: "bottom-right",
+          direction: "column",
+          justify: false,
+          translateX: 100,
+          translateY: 0,
+          itemsSpacing: 0,
+          itemDirection: "left-to-right",
+          itemWidth: 80,
+          itemHeight: 20,
+          itemOpacity: 0.75,
+          symbolSize: 12,
+          symbolShape: "circle",
+          symbolBorderColor: "rgba(0, 0, 0, .5)",
+          effects: [
+            {
+              on: "hover",
+              style: {
+                itemBackground: "rgba(0, 0, 0, .03)",
+                itemOpacity: 1,
+              },
+            },
+          ],
+        },
+      ]}
+    />
   );
 };
 
