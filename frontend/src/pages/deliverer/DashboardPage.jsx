@@ -162,7 +162,7 @@ const DashboardPage = () => {
 
       const change = secondLatestMonthJobs - thirdLatestMonthJobs;
       percentage = (change / thirdLatestMonthJobs) * 100;
-      percentage = percentage.toFixed(2);
+      percentage = percentage.toFixed(0);
       console.log(change);
 
       if (percentage > 0) {
