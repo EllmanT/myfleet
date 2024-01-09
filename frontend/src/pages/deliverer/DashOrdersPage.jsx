@@ -161,12 +161,14 @@ const DashOrdersPage = () => {
       const change = secondLatestMonthJobs - thirdLatestMonthJobs;
       percentage = (change / thirdLatestMonthJobs) * 100;
 
+      percentage = percentage.toFixed(0);
+
       console.log(change);
 
       if (percentage > 0) {
-        percentage = "+" + percentage;
+        percentage =  percentage;
       } else {
-        percentage = "-" + percentage;
+        percentage =  percentage;
       }
     }
   }
