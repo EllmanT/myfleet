@@ -384,7 +384,7 @@ const AllJobsPage = () => {
         </DialogActions>
       </Dialog>
 
-      {/**This is where the add customer dialogue endss*/}
+      {/**This is where the add customer dialogue ends*/}
       <Box>
         <UpdateJobPopup
           open={isUpdatePopupOpen}
