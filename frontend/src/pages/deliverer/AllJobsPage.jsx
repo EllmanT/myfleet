@@ -396,7 +396,7 @@ const AllJobsPage = () => {
         />
       </Box>
 
-      {/**This is where the content goess */}
+      {/**This is where the content goesss */}
       <Box
         height="80vh"
         sx={{
