@@ -24,8 +24,8 @@ const RevenueOverviewChart = ({ isDashboard = false, view }) => {
       data: [],
     };
     const totalExpensesLine = {
-      id: "totalRevenue",
-      color: theme.palette.primary.main,
+      id: "totalExpenses",
+      color: theme.palette.secondary[600],
       data: [],
     };
 
@@ -41,8 +41,8 @@ const RevenueOverviewChart = ({ isDashboard = false, view }) => {
         ];
 
         totalExpensesLine.data = [
-          ...totalRevenueLine.data,
-          { x: shortMonth, y: totalRevenue },
+          ...totalExpensesLine.data,
+          { x: shortMonth, y: totalExpenses },
         ];
       }
     );
