@@ -110,9 +110,7 @@ const App = () => {
               <Route
                 path="/del-admins"
                 element={
-                  <DelProtectedRoutes>
                     <DelAdminsPage />
-                  </DelProtectedRoutes>
                 }
               />
               <Route
