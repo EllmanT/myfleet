@@ -28,11 +28,7 @@ const RevenueOverviewChart = ({ isDashboard = false, view }) => {
       color: theme.palette.secondary[600],
       data: [],
     };
-    const totalProfitLine = {
-      id: "totalProfit",
-      color: theme.palette.secondary[600],
-      data: [],
-    };
+   
 
     Object.values(monthlyData).forEach(
       ({ month, totalRevenue, totalExpenses, totalProfit }) => {
@@ -60,7 +56,6 @@ const RevenueOverviewChart = ({ isDashboard = false, view }) => {
     const formattedData = [
       totalRevenueLine,
       totalExpensesLine,
-      totalProfitLine,
     ];
     return [formattedData];
   }, [coOverallStats]); // eslint-disable-line react-hooks/exhaustive-deps
