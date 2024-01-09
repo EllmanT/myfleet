@@ -31,7 +31,7 @@ const RevenueOverviewChart = ({ isDashboard = false, view }) => {
    
 
     Object.values(monthlyData).forEach(
-      ({ month, totalRevenue, totalExpenses, totalProfit }) => {
+      ({ month, totalRevenue, totalExpenses }) => {
 
         var shortMonth = new Date(Date.parse(month + " 1, 2000")).toLocaleString(
           "default",
