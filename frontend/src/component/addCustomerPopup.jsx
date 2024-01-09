@@ -104,8 +104,8 @@ setDisableSelect(true)
       if (isAddButton === true && isEditButton === false) {
         dispatch(createCustomer(newForm))
           .then(() => {
-            dispatch(getAllCustomersPage());
             handleClose();
+            dispatch(getAllCustomersPage());
             dispatch({ type: "clearMessages" });
           })
           .catch((error) => {
