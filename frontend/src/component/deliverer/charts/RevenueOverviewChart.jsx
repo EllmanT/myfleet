@@ -74,7 +74,7 @@ const RevenueOverviewChart = ({ isDashboard = false, view }) => {
     xScale={{ type: 'point' }}
     yScale={{
         type: 'linear',
-        min: 'auto',
+        min: '0',
         max: 'auto',
         stacked: true,
         reverse: false
