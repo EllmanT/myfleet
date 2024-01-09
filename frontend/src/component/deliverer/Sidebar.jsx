@@ -109,11 +109,11 @@ const Sidebar = ({
     //   icon: <Payments />,
     //   name: "payments",
     //  },
-    {
-      text: "Reports",
-      icon: <TrendingUpOutlined />,
-      name: "performance",
-    },
+    // {
+    //   text: "Reports",
+    //    icon: <TrendingUpOutlined />,
+    //    name: "performance",
+    // },
     {
       text: "Management",
       icon: null,

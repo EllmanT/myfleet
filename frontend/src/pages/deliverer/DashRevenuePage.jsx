@@ -187,17 +187,17 @@ const DashRevenuePage = () => {
       percentageExpenses = percentageExpenses.toFixed(0);
 
       if (percentageRevenue > 0) {
-        percentageRevenue = percentageRevenue;
+        percentageRevenue = "+" + percentageRevenue;
       } else {
         percentageRevenue = percentageRevenue;
       }
       if (percentageProfit > 0) {
-        percentageProfit = percentageProfit;
+        percentageProfit = "+" + percentageProfit;
       } else {
         percentageProfit = percentageProfit;
       }
       if (percentageExpenses > 0) {
-        percentageExpenses = percentageExpenses;
+        percentageExpenses = "+" + percentageExpenses;
       } else {
         percentageExpenses = percentageExpenses;
       }
