@@ -139,9 +139,10 @@ const DashRevenuePage = () => {
     const latestMonthData = jobsMonthlyData.find(
       (job) => job.month === latestMonth
     );
-    latestMonthRevenue = latestMonthData.totalRevenue;
-    latestMonthProfit = latestMonthData.totalProfit;
-    latestMonthExpenses = latestMonthData.totalExpenses;
+    latestMonthRevenue = latestMonthData.totalRevenue.toFixed(0);
+
+    latestMonthProfit = latestMonthData.totalProfit.toFixed(0);
+    latestMonthExpenses = latestMonthData.totalExpenses.toFixed(0);
 
     //we are using this logic because we are saying
     //lets assume that there are 3 months.
@@ -181,21 +182,24 @@ const DashRevenuePage = () => {
       percentageRevenue = (changeRevenue / thirdLatestMonthRevenue) * 100;
       percentageProfit = (changeProfit / thirdLatestMonthProfit) * 100;
       percentageExpenses = (changeExpenses / thirdLatestMonthExpenses) * 100;
+      percentageRevenue = percentageRevenue.toFixed(0);
+      percentageProfit = percentageProfit.toFixed(0);
+      percentageExpenses = percentageExpenses.toFixed(0);
 
       if (percentageRevenue > 0) {
-        percentageRevenue = "+" + percentageRevenue;
+        percentageRevenue = percentageRevenue;
       } else {
-        percentageRevenue = "-" + percentageRevenue;
+        percentageRevenue = percentageRevenue;
       }
       if (percentageProfit > 0) {
-        percentageProfit = "+" + percentageProfit;
+        percentageProfit = percentageProfit;
       } else {
-        percentageProfit = "-" + percentageProfit;
+        percentageProfit = percentageProfit;
       }
       if (percentageExpenses > 0) {
-        percentageExpenses = "+" + percentageExpenses;
+        percentageExpenses = percentageExpenses;
       } else {
-        percentageExpenses = "-" + percentageExpenses;
+        percentageExpenses = percentageExpenses;
       }
     }
   }
@@ -287,7 +291,7 @@ const DashRevenuePage = () => {
               fontWeight: "bold",
               padding: "10px 20px",
               ":hover": {
-              //  backgroundColor: theme.palette.secondary[100],
+                //  backgroundColor: theme.palette.secondary[100],
               },
             }}
           >
