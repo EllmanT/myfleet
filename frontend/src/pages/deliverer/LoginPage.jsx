@@ -66,7 +66,11 @@ const DelLoginPage = () => {
             alignItems={"center"}
             justifyContent={"center"}
           >
-            <Typography variant="h2" fontWeight={"bold"} color={theme.palette.secondary[100]}> 
+            <Typography
+              variant="h2"
+              fontWeight={"bold"}
+              color={theme.palette.secondary[100]}
+            >
               myFleet
             </Typography>
           </Box>
@@ -89,6 +93,8 @@ const DelLoginPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <p>Demo email : tmuranda1@gmail.com</p>
+            <p>Demo Password: tapiwa1234</p>
             <Box
               display={"flex"}
               flexDirection={"column"}
