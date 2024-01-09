@@ -166,9 +166,9 @@ const DashboardPage = () => {
       console.log(change);
 
       if (percentage > 0) {
-        percentage = "+" + percentage;
+        percentage =  percentage;
       } else {
-        percentage = "-" + percentage;
+        percentage =  percentage;
       }
     }
   }
