@@ -2,67 +2,37 @@ import { InputLabel, MenuItem, Select } from "@mui/material";
 import React, { useState } from "react";
 
 const cities = [
-  {
-    value: "Mutare",
-  },
-  {
-    value: "Harare",
-  },
-  {
-    value: "Bulawayo",
-  },
-  {
-    value: "Rusape",
-  },
-  {
-    value: "Chinhoyi",
-  },
-  {
-    value: "Gweru",
-  },
-  {
-    value: "Kadoma",
-  },
-  {
-    value: "Chegutu",
-  },
-  {
-    value: "Victoria Falls",
-  },
-  {
-    value: "Masvingo",
-  },
-  {
-    value: "Hwange",
-  },
-  {
-    value: "Marondera",
-  },
-  {
-    value: "Chipinge",
-  },
-  {
-    value: "Chimanimani",
-  },
-  {
-    value: "Nyanga",
-  },
-  {
-    value: "Kariba",
-  },
-  {
-    value: "BeitBridge",
-  },
-  {
-    value: "Chirundu",
-  },
-];
+  "Mutare",
 
-export default function Cities({ name, onChange }) {
+  "Harare",
+
+  "Bulawayo",
+
+  "Rusape",
+
+  "Chinhoyi",
+
+  "Gweru",
+  "Kadoma",
+  "Chegutu",
+  "Victoria Falls",
+  "Masvingo",
+  "Hwange",
+  "Marondera",
+  "Chipinge",
+  "Chimanimani",
+  "Nyanga",
+  "Kariba",
+  "BeitBridge",
+  "Chirundu",
+];
+cities.sort();
+export default function Cities({ name, onChange, disabled }) {
   return (
     <>
       <InputLabel id="demo-simple-select-autowidth-label">City</InputLabel>
       <Select
+        disabled={disabled}
         color="info"
         labelId="simple-select-autowidth-label"
         id="demo-simple-select-autowidth"
@@ -72,8 +42,8 @@ export default function Cities({ name, onChange }) {
         label="City"
       >
         {cities.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.value}
+          <MenuItem key={option} value={option}>
+            {option}
           </MenuItem>
         ))}
       </Select>

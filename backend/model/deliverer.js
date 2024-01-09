@@ -14,25 +14,22 @@ const delivererSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    goodsType: [
-      {
-        type: String,
-        required: true,
-      },
-    ],
+    goodsType: {
+      type: [String],
+      required: true,
+    },
 
     vehiclesType: [
       {
         type: String,
-        required: true,
       },
     ],
     deliveryType: [
       {
         type: String,
-        required: true,
       },
     ],
+
     Rates: [
       {
         rateType: {
@@ -49,13 +46,41 @@ const delivererSchema = new mongoose.Schema(
         },
       },
     ],
-    customers: {
+    job_ids: {
+      type: [mongoose.Types.ObjectId],
+      ref: "Job",
+    },
+    customer_ids: {
       type: [mongoose.Types.ObjectId],
       ref: "Customer",
     },
-    contractors: {
+    contractor_ids: {
       type: [mongoose.Types.ObjectId],
       ref: "Contractor",
+    },
+    admin_ids: {
+      type: [mongoose.Types.ObjectId],
+      ref: "Admin",
+    },
+    driver_ids: {
+      type: [mongoose.Types.ObjectId],
+      ref: "Driver",
+    },
+    vehicle_ids: {
+      type: [mongoose.Types.ObjectId],
+      ref: "Vehicle",
+    },
+    contact: {
+      type: "String",
+    },
+
+    prefix: {
+      type: String,
+      default: "JN",
+    },
+    lastOrder: {
+      type: Number,
+      default: 0,
     },
   },
   { timestamps: true }

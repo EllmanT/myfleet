@@ -2,46 +2,47 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, "Enter your name"],
-  },
-  email: {
-    type: String,
-    required: [true, "Enter your email"],
-  },
-  password: {
-    type: String,
-    required: [true, "Enter your password"],
-  },
-  phoneNumber: {
-    type: String,
-    required: true,
-  },
-  role: {
-    type: String,
-    default: "deliverer",
-    required: true,
-  },
-  address: {
-    type: String,
-    required: true,
-  },
-  city: {
-    type: String,
-    required: true,
-  },
-  companyId: {
-    type: mongoose.Types.ObjectId,
-  },
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, "Enter your name"],
+    },
+    email: {
+      type: String,
+      required: [true, "Enter your email"],
+    },
+    password: {
+      type: String,
+      required: [true, "Enter your password"],
+    },
+    phoneNumber: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      default: "deliverer",
+      required: true,
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    city: {
+      type: String,
+      required: true,
+    },
+    companyId: {
+      type: mongoose.Types.ObjectId,
+    },
 
-  resetPasswordToken: {
-    String,
+    resetPasswordToken: {
+      String,
+    },
+    resetPasswordTime: { Date },
   },
-  resetPasswordTime: { Date },
-},
-{ timestamps: true }
+  { timestamps: true }
 );
 
 //hashing the password

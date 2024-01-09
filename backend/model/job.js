@@ -2,12 +2,13 @@ const mongoose = require("mongoose");
 
 const jobSchema = new mongoose.Schema(
   {
-    orderNumber: {
+    jobNumber: {
       type: String,
       required: true,
+      
     },
     from: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
     customer: {
@@ -22,10 +23,7 @@ const jobSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    constractorId: {
-      type: String,
-      required: true,
-    },
+
     mileageOut: {
       type: String,
       required: true,
@@ -42,16 +40,24 @@ const jobSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    delivererId: {
+    deliveryType:{
+      type:String,
+      required:true,
+    },
+   
+    contractorId: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: "Contractor",
       required: true,
     },
     vehicleId: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: "Vehicle",
       required: true,
     },
     driverId: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: "driver",
       required: true,
     },
   },

@@ -14,13 +14,16 @@ import {
   Stepper,
   StepButton,
   Step,
+  IconButton,
 } from "@mui/material";
 import {
   AddBusiness,
   AddToQueue,
   Business,
   Close,
+  EditSharp,
   GroupAdd,
+  Visibility,
 } from "@mui/icons-material";
 import FlexBetween from "component/deliverer/FlexBetween";
 import Header from "component/deliverer/Header";
@@ -29,9 +32,15 @@ import Cities from "component/Cities";
 import { useDispatch, useSelector } from "react-redux";
 import VehicleTypes from "component/deliverer/VehicleTypes";
 import DeliveryTypes from "component/deliverer/DeliveryTypes";
-import { createDeliverer } from "redux/actions/deliverer";
+import {
+  createDeliverer,
+  getAllDeliverersPage,
+  updateDeliverer,
+} from "redux/actions/deliverer";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { DataGrid, GridDeleteIcon } from "@mui/x-data-grid";
+import DataGridCustomToolbar from "component/deliverer/DataGridCustomToolbar";
 
 const steps = ["General Details", "Rates", "Preview"];
 
@@ -41,19 +50,75 @@ const DeliverersPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { success, error } = useSelector((state) => state.deliverer);
+  const [isAddButtonn, setIsAddButtonn] = useState(false);
+  const [isEditButtonn, setIsEditButtonn] = useState(false);
+  const [addedAdmin, setAddedAdmin] = useState("");
+  const [chosenDeliverer, setChosenDeliverer] = useState({});
+  const [isView, setIsView] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [lastStep, setLastStep] = useState(0);
+  const [disableSelect, setDisableSelect] = useState(false);
+
+  const [pagee, setPagee] = useState(1);
+  const [pageSizee, setPageSizee] = useState(20);
+  const [sort, setSort] = useState({});
+  const [search, setJobSearch] = useState("");
+  const [results, setResults] = useState("");
+  const [totalDeliverers, setTotalDeliverers] = useState(0);
+  const [searchInput, setSearchInput] = useState("");
+  const { deliverersPage, totalCount, isPageDeliverersLoading } = useSelector(
+    (state) => state.deliverers
+  );
+  const [paginationModel, setPaginationModel] = React.useState({
+    pageSize: 25,
+    page: 0,
+  });
+
+  let pageSize;
+  let page;
+  pageSize = paginationModel.pageSize;
+  page = paginationModel.page;
+
+  useEffect(() => {
+    if (page < 0) {
+      setPagee(0); // Reset to the first page if the value is negative
+    } else {
+      dispatch(
+        getAllDeliverersPage(page, pageSize, JSON.stringify(sort), search)
+      );
+    }
+  }, [page, pageSize, sort, search, dispatch]);
+
+  useEffect(() => {
+    if (deliverersPage) {
+      if (totalDeliverers === 0) {
+        setTotalDeliverers(deliverersPage.length);
+      }
+      if (search === "") {
+        setResults(deliverersPage.length);
+      }
+      setResults(deliverersPage.length);
+    } else {
+      setResults(0);
+    }
+  }, [deliverersPage, totalDeliverers, search]);
+
+  const { success, error } = useSelector((state) => state.deliverers);
   const [open, setOpen] = useState(false);
 
   const [companyName, setCompanyName] = useState("");
   const [address, setAddress] = useState("");
+  const [contact, setContact] = useState("");
   const [goodsType, setGoodsType] = useState([]);
   const [vehiclesType, setVehiclesType] = useState([]);
   const [deliveryType, setDeliveryType] = useState([]);
   const [city, setCity] = useState("");
+  const [prefix, setPrefix] = useState("");
+  const [companyId, setCompanyId] = useState("");
 
   //the steps
   const [activeStep, setActiveStep] = React.useState(0);
-  const [completed, setCompleted] = React.useState({});
+  let [completed, setCompleted] = React.useState({});
 
   const [disable, setDisable] = useState(false);
 
@@ -94,22 +159,22 @@ const DeliverersPage = () => {
           steps.findIndex((step, i) => !(i in completed))
         : activeStep + 1;
     setActiveStep(newActiveStep);
-    stepChecker();
+    if (isAddButtonn || isEditButtonn) {
+      stepChecker();
+    }
   };
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    stepChecker();
+    if (isAddButtonn || isEditButtonn) {
+      stepChecker();
+    }
   };
 
   const handleStep = (step) => () => {
     setActiveStep(step);
   };
 
-  const handleReset = () => {
-    setActiveStep(0);
-    setCompleted({});
-  };
   //handle the changes from step to step check to see if step is complete
   const stepChecker = () => {
     if (activeStep === 0) {
@@ -148,12 +213,66 @@ const DeliverersPage = () => {
     setCompanyName("");
     setAddress("");
     setCity("");
+    setPrefix("");
+    setCompanyId("");
     setGoodsType([]);
     setVehiclesType([]);
     setDeliveryType([]);
     setCompleted({});
-    setOpen(true);
+    setLastStep(steps.length - 1);
+    setActiveStep(0);
+    setIsAddButtonn(true);
+    setIsEditButtonn(false);
     setDisable(false);
+    setDisableSelect(false);
+    setOpen(true);
+  };
+
+  const handleDelete = () => {};
+  const handleView = (delivererId) => {
+    const selectedDeliverer =
+      deliverersPage &&
+      deliverersPage.find((deliverer) => deliverer._id === delivererId);
+    setCompanyId(selectedDeliverer._id);
+    setCompanyName(selectedDeliverer.companyName);
+    setContact(selectedDeliverer.contact);
+    setAddress(selectedDeliverer.address);
+    setPrefix(selectedDeliverer.prefix);
+    setCity(selectedDeliverer.city);
+    setGoodsType(selectedDeliverer.goodsType);
+    setVehiclesType(selectedDeliverer.vehiclesType);
+    setDeliveryType(selectedDeliverer.deliveryType);
+    // setPageRates(selectedDeliverer.v);
+    setLastStep(steps.length - 1);
+    setActiveStep(0);
+    setCompleted({});
+    setDisableSelect(true);
+    setIsAddButtonn(false);
+    setIsEditButtonn(false);
+    setOpen(true);
+  };
+
+  const handleEdit = (delivererId) => {
+    const selectedDeliverer =
+      deliverersPage &&
+      deliverersPage.find((deliverer) => deliverer._id === delivererId);
+    setCompanyId(selectedDeliverer._id);
+    setCompanyName(selectedDeliverer.companyName);
+    setContact(selectedDeliverer.contact);
+    setAddress(selectedDeliverer.address);
+    setPrefix(selectedDeliverer.prefix);
+    setCity(selectedDeliverer.city);
+    setGoodsType(selectedDeliverer.goodsType);
+    setVehiclesType(selectedDeliverer.vehiclesType);
+    setDeliveryType(selectedDeliverer.deliveryType);
+    //setPageRates(selectedDeliverer.v);
+    setLastStep(steps.length - 1);
+    completed = setActiveStep(0);
+    setDisable(false);
+    setDisableSelect(false);
+    setIsEditButtonn(true);
+    setIsAddButtonn(false);
+    setOpen(true);
   };
 
   const handleClose = (event, reason) => {
@@ -169,19 +288,117 @@ const DeliverersPage = () => {
 
     const newForm = new FormData();
 
+    newForm.append("id", companyId);
     newForm.append("companyName", companyName);
     newForm.append("address", address);
     newForm.append("city", city);
+    newForm.append("prefix", prefix);
     newForm.append("goodsType", goodsType);
     newForm.append("vehiclesType", vehiclesType);
     newForm.append("deliveryType", deliveryType);
     if (completed[0] && completed[1]) {
-      dispatch(createDeliverer(newForm));
+      if (isAddButtonn === true && isEditButtonn === false) {
+        dispatch(createDeliverer(newForm)).then(() => {
+          dispatch(getAllDeliverersPage());
+          handleClose();
+          dispatch({ type: "clearMessages" });
+        });
+      }
+
+      if (isAddButtonn === false && isEditButtonn === true) {
+        dispatch(
+          updateDeliverer(
+            companyId,
+            companyName,
+            contact,
+            city,
+            address,
+            prefix,
+            goodsType,
+            vehiclesType,
+            deliveryType
+          )
+        )
+          .then(() => {
+            toast.success("Deliverer updated successfully");
+            dispatch(getAllDeliverersPage());
+            handleClose();
+            dispatch({ type: "clearMessages" });
+          })
+          .catch((error) => {
+            toast.error(error.response.data.message);
+          });
+
+        //edit the customer
+      }
     } else {
       toast.error("fill in all fields");
       setDisable(false);
     }
   };
+
+  const columns = [
+    {
+      field: "companyName",
+      headerName: "Name",
+      flex: 1,
+    },
+    {
+      field: "address",
+      headerName: "Address",
+      flex: 1,
+    },
+    {
+      field: "city",
+      headerName: "City",
+      flex: 1,
+    },
+    {
+      field: "contact",
+      headerName: "Contact",
+      flex: 1.5,
+      sortable: false,
+    },
+    {
+      field: "totalJobs",
+      headerName: "Total Jobs",
+      flex: 1.5,
+      sortable: false,
+    },
+    {
+      field: "totalIncome",
+      headerName: "Total Income",
+      flex: 1.5,
+      sortable: false,
+    },
+    {
+      field: "options",
+      headerName: "Options",
+      flex: 1,
+      renderCell: (params) => (
+        <>
+          <IconButton
+            aria-label="View"
+            onClick={() => handleView(params.row._id)}
+          >
+            <Visibility />
+          </IconButton>
+          <IconButton
+            aria-label="Edit"
+            onClick={() => handleEdit(params.row._id)}
+          >
+            <EditSharp />
+          </IconButton>
+          <IconButton
+            aria-label="Delete"
+            onClick={() => handleDelete(params.row._id)}
+          >
+            <GridDeleteIcon />
+          </IconButton>
+        </>
+      ),
+    },
+  ];
 
   return (
     <Box m="1.5rem 2.5rem">
@@ -199,7 +416,8 @@ const DeliverersPage = () => {
             }}
             onClick={handleClickOpen}
           >
-            <Business sx={{ mr: "10px" }} />4
+            <Business sx={{ mr: "10px" }} />
+            {totalCount}
           </Button>
         </Box>
         <Box>
@@ -221,7 +439,7 @@ const DeliverersPage = () => {
           </Button>
         </Box>
       </FlexBetween>
-      {/**Add contractor dialogue start */}
+      {/**Add Deliverer dialogue start */}
       <div>
         <Dialog disableEscapeKeyDown open={open} onClose={handleClose}>
           <form onSubmit={handleSubmit}>
@@ -262,19 +480,7 @@ const DeliverersPage = () => {
                   ))}
                 </Stepper>
                 <div>
-                  {allStepsCompleted() ? (
-                    <React.Fragment>
-                      <Typography sx={{ mt: 1, mb: 1 }}>
-                        All steps completed - you&apos;re finished
-                      </Typography>
-                      <Box
-                        sx={{ display: "flex", flexDirection: "row", pt: 2 }}
-                      >
-                        <Box sx={{ flex: "1 1 auto" }} />
-                        <Button onClick={handleReset}>Reset</Button>
-                      </Box>
-                    </React.Fragment>
-                  ) : (
+                  {
                     <React.Fragment>
                       <Box
                         sx={{ mt: "0.5rem" }}
@@ -290,6 +496,7 @@ const DeliverersPage = () => {
                           <Box display={"flex"} flexDirection={"column"}>
                             <FormControl sx={{ m: 1, minWidth: 250 }}>
                               <TextField
+                                disabled={disableSelect}
                                 required
                                 variant="outlined"
                                 type="text"
@@ -304,10 +511,12 @@ const DeliverersPage = () => {
                                 <Cities
                                   name={city}
                                   onChange={(e) => setCity(e.target.value)}
+                                  disabled={disableSelect}
                                 />
                               </FormControl>
                               <FormControl sx={{ m: 1, minWidth: 250 }}>
                                 <TextField
+                                  disabled={disableSelect}
                                   required
                                   variant="outlined"
                                   type="text"
@@ -332,6 +541,7 @@ const DeliverersPage = () => {
                                 <GoodsTypes
                                   selected={goodsType}
                                   onChange={setGoodsType}
+                                  disabled={disableSelect}
                                 />
                               </Box>
                             </FormControl>
@@ -340,6 +550,25 @@ const DeliverersPage = () => {
 
                         {activeStep === 1 && (
                           <Box display={"flex"} flexDirection={"column"}>
+                            <FormControl sx={{ m: 1, minWidth: 250 }}>
+                              <TextField
+                                disabled={disableSelect}
+                                required
+                                variant="outlined"
+                                type="text"
+                                label="Prefix letters only! (e.g JN0001 , LM0002)"
+                                color="info"
+                                value={prefix}
+                                onChange={(e) =>
+                                  setPrefix(
+                                    e.target.value
+                                      .toUpperCase()
+                                      .replace(/[^a-zA-Z\s]/g, "")
+                                  )
+                                }
+                                inputProps={{ maxLength: 4 }}
+                              />
+                            </FormControl>
                             <FormControl sx={{ m: 1, minWidth: 300 }}>
                               <TextField
                                 disabled
@@ -355,6 +584,7 @@ const DeliverersPage = () => {
                                 <VehicleTypes
                                   selected={vehiclesType}
                                   onChange={setVehiclesType}
+                                  disabled={disableSelect}
                                 />
                               </Box>
                             </FormControl>
@@ -374,6 +604,7 @@ const DeliverersPage = () => {
                                 <DeliveryTypes
                                   selected={deliveryType}
                                   onChange={setDeliveryType}
+                                  disabled={disableSelect}
                                 />
                               </Box>
                             </FormControl>
@@ -406,7 +637,7 @@ const DeliverersPage = () => {
                                 <FormControl sx={{ m: 1, minWidth: 150 }}>
                                   <TextField
                                     size="small"
-                                    disabled
+                                    disabled={true}
                                     variant="standard"
                                     type="text"
                                     label="What  vehicles do you have?"
@@ -428,7 +659,7 @@ const DeliverersPage = () => {
                                 <FormControl sx={{ m: 1, minWidth: 150 }}>
                                   <TextField
                                     size="small"
-                                    disabled
+                                    disabled={true}
                                     variant="standard"
                                     type="text"
                                     label="Where can you deliver?"
@@ -451,7 +682,7 @@ const DeliverersPage = () => {
                         )}
                       </Box>
                     </React.Fragment>
-                  )}
+                  }
                 </div>
               </Box>
             </DialogContent>
@@ -481,14 +712,14 @@ const DeliverersPage = () => {
                 >
                   Back
                 </Button>
-                {activeStep !== 2 && (
+                {activeStep !== lastStep && (
                   <Button
                     onClick={handleNext}
-                    variant="contained"
+                    variant="outlined"
                     fontWeight="bold"
                     sx={{
                       color: theme.palette.secondary[100],
-                      backgroundColor: theme.palette.secondary[300],
+                      // backgroundColor: theme.palette.secondary[300],
                       margin: "0.5rem  ",
                       border: "solid 0.5px",
                       ":hover": {
@@ -503,16 +734,15 @@ const DeliverersPage = () => {
                   </Button>
                 )}
 
-                {activeStep === 2 && (
+                {activeStep === lastStep && (isAddButtonn || isEditButtonn) && (
                   <Button
                     type={"submit"}
                     disabled={disable}
-                    onClick={handleNext}
-                    variant="contained"
+                    variant="outlined"
                     fontWeight="bold"
                     sx={{
                       color: theme.palette.secondary[100],
-                      backgroundColor: theme.palette.secondary[300],
+                      // backgroundColor: theme.palette.secondary[300],
                       margin: "0.5rem  ",
                       border: "solid 0.5px",
                       ":hover": {
@@ -523,7 +753,8 @@ const DeliverersPage = () => {
                       },
                     }}
                   >
-                    Add Contractor
+                    {isAddButtonn && !isEditButtonn && <>Add Admin</>}
+                    {!isAddButtonn && isEditButtonn && <>Edit Admin</>}
                   </Button>
                 )}
               </Box>
@@ -531,12 +762,59 @@ const DeliverersPage = () => {
           </form>
         </Dialog>
       </div>
-      {/**Add contractor dialogue ends
+      {/**Add Deliverer dialogue ends
        *
        */}
 
       {/**Where the info goes */}
-      <Box></Box>
+      <Box
+        height="80vh"
+        sx={{
+          "& .MuiDataGrid-root": {
+            border: "none",
+          },
+          "& .MuiDataGrid-cell": {
+            borderBottom: "none",
+          },
+          "& .MuiDataGrid-columnHeaders": {
+            backgroundColor: theme.palette.background.alt,
+            color: theme.palette.secondary[100],
+            borderBottom: "none",
+          },
+          "& .MuiDataGrid-virtualScroller": {
+            backgroundColor: theme.palette.primary.light,
+          },
+          "& .MuiDataGrid-footerContainer": {
+            backgroundColor: theme.palette.background.alt,
+            color: theme.palette.secondary[100],
+            borderTop: "none",
+          },
+          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+            color: `${theme.palette.secondary[200]} !important`,
+          },
+        }}
+      >
+        <DataGrid
+          loading={isPageDeliverersLoading || !deliverersPage}
+          getRowId={(row) => row._id}
+          rows={(deliverersPage && deliverersPage) || []}
+          columns={columns}
+          rowCount={totalCount || 0}
+          rowsPerPageOptions={[25, 50, 100]}
+          pagination
+          paginationModel={paginationModel}
+          onPaginationModelChange={setPaginationModel}
+          paginationMode="server"
+          sortingMode="server"
+          onPageChange={(newPage) => setPagee(newPage)}
+          onPageSizeChange={(newPageSize) => setPageSizee(newPageSize)}
+          onSortModelChange={(newSortModel) => setSort(...newSortModel)}
+          components={{ Toolbar: DataGridCustomToolbar }}
+          componentsProps={{
+            toolbar: { searchInput, setSearchInput, setJobSearch, results },
+          }}
+        />
+      </Box>
       {/**Where the info ends */}
     </Box>
   );

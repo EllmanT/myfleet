@@ -19,8 +19,8 @@ const VehicleTypes = ({ selected, onChange, disabled }) => {
           <input
             disabled={disabled}
             type="checkbox"
-            checked={selected.includes("small")}
-            name="small"
+            checked={selected.includes("smallVehicle")}
+            name="smallVehicle"
             onChange={handleCBClick}
           >
 
@@ -34,12 +34,24 @@ const VehicleTypes = ({ selected, onChange, disabled }) => {
           <input
             disabled={disabled}
             type="checkbox"
-            checked={selected.includes("medium")}
-            name="medium"
+            checked={selected.includes("mediumVehicle")}
+            name="mediumVehicle"
             onChange={handleCBClick}
           />
 
           <span>Medium <br/>(5-10T)</span>
+        </label>
+        
+        <label className=" border p-4 flex rounded gap-2 items-center cursor-pointer">
+          <input
+            disabled={disabled}
+            type="checkbox"
+            checked={selected.includes("largeVehicle")}
+            name="largeVehicle"
+            onChange={handleCBClick}
+          />
+
+          <span>Large <br/>(10T+)</span>
         </label>
         <label className=" border p-4 flex rounded gap-2 items-center cursor-pointer">
           <input
@@ -50,7 +62,7 @@ const VehicleTypes = ({ selected, onChange, disabled }) => {
             onChange={handleCBClick}
           />
 
-          <span>Horse <br/>(10T+)</span>
+          <span>Horse <br/></span>
         </label>
           
       

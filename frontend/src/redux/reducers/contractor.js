@@ -27,20 +27,65 @@ export const contractorReducer = createReducer(initialState, {
   // get all Contractors deliverer request
 
   getAllContrDelReq: (state) => {
-    state.isLoading = true;
+    state.isContrDelLoading = true;
   },
 
   //get all Contractors deliverer success
   getAllContrDelSuccess: (state, action) => {
-    state.isLoading = false;
-    state.contractors = action.payload;
+    state.isContrDelLoading = false;
+    state.delContractors = action.payload;
   },
 
   //get all Contractors deliverer failed
   getAllContrDelFailed: (state, action) => {
-    state.isLoading = false;
+    state.isContrDelLoading = false;
     state.error = action.payload;
   },
+
+  // get all Contractors deliverer request
+
+  getAllContrPageReq: (state) => {
+    state.isContrDelLoading = true;
+  },
+
+  //get all Contractors deliverer success
+  getAllContrPageSuccess: (state, action) => {
+    state.isContrPageLoading = false;
+    state.pageContractors = action.payload;
+  },
+
+  //get all Contractors deliverer failed
+  getAllContrPageFailed: (state, action) => {
+    state.isContrPageLoading = false;
+    state.error = action.payload;
+  },
+
+  //update contractor
+
+  updateContractorRequest: (state) => {
+    state.isUpdateContrLoading = true;
+  },
+  updateContractorSuccess: (state, action) => {
+    state.isUpdateContrLoading = false;
+    state.contractor = action.payload;
+  },
+  updateContractorFailed: (state, action) => {
+    state.isUpdateContrLoading = false;
+    state.error = action.payload;
+  },
+
+    // delete Contractor of a shop
+    deleteContractorRequest: (state) => {
+      state.isLoading = true;
+    },
+    deleteContractorSuccess: (state, action) => {
+      state.isLoading = false;
+      state.message = action.payload;
+    },
+    deleteContractorFailed: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
 
   //clear errors
   clearErrors: (state) => {

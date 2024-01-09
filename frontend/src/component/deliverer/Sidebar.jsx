@@ -12,7 +12,7 @@ import {
   useTheme,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import FlexBetween from "./FlexBetween";
 import {
   AdminPanelSettingsOutlined,
@@ -34,97 +34,7 @@ import {
   TodayOutlined,
   TrendingUpOutlined,
 } from "@mui/icons-material";
-
-const navItems = [
-  {
-    text: "Dashboard",
-    icon: <HomeOutlined />,
-    name: "dashboard",
-  },
-  {
-    text: "Order Central",
-    icon: null,
-  },
-  {
-    text: "Overview",
-    icon: <TodayOutlined />,
-    name: "dash-orders",
-  },
-  {
-    text: "View All",
-    icon: <CalendarMonthOutlined />,
-    name: "all-orders",
-  },
-  {
-    text: "Customers",
-    icon: <Groups2Outlined />,
-    name: "customers",
-  },
-  {
-    text: "Contractors",
-    icon: <ReceiptLongOutlined />,
-    name: "contractors",
-  },
-
-  {
-    text: "Revenue",
-    icon: null,
-  },
-  {
-    text: "$ Overview",
-    icon: <PointOfSaleOutlined />,
-    name: "dash-revenue",
-  },
-  {
-    text: "Daily",
-    icon: <TodayOutlined />,
-    name: "daily",
-  },
-  {
-    text: "Monthly",
-    icon: <CalendarMonthOutlined />,
-    name: "monthly",
-  },
-  {
-    text: "Breakdown",
-    icon: <PieChartOutlined />,
-    name: "breakdown",
-  },
-  {
-    text: "Payments",
-    icon: <Payments />,
-    name: "payments",
-  },
-  {
-    text: "Reports",
-    icon: <TrendingUpOutlined />,
-    name: "performance",
-  },
-  {
-    text: "Management",
-    icon: null,
-  },
-  {
-    text: "Admins",
-    icon: <AdminPanelSettingsOutlined />,
-    name: "admins",
-  },
-  {
-    text: "Vehicles",
-    icon: <LocalShipping />,
-    name: "vehicles",
-  },
-  {
-    text: "Drivers",
-    icon: <GroupOutlined />,
-    name: "drivers",
-  },
-  {
-    text: "Deliverers",
-    icon: <GroupWorkOutlined />,
-    name: "deliverers",
-  },
-];
+import { useSelector } from "react-redux";
 
 const Sidebar = ({
   user,
@@ -133,6 +43,103 @@ const Sidebar = ({
   setIsSidebarOpen,
   isNonMobile,
 }) => {
+  const companyId = user && user.companyId;
+  const daily = "/revenue-analytics/daily-data/";
+  const monthly = "/revenue-analytics/monthly-data/";
+  const breakdown = "/revenue-analytics/breakdown/";
+
+  const navItems = [
+    {
+      text: "Dashboard",
+      icon: <HomeOutlined />,
+      name: "dashboard",
+    },
+    {
+      text: "Order Central",
+      icon: null,
+    },
+    {
+      text: "Overview",
+      icon: <TodayOutlined />,
+      name: "dash-orders",
+    },
+    {
+      text: "View All",
+      icon: <CalendarMonthOutlined />,
+      name: "all-orders",
+    },
+    {
+      text: "Customers",
+      icon: <Groups2Outlined />,
+      name: "customers",
+    },
+    {
+      text: "Contractors",
+      icon: <ReceiptLongOutlined />,
+      name: "contractors",
+    },
+
+    {
+      text: "Revenue",
+      icon: null,
+    },
+    {
+      text: "$ Overview",
+      icon: <PointOfSaleOutlined />,
+      name: "dash-revenue",
+    },
+    {
+      text: "Daily",
+      icon: <TodayOutlined />,
+      name: `${daily}`,
+    },
+    {
+      text: "Monthly",
+      icon: <CalendarMonthOutlined />,
+      name: `${monthly}`,
+    },
+    {
+      text: "Breakdown",
+      icon: <PieChartOutlined />,
+      name: `${breakdown}`,
+    },
+    //Not YET
+    //{
+    //  text: "Payments",
+    //   icon: <Payments />,
+    //   name: "payments",
+    //  },
+    {
+      text: "Reports",
+      icon: <TrendingUpOutlined />,
+      name: "performance",
+    },
+    {
+      text: "Management",
+      icon: null,
+    },
+    {
+      text: "Admins",
+      icon: <AdminPanelSettingsOutlined />,
+      name: "admins",
+    },
+    {
+      text: "Vehicles",
+      icon: <LocalShipping />,
+      name: "vehicles",
+    },
+    {
+      text: "Drivers",
+      icon: <GroupOutlined />,
+      name: "drivers",
+    },
+    {
+      text: "Deliverers",
+      icon: <GroupWorkOutlined />,
+      name: "deliverers",
+    },
+  ];
+
   const { pathname } = useLocation();
   const [active, setActive] = useState();
   const theme = useTheme();
@@ -192,7 +199,18 @@ const Sidebar = ({
                   <ListItem key={text} disablePadding>
                     <ListItemButton
                       onClick={() => {
-                        navigate(`/del-${name}`);
+                        name === daily &&
+                          navigate(
+                            `/revenue-analytics/daily-data/${companyId}`
+                          );
+                        name === monthly &&
+                          navigate(`/revenue-analytics/monthly/${companyId}`);
+                        name === breakdown &&
+                          navigate(`/revenue-analytics/breakdown/${companyId}`);
+                        name !== daily &&
+                          name !== monthly &&
+                          name !== breakdown &&
+                          navigate(`del-${name}`);
                       }}
                       sx={{
                         backgroundColor:
@@ -252,7 +270,7 @@ const Sidebar = ({
                   fontSize={"0.8rem"}
                   sx={{ color: theme.palette.secondary[200] }}
                 >
-                  Super Admin
+                  {user?.role}
                 </Typography>
               </Box>
             </FlexBetween>

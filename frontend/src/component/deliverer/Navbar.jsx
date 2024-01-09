@@ -10,11 +10,11 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import FlexBetween from "./FlexBetween";
 import {
-    AddTask,
+  AddTask,
   AddTaskOutlined,
   ArrowDropDownOutlined,
   DarkModeOutlined,
@@ -27,12 +27,16 @@ import {
   TaskOutlined,
 } from "@mui/icons-material";
 import { setMode } from "state";
+import { getAllDeliverersPage } from "redux/actions/deliverer";
 
 const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const [anchorEl, setAchorEl] = useState(null);
   const isOpen = Boolean(anchorEl);
+
+  const { delivererName } = useSelector((state) => state.user);
+
   const handleClick = (event) => setAchorEl(event.currentTarget);
   const handleClose = () => setAchorEl(null);
   return (
@@ -58,19 +62,14 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
           </FlexBetween>
 
           <FlexBetween backgroundColor={theme.palette.secondary[900]}>
-            
             <Button
-            gap="1rem"
+              gap="1rem"
               p="0.1rem 1rem"
               variant="outlined"
               color="inherit"
               size="large"
-            > 
-
-            <PendingActions/>
-               <Typography>Upload <b>24</b> New Orders</Typography> 
-
-
+            >
+              <Typography>{delivererName}</Typography>
             </Button>
           </FlexBetween>
         </FlexBetween>

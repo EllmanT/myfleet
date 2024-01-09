@@ -6,16 +6,8 @@ const DelProtectedRoutes = ({ children }) => {
   const { isAuthenticated, loading, user } = useSelector((state) => state.user);
 
   if (!loading) {
-    if (!user) {
-      return <Navigate to="/login" replace />;
-    }
-    if (
-      !isAuthenticated &&
-      (user.role !== "Deliverer Manager" ||
-        user.role !== "Deliverer Admin" ||
-        user.role !== "Super Admin")
-    ) {
-      return <Navigate to="/login" replace />;
+    if(!isAuthenticated){
+      return <Navigate to={`/login`} replace />;
     }
   }
 

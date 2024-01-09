@@ -6,18 +6,30 @@ import { contractorReducer } from "./reducers/contractor";
 import { vehicleReducer } from "./reducers/vehicle";
 import { delivererReducer } from "./reducers/deliverer";
 import { driverReducer } from "./reducers/driver";
-import {tripReducer} from "./reducers/trip"
- 
+import { jobReducer } from "./reducers/job";
+import { rateReducer } from "./reducers/rate";
+import { overallStatsReducer } from "./reducers/overallStats";
+import { expensesReducer } from "./reducers/expense";
+import { vehicleStatsReducer } from "./reducers/vehicleStats";
+import { driverStatsReducer } from "./reducers/driverStats";
+import { contractorStatsReducer } from "./reducers/contractorStats";
+
 const Store = configureStore({
   reducer: {
     global: globalReducer,
     user: userReducer,
-    customer: customerReducer,
-    contractor: contractorReducer,
-    vehicle: vehicleReducer,
-    deliverer: delivererReducer,
-    driver: driverReducer,
-    trip:tripReducer
+    customers: customerReducer,
+    contractors: contractorReducer,
+    vehicles: vehicleReducer,
+    deliverers: delivererReducer,
+    drivers: driverReducer,
+    jobs: jobReducer,
+    rates: rateReducer,
+    overallStats: overallStatsReducer,
+    vehicleStats: vehicleStatsReducer,
+    driverStats: driverStatsReducer,
+    contractorStats: contractorStatsReducer,
+    expenses: expensesReducer,
   },
 });
 

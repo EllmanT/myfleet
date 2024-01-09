@@ -25,16 +25,61 @@ export const vehicleReducer = createReducer(initialState, {
   //get all vehicles request
 
   getAllVehiclesCompanyRequest: (state) => {
-    state.isLoading = true;
+    state.isCoVehLoading = true;
   },
 
   //get all vehicles company success
   getAllVehiclesCompanySuccess: (state, action) => {
-    state.isLoading = false;
-    state.vehicles = action.payload;
+    state.isCoVehLoading = false;
+    state.coVehicles = action.payload;
   },
   // get all vehicles company failed
   getAllVehiclesCompanyFailed: (state, action) => {
+    state.isCoVehLoading = false;
+    state.error = action.payload;
+  },
+
+  //get all vehicles request
+
+  getAllVehiclesPageRequest: (state) => {
+    state.isPageVehLoading = true;
+  },
+
+  //get all vehicles company success
+  getAllVehiclesPageSuccess: (state, action) => {
+    state.isPageVehLoading = false;
+    state.vehiclesPage = action.payload;
+  },
+  // get all vehicles company failed
+  getAllVehiclesPageFailed: (state, action) => {
+    state.isPageVehLoading = false;
+    state.error = action.payload;
+  },
+
+  //update the vehicle request
+  updateVehicleRequest: (state) => {
+    state.isUpdateVehRequest = true;
+  },
+  //update vehicle request success
+  updateVehicleSuccess: (state, action) => {
+    state.isUpdateVehRequest = false;
+    state.vehicle = action.payload;
+  },
+  //update vehicle request failed
+  updateVehicleFailed: (state, action) => {
+    state.isUpdateVehRequest = false;
+    state.error = action.payload;
+  },
+
+   // delete Vehicle of a shop
+   deleteVehicleRequest: (state) => {
+    state.isLoading = true;
+  },
+  deleteVehicleSuccess: (state, action) => {
+    state.isLoading = false;
+    state.message = action.payload;
+  },
+  deleteVehicleFailed: (state, action) => {
     state.isLoading = false;
     state.error = action.payload;
   },

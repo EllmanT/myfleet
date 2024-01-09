@@ -17,10 +17,28 @@ import {
   DelPaymentsPage,
   DelAllOrdersPage,
   DelDashOrdersPage,
+  DelDashDriverPage,
+  DelDashVehiclePage,
+  DelDashContractorPage,
   DelDashRevenuePage,
-  DelAddOrderPage,
   DelDeliverersPage,
   ActivationPage,
+  DelAddJobPage,
+  DelDashJobsAnalyticsPage,
+  DelDashVehicleAnalyticsPage,
+  DelDashDriverAnalyticsPage,
+  DelDashContrAnalyticsPage,
+  DelDashDailyDataPage,
+  DelDashVehicleDailyDataPage,
+  DelDashContrDailyDataPage,
+  DelDashDriverDailyDataPage,
+  DelDashRevenueBreakdownPage,
+  DelDashRevenueMonthlyPage,
+  DelDashRevenueDailyDataPage,
+  DelDashReportsPage,
+  DelDashContrReportsPage,
+  DelDashDriverReportsPage,
+  DelDashVehicleReportsPage,
 } from "./route/delRoutes";
 
 import ToasterProvider from "providers/ToastProvider";
@@ -30,10 +48,24 @@ import { loadUser } from "redux/actions/user";
 //getting the layouts
 import DelLayout from "component/deliverer/DelLayout";
 import DelProtectedRoutes from "route/delProtectedRoutes";
+import { getAllCustomersDeliverer } from "redux/actions/customer";
+import { getAllContractorsDeliverer } from "redux/actions/contractor";
+import { getAllVehiclesCompany } from "redux/actions/vehicle";
+import { getAllDriversCompany } from "redux/actions/driver";
+import { getDelivererInfo } from "redux/actions/deliverer";
+import { getRates } from "redux/actions/rate";
+
+//the analytics pages
 
 const App = () => {
   useEffect(() => {
     Store.dispatch(loadUser());
+    Store.dispatch(getDelivererInfo());
+    Store.dispatch(getAllCustomersDeliverer());
+    Store.dispatch(getAllContractorsDeliverer());
+    Store.dispatch(getAllVehiclesCompany());
+    Store.dispatch(getAllDriversCompany());
+    Store.dispatch(getRates());
   }, []);
 
   const mode = useSelector((state) => state.global.mode);
@@ -94,9 +126,7 @@ const App = () => {
               <Route
                 path="/del-deliverers"
                 element={
-                  <DelProtectedRoutes>
                     <DelDeliverersPage />
-                  </DelProtectedRoutes>
                 }
               />
               <Route
@@ -132,10 +162,35 @@ const App = () => {
                 }
               />
               <Route
-                path="/add-order"
+                path="/del-dash-driver/:driverId"
                 element={
                   <DelProtectedRoutes>
-                    <DelAddOrderPage />
+                    <DelDashDriverPage />
+                  </DelProtectedRoutes>
+                }
+              />
+              <Route
+                path="/del-dash-vehicle/:vehicleId"
+                element={
+                  <DelProtectedRoutes>
+                    <DelDashVehiclePage />
+                  </DelProtectedRoutes>
+                }
+              />
+              <Route
+                path="/del-dash-contractor/:contractorId"
+                element={
+                  <DelProtectedRoutes>
+                    <DelDashContractorPage />
+                  </DelProtectedRoutes>
+                }
+              />
+           
+              <Route
+                path="/add-job"
+                element={
+                  <DelProtectedRoutes>
+                    <DelAddJobPage />
                   </DelProtectedRoutes>
                 }
               />
@@ -144,6 +199,130 @@ const App = () => {
                 element={
                   <DelProtectedRoutes>
                     <DelDashboardPage />
+                  </DelProtectedRoutes>
+                }
+              />
+
+              {/**Analytics routes */}
+
+              <Route
+                path="/job-analytics/:companyId"
+                element={
+                  <DelProtectedRoutes>
+                    <DelDashJobsAnalyticsPage />
+                  </DelProtectedRoutes>
+                }
+              />
+              <Route
+                path="/job-analytics/daily-data/:companyId"
+                element={
+                  <DelProtectedRoutes>
+                    <DelDashDailyDataPage />
+                  </DelProtectedRoutes>
+                }
+              />
+              <Route
+                path="/vehicle-analytics/:vehicleId"
+                element={
+                  <DelProtectedRoutes>
+                    <DelDashVehicleAnalyticsPage />
+                  </DelProtectedRoutes>
+                }
+              />
+              <Route
+                path="/vehicle-analytics/daily-data/:vehicleId"
+                element={
+                  <DelProtectedRoutes>
+                    <DelDashVehicleDailyDataPage />
+                  </DelProtectedRoutes>
+                }
+              />
+              <Route
+                path="/driver-analytics/:driverId"
+                element={
+                  <DelProtectedRoutes>
+                    <DelDashDriverAnalyticsPage />
+                  </DelProtectedRoutes>
+                }
+              />
+              <Route
+                path="/driver-analytics/daily-data/:driverId"
+                element={
+                  <DelProtectedRoutes>
+                    <DelDashDriverDailyDataPage />
+                  </DelProtectedRoutes>
+                }
+              />
+              <Route
+                path="/contractor-analytics/:contractorId"
+                element={
+                  <DelProtectedRoutes>
+                    <DelDashContrAnalyticsPage />
+                  </DelProtectedRoutes>
+                }
+              />
+              <Route
+                path="/contractor-analytics/daily-data/:contractorId"
+                element={
+                  <DelProtectedRoutes>
+                    <DelDashContrDailyDataPage />
+                  </DelProtectedRoutes>
+                }
+              />
+              <Route
+                path="/revenue-analytics/breakdown/:companyId"
+                element={
+                  <DelProtectedRoutes>
+                    <DelDashRevenueBreakdownPage />
+                  </DelProtectedRoutes>
+                }
+              />
+              <Route
+                path="/revenue-analytics/monthly/:companyId"
+                element={
+                  <DelProtectedRoutes>
+                    <DelDashRevenueMonthlyPage />
+                  </DelProtectedRoutes>
+                }
+              />
+              <Route
+                path="/revenue-analytics/daily-data/:companyId"
+                element={
+                  <DelProtectedRoutes>
+                    <DelDashRevenueDailyDataPage />
+                  </DelProtectedRoutes>
+                }
+              />
+
+              <Route
+                path="/reports"
+                element={
+                  <DelProtectedRoutes>
+                    <DelDashReportsPage />
+                  </DelProtectedRoutes>
+                }
+              />
+              <Route
+                path="/reports-contractor/:contractorId"
+                element={
+                  <DelProtectedRoutes>
+                    <DelDashContrReportsPage />
+                  </DelProtectedRoutes>
+                }
+              />
+              <Route
+                path="/reports-driver/:driverId"
+                element={
+                  <DelProtectedRoutes>
+                    <DelDashDriverReportsPage />
+                  </DelProtectedRoutes>
+                }
+              />
+              <Route
+                path="/reports-vehicle/:vehicleId"
+                element={
+                  <DelProtectedRoutes>
+                    <DelDashVehicleReportsPage />
                   </DelProtectedRoutes>
                 }
               />

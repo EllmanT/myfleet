@@ -6,6 +6,12 @@ const contractorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    prefix: {
+      type: String,
+    },
+    contact: {
+      type: String,
+    },
     address: {
       type: String,
       required: true,
@@ -14,41 +20,32 @@ const contractorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    rates: [
-      {
-        rateType: {
-          type: String,
-        },
-        smallVehicle: {
-          type: Number,
-        },
-        mediumVehicle: {
-          type: Number,
-        },
-        largeVehicle: {
-          type: Number,
-        },
-      },
-    ],
+    lastOrder: {
+      type: Number,
+      default: 1,
+    },
+    goodsTypes: {
+      type: [String],
+      required: true,
+    },
 
-    goodsTypes: [
-      {
-        type: String,
-      },
-    ],
-    vehiclesTypes: [
-      {
-        type: String,
-      },
-    ],
-    deliveryTypes: [
-      {
-        type: String,
-      },
-    ],
+    vehiclesTypes: {
+      type: [String],
+      required: true,
+    },
+
+    deliveryTypes: {
+      type: [String],
+      required: true,
+    },
+
     customers: {
       type: [mongoose.Types.ObjectId],
       ref: "Customer",
+    },
+    job_ids: {
+      type: [mongoose.Types.ObjectId],
+      ref: "Job",
     },
     createdAt: {
       type: Date,

@@ -5,38 +5,98 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  DialogContentText,
   DialogTitle,
-  FormControl,
-  TextField,
+  IconButton,
   useTheme,
 } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
-import { Close, Group, GroupAdd } from "@mui/icons-material";
+import {
+  DataGrid,
+  GridDeleteIcon,
+  GridVisibilityOffIcon,
+} from "@mui/x-data-grid";
+import {
+  Close,
+  EditNotifications,
+  EditSharp,
+  Group,
+  GroupAdd,
+  Visibility,
+} from "@mui/icons-material";
 import FlexBetween from "component/deliverer/FlexBetween";
 import Header from "component/deliverer/Header";
-import Cities from "component/Cities";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { createCustomer } from "redux/actions/customer";
+import {
+  createCustomer,
+  deleteCustomer,
+  getAllCustomersPage,
+} from "redux/actions/customer";
+import AddCustomerPopup from "component/addCustomerPopup";
+import Store from "redux/store";
+import DataGridCustomToolbar from "component/deliverer/DataGridCustomToolbar";
 
 const CustomersPage = () => {
+  const { user } = useSelector((state) => state.user);
+
   const theme = useTheme();
   const dispatch = useDispatch();
 
-  const { user } = useSelector((state) => state.user);
-  const { success, error } = useSelector((state) => state.customer);
+  const [pagee, setPagee] = useState(0);
+  const [pageSizee, setPageSizee] = useState(25);
+  const [sort, setSort] = useState({});
+  const [search, setJobSearch] = useState("");
+  const [results, setResults] = useState("");
+  const [totalCustomers, setTotalCustomers] = useState(0);
+  const [searchInput, setSearchInput] = useState("");
+  const { customersPage, totalCount, isPageCustomerLoading } = useSelector(
+    (state) => state.customers
+  );
 
+  const [paginationModel, setPaginationModel] = React.useState({
+    pageSize: 25,
+    page: 0,
+  });
+
+  let pageSize;
+  let page;
+  pageSize = paginationModel.pageSize;
+  page = paginationModel.page;
+
+  useEffect(() => {
+    if (page < 0) {
+      setPagee(0); // Reset to the first page if the value is negative
+    } else {
+      dispatch(
+        getAllCustomersPage(page, pageSize, JSON.stringify(sort), search)
+      );
+    }
+  }, [page, pageSize, sort, search, dispatch]);
+
+
+
+  console.log(customersPage);
   const [disable, setDisable] = useState(false);
   const [open, setOpen] = useState(false);
 
-  const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [city, setCity] = useState("");
-  const [address, setAddress] = useState("");
+  const [addedCustomer, setAddedCustomer] = useState("");
+  const [chosenCustomer, setChosenCustomer] = useState({});
+  const [isView, setIsView] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [isAddButtonn, setIsAddButtonn] = useState(false);
+  const [isEditButtonn, setIsEditButtonn] = useState(false);
+  const [name, setName] = useState(false);
+  const [customerId, setCustomerId] = useState("");
 
   const handleClickOpen = () => {
+    setIsAddButtonn(true);
+    setIsEditButtonn(false);
+    setIsView(false);
+    setIsEdit(false);
     setOpen(true);
   };
+
+  const isReset = () => {};
 
   const handleClose = (event, reason) => {
     if (reason !== "backdropClick") {
@@ -44,76 +104,109 @@ const CustomersPage = () => {
     }
   };
 
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-    }
-    if (success) {
-      toast.success("Customer added successfully");
-      window.location.reload();
-    }
-  }, [dispatch, error, success]);
-
-  const handleSubmit = async (e) => {
-    setDisable(false);
-    e.preventDefault();
-
-    const newForm = new FormData();
-
-    newForm.append("name", name);
-    newForm.append("city", city);
-    newForm.append("phoneNumber", phoneNumber);
-    newForm.append("address", address);
-    newForm.append("companyId", user.companyId);
-    if (name !== "" && address !== "") {
-      dispatch(createCustomer(newForm));
-    } else {
-      toast.error("Name or address missing");
-      setDisable(false);
-    }
+  const handleView = (customerId) => {
+    const selectedCustomer =
+      customersPage &&
+      customersPage.find((customer) => customer._id === customerId);
+    setChosenCustomer(selectedCustomer);
+    setIsView(true);
+    setIsEdit(false);
+    setIsAddButtonn(false);
+    setIsEditButtonn(false);
+    setOpen(true);
   };
-  //console.log(user.companyId);
+
+  const handleEdit = (customerId) => {
+    const selectedCustomer =
+      customersPage &&
+      customersPage.find((customer) => customer._id === customerId);
+    setChosenCustomer(selectedCustomer);
+    setIsEditButtonn(true);
+    setIsAddButtonn(false);
+    setIsView(false);
+    setIsEdit(true);
+    setOpen(true);
+  };
+  const [isDelete, setIsDelete] = useState(false);
+  const handleDelete = (customerId) => {
+    dispatch(deleteCustomer(customerId))
+      .then(() => {
+        // The deleteCustomer action has successfully executed
+        toast.success("Customer deleted successfully");
+        dispatch(getAllCustomersPage());
+        handleDeleteDialogueClose();
+      })
+      .catch((error) => {
+        // An error occurred during the deleteCustomer action
+        toast.error(error.response.data.message);
+      });
+  };
+  const handleDeleteDialogue = (customerId) => {
+    const selectedCustomer =
+      customersPage &&
+      customersPage.find((customer) => customer._id === customerId);
+
+    setCustomerId(customerId);
+    setName(selectedCustomer.name);
+    setIsDelete(true);
+  };
+
+  const handleDeleteDialogueClose = () => {
+    setIsDelete(false);
+  };
+
   const columns = [
-    {
-      field: "_id",
-      headerName: "ID",
-      flex: 1,
-    },
     {
       field: "name",
       headerName: "Name",
-      flex: 0.5,
+      flex: 1,
     },
     {
-      field: "email",
-      headerName: "Email",
+      field: "address",
+      headerName: "Address",
+      flex: 1,
+    },
+    {
+      field: "city",
+      headerName: "City",
       flex: 1,
     },
     {
       field: "phoneNumber",
       headerName: "Phone Number",
-      flex: 0.5,
-      renderCell: (params) => {
-        return params.value.replace(/^(\d{3})(\d{3})(\d{4})/, "($1)$2-$3");
-      },
+      flex: 1.5,
+      sortable: false,
     },
     {
-      field: "country",
-      headerName: "Country",
-      flex: 0.4,
-    },
-    {
-      field: "occupation",
-      headerName: "Occupation",
+      field: "options",
+      headerName: "Options",
       flex: 1,
-    },
-    {
-      field: "role",
-      headerName: "Role",
-      flex: 0.5,
+      renderCell: (params) => (
+        <>
+          <IconButton
+            aria-label="View"
+            onClick={() => handleView(params.row._id)}
+          >
+            <Visibility />
+          </IconButton>
+          <IconButton
+            aria-label="Edit"
+            onClick={() => handleEdit(params.row._id)}
+          >
+            <EditSharp />
+          </IconButton>
+          <IconButton
+            aria-label="Delete"
+            onClick={() => handleDeleteDialogue(params.row._id)}
+          >
+            <GridDeleteIcon />
+          </IconButton>
+        </>
+      ),
     },
   ];
 
+  console.log(customersPage)
   return (
     <Box m="1.5rem 2.5rem">
       <FlexBetween>
@@ -131,7 +224,7 @@ const CustomersPage = () => {
             }}
           >
             <Group sx={{ mr: "10px" }} />
-            255  {user?.companyId}
+            {totalCount}
           </Button>
         </Box>
 
@@ -154,142 +247,104 @@ const CustomersPage = () => {
           </Button>
         </Box>
       </FlexBetween>
+      <Dialog
+        open={isDelete}
+        onClose={handleDeleteDialogueClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title" fontWeight={"bold"}>
+          {`Delete Admin : ${name}?`}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to remove <b> {name} </b> from the system ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="outlined"
+            color="info"
+            onClick={() => handleDeleteDialogueClose()}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="outlined"
+            color="warning"
+            onClick={() => handleDelete(customerId)}
+            autoFocus
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
       {/**This is where the add customer dialogue starts */}
-      <div>
-        <Dialog disableEscapeKeyDown open={open} onClose={handleClose}>
-          <DialogTitle variant="h3" sx={{ m: "0rem 6rem" }}>
-            <Button
-              disabled
-              variant="outlined"
-              sx={{
-                fontSize: "20px",
-                fontWeight: "bold",
-                padding: "10px 20px",
-                ":disabled": {
-                  color: theme.palette.primary[100],
-                },
-              }}
-            >
-              <GroupAdd sx={{ mr: "10px", fontSize: "25px" }} />
-              Customer
-            </Button>
-            <Button
-              onClick={handleClose}
-              variant="outlined"
-              color="info"
-              sx={{ ml: "30px" }}
-            >
-              <Close sx={{ fontSize: "25px" }} />
-            </Button>
-          </DialogTitle>
-          <DialogContent>
-            <form onSubmit={handleSubmit}>
-              <Box
-                sx={{ mt: "0.5rem" }}
-                display="flex"
-                maxWidth={"400px"}
-                margin={"auto"}
-                flexDirection="column"
-                alignItems={"center"}
-                justifyContent={"center"}
-              >
-                <Box display={"flex"} flexDirection={"column"}>
-                  <FormControl sx={{ m: 1, minWidth: 250 }}>
-                    <TextField
-                      required
-                      variant="outlined"
-                      type="text"
-                      label="Name"
-                      color="info"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                    />
-                  </FormControl>
-                  <Box display={"flex"}>
-                    <FormControl sx={{ m: 1, minWidth: 200 }}>
-                      <Cities
-                        name={city}
-                        onChange={(e) => setCity(e.target.value)}
-                      />
-                    </FormControl>
-                    <FormControl sx={{ m: 1, minWidth: 150 }}>
-                      <TextField
-                        required
-                        variant="outlined"
-                        type="text"
-                        label="Phone Number"
-                        color="info"
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                      />
-                    </FormControl>
-                  </Box>
-
-                  <FormControl sx={{ m: 1, minWidth: 250 }}>
-                    <TextField
-                      required
-                      variant="outlined"
-                      type="text"
-                      label="Address"
-                      color="info"
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                    />
-                  </FormControl>
-
-                  <Box display={"flex"} sx={{ m: "1rem 3rem " }}>
-                    <Button
-                      disabled={disable}
-                      onClick={handleClose}
-                      variant="contained"
-                      size="large"
-                      sx={{
-                        color: theme.palette.secondary[300],
-
-                        margin: "1rem",
-                        border: "solid 1px",
-                        ":hover": {
-                          backgroundColor: theme.palette.secondary[800],
-                        },
-                        ":disabled": {
-                          backgroundColor: theme.palette.secondary[800],
-                        },
-                      }}
-                    >
-                      Close
-                    </Button>
-                    <Button
-                      disabled={disable}
-                      type="submit"
-                      variant="contained"
-                      fontWeight="bold"
-                      sx={{
-                        color: theme.palette.secondary[100],
-                        backgroundColor: theme.palette.secondary[300],
-                        margin: "1rem  ",
-                        border: "solid 0.5px",
-                        ":hover": {
-                          backgroundColor: theme.palette.secondary[300],
-                        },
-                        ":disabled": {
-                          backgroundColor: theme.palette.secondary[300],
-                        },
-                      }}
-                    >
-                      Add Customer
-                    </Button>
-                  </Box>
-                </Box>
-              </Box>
-            </form>
-          </DialogContent>
-          <DialogActions></DialogActions>
-        </Dialog>
-      </div>
+      {open && (
+        <AddCustomerPopup
+          open={true}
+          handleClose={handleClose}
+          isReset={isReset}
+          selectedCustomer={chosenCustomer}
+          isView={isView}
+          isEdit={isEdit}
+          isAddButton={isAddButtonn}
+          isEditButton={isEditButtonn}
+          name={addedCustomer}
+          onChange={(e) => setAddedCustomer(e.target.value)}
+        />
+      )}
       {/**This is where the add customer dialogue ends */}
 
       {/**This is where the content goes */}
-      <Box></Box>
+      <Box
+        height="80vh"
+        sx={{
+          "& .MuiDataGrid-root": {
+            border: "none",
+          },
+          "& .MuiDataGrid-cell": {
+            borderBottom: "none",
+          },
+          "& .MuiDataGrid-columnHeaders": {
+            backgroundColor: theme.palette.background.alt,
+            color: theme.palette.secondary[100],
+            borderBottom: "none",
+          },
+          "& .MuiDataGrid-virtualScroller": {
+            backgroundColor: theme.palette.primary.light,
+          },
+          "& .MuiDataGrid-footerContainer": {
+            backgroundColor: theme.palette.background.alt,
+            color: theme.palette.secondary[100],
+            borderTop: "none",
+          },
+          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+            color: `${theme.palette.secondary[200]} !important`,
+          },
+        }}
+      >
+        <DataGrid
+          loading={isPageCustomerLoading || !customersPage}
+          getRowId={(row) => row._id}
+          rows={(customersPage && customersPage) || []}
+          columns={columns}
+          rowCount={totalCount || 0}
+          rowsPerPageOptions={[20, 50, 100]}
+          pagination
+          page={page}
+          pageSize={pageSize}
+          paginationModel={paginationModel}
+          onPaginationModelChange={setPaginationModel}
+          paginationMode="server"
+          sortingMode="server"
+          onSortModelChange={(newSortModel) => setSort(...newSortModel)}
+          components={{ Toolbar: DataGridCustomToolbar }}
+          componentsProps={{
+            toolbar: { searchInput, setSearchInput, setJobSearch, results },
+          }}
+        />
+      </Box>
       {/**This is where the content ends */}
     </Box>
   );

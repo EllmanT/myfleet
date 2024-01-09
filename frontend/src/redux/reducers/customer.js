@@ -25,17 +25,59 @@ export const customerReducer = createReducer(initialState, {
 
   //load the customers for the deliverer
   getAllCustomersDelivererRequest: (state) => {
-    state.isLoading = true;
+    state.isDelCustLoading = true;
   },
   getAllCustomersDelivererSuccess: (state, action) => {
-    state.isLoading = false;
-    state.customers = action.payload;
+    state.isDelCustLoading = false;
+    state.delCustomers = action.payload;
   },
   getAllCustomersDelivererFailed: (state, action) => {
-    state.isLoading = false;
+    state.isDelCustLoading = false;
     state.error = action.payload;
   },
 
+  //load the customers for the deliverer
+  getAllCustomersPageRequest: (state) => {
+    state.isPageCustLoading = true;
+  },
+  getAllCustomersPageSuccess: (state, action) => {
+    state.isPageCustLoading = false;
+    state.customersPage = action.payload;
+  },
+  setTotalCount: (state, action) => { // Add this new reducer case
+    state.totalCount = action.payload;
+  },
+  getAllCustomersPageFailed: (state, action) => {
+    state.isPageCustLoading = false;
+    state.error = action.payload;
+  },
+
+  //updating the customer
+
+  updateCustomerRequest: (state) => {
+    state.isUpdateCustomer = true;
+  },
+  updateCustomerSuccess: (state, action) => {
+    state.isUpdateCustomer = false;
+    state.customer = action.payload;
+  },
+  updateCustomerFailed: (state, action) => {
+    state.isUpdateCustomer = false;
+    state.error = action.payload;
+  },
+
+    // delete Customer of a shop
+    deleteCustomerRequest: (state) => {
+      state.isLoading = true;
+    },
+    deleteCustomerSuccess: (state, action) => {
+      state.isLoading = false;
+      state.message = action.payload;
+    },
+    deleteCustomerFailed: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
   //clear errors
 
   clearErrors: (state) => {

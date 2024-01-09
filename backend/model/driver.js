@@ -33,6 +33,10 @@ const driverSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  job_ids: {
+    type: [mongoose.Types.ObjectId],
+    ref: "Job",
+  },
   //dateJoined:{
   //type:Date,
   // },
