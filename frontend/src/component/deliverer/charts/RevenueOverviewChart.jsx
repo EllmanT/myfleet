@@ -47,7 +47,7 @@ const RevenueOverviewChart = ({ isDashboard = false, view }) => {
       }
     );
 
-    const formattedData = [totalRevenueLine, totalExpensesLine];
+    const formattedData = [totalExpensesLine, totalRevenueLine];
     return [formattedData];
   }, [coOverallStats]); // eslint-disable-line react-hooks/exhaustive-deps
 
